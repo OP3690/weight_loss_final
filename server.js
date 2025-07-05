@@ -14,7 +14,13 @@ app.use(helmet());
 app.use(compression());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://client-9jm305kpo-omprakash-utahas-projects.vercel.app', 'https://weight-management-frontend.vercel.app', 'https://weight-management-client.vercel.app', 'http://localhost:3000']
+    ? [
+        'https://weight-loss-lac.vercel.app',
+        'https://client-9jm305kpo-omprakash-utahas-projects.vercel.app',
+        'https://weight-management-frontend.vercel.app',
+        'https://weight-management-client.vercel.app',
+        'http://localhost:3000'
+      ]
     : 'http://localhost:3000',
   credentials: true
 }));
