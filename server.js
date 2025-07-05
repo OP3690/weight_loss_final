@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -11,12 +12,18 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(helmet());
 app.use(compression());
-app.use(cors());
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://your-frontend-domain.onrender.com', 'http://localhost:3000']
+    : 'http://localhost:3000',
+  credentials: true
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // MongoDB Connection
-mongoose.connect('mongodb+srv://global5665:test123@cluster0.wigbba7.mongodb.net/weight-management?retryWrites=true&w=majority&appName=Cluster0', {
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://global5665:test123@cluster0.wigbba7.mongodb.net/weight-management?retryWrites=true&w=majority&appName=Cluster0';
+mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
