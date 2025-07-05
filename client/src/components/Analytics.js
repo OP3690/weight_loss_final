@@ -22,17 +22,6 @@ const Analytics = () => {
   const ENTRIES_PER_PAGE = 7;
   const [userProfile, setUserProfile] = useState(null);
 
-
-
-  useEffect(() => {
-    if (currentUser && currentUser.id !== 'demo') {
-      loadUserProfileAndAnalytics();
-    } else if (currentUser && currentUser.id === 'demo') {
-      // Demo user - generate sample analytics data
-      generateSampleAnalytics();
-    }
-  }, [currentUser, loadUserProfileAndAnalytics, generateSampleAnalytics]);
-
   const loadUserProfileAndAnalytics = useCallback(async () => {
     try {
       setLoading(true);
@@ -143,6 +132,15 @@ const Analytics = () => {
     });
     setLoading(false);
   }, [selectedPeriod]);
+
+  useEffect(() => {
+    if (currentUser && currentUser.id !== 'demo') {
+      loadUserProfileAndAnalytics();
+    } else if (currentUser && currentUser.id === 'demo') {
+      // Demo user - generate sample analytics data
+      generateSampleAnalytics();
+    }
+  }, [currentUser, loadUserProfileAndAnalytics, generateSampleAnalytics]);
 
   const getTrendIcon = () => {
     if (!analytics) return <Minus className="w-4 h-4 text-gray-600" />;
