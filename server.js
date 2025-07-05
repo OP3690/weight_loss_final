@@ -14,7 +14,7 @@ app.use(helmet());
 app.use(compression());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-frontend-domain.onrender.com', 'http://localhost:3000']
+    ? ['https://weight-management-frontend.onrender.com', 'http://localhost:3000']
     : 'http://localhost:3000',
   credentials: true
 }));
