@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { 
   BarChart3, 
@@ -10,7 +10,7 @@ import {
   Minus
 } from 'lucide-react';
 import { useUser } from '../context/UserContext';
-import { calculateBMI, getBMICategory, weightEntryAPI, userAPI, isValidObjectId } from '../services/api';
+import { calculateBMI, weightEntryAPI, userAPI, isValidObjectId } from '../services/api';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const Analytics = () => {
@@ -22,8 +22,7 @@ const Analytics = () => {
   const ENTRIES_PER_PAGE = 7;
   const [userProfile, setUserProfile] = useState(null);
 
-  // Get active goalId from userProfile
-  const activeGoalId = userProfile && userProfile.goalId && (userProfile.goalId === 'demo' || isValidObjectId(userProfile.goalId)) ? userProfile.goalId : null;
+
 
   useEffect(() => {
     if (currentUser && currentUser.id !== 'demo') {
@@ -32,9 +31,9 @@ const Analytics = () => {
       // Demo user - generate sample analytics data
       generateSampleAnalytics();
     }
-  }, [selectedPeriod, currentUser]);
+  }, [currentUser, loadUserProfileAndAnalytics, generateSampleAnalytics]);
 
-  const loadUserProfileAndAnalytics = async () => {
+  const loadUserProfileAndAnalytics = useCallback(async () => {
     try {
       setLoading(true);
       const profile = await userAPI.getUser(currentUser.id);
@@ -85,9 +84,9 @@ const Analytics = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentUser, selectedPeriod]);
 
-  const generateSampleAnalytics = () => {
+  const generateSampleAnalytics = useCallback(() => {
     const days = parseInt(selectedPeriod);
     const entries = [];
     const startWeight = 76;
@@ -143,7 +142,7 @@ const Analytics = () => {
       updatedAt: new Date()
     });
     setLoading(false);
-  };
+  }, [selectedPeriod]);
 
   const getTrendIcon = () => {
     if (!analytics) return <Minus className="w-4 h-4 text-gray-600" />;
