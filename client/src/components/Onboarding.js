@@ -28,7 +28,15 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
   const onRegister = async (data) => {
     setLoading(true);
     try {
-      const response = await userAPI.register(data);
+      // Convert numeric fields to numbers before sending to backend
+      const payload = {
+        ...data,
+        age: Number(data.age),
+        height: Number(data.height),
+        currentWeight: Number(data.currentWeight),
+        targetWeight: Number(data.targetWeight),
+      };
+      const response = await userAPI.register(payload);
       toast.success('Registration successful!');
       
       // Automatically log in the user after successful registration
