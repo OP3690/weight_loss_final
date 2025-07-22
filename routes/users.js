@@ -74,7 +74,7 @@ const validateGoalData = [
 router.post('/register', [
   body('name').trim().isLength({ min: 2 }).withMessage('Name must be at least 2 characters long'),
   body('email').isEmail().withMessage('Valid email is required'),
-  body('mobileNumber').matches(/^\+[0-9]{1,4}[0-9]{10,15}$/).withMessage('Valid international mobile number is required'),
+  body('mobile').matches(/^\+[0-9]{1,4}[0-9]{10,15}$/).withMessage('Valid international mobile number is required'),
   body('country').isLength({ min: 2 }).withMessage('Country is required'),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
   body('gender').isIn(['male', 'female', 'other']).withMessage('Gender must be male, female, or other'),
@@ -89,10 +89,10 @@ router.post('/register', [
     if (!errors.isEmpty()) {
       return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
     }
-    const { name, email, mobileNumber, country, password, gender, age, height, currentWeight, goalWeight, activityLevel } = req.body;
+    const { name, email, mobile, country, password, gender, age, height, currentWeight, goalWeight, activityLevel } = req.body;
     
     // Check for existing user
-    const existingUser = await User.findOne({ $or: [{ email }, { mobileNumber }] });
+    const existingUser = await User.findOne({ $or: [{ email }, { mobile }] });
     if (existingUser) {
       return res.status(400).json({ message: 'Email or mobile number already registered' });
     }
@@ -100,7 +100,7 @@ router.post('/register', [
     const user = new User({
       name,
       email,
-      mobileNumber,
+      mobile,
       country,
       password,
       gender,
@@ -132,7 +132,7 @@ router.post('/register', [
         id: user._id, 
         name: user.name, 
         email: user.email, 
-        mobileNumber: user.mobileNumber,
+        mobile: user.mobile,
         country: user.country,
         goalId: user.goalId?.toString(), 
         goalInitialWeight: user.goalInitialWeight 
@@ -752,7 +752,7 @@ router.post('/verify-otp', [
 
 // Request SMS password reset (send OTP via SMS)
 router.post('/forgot-password-sms', [
-  body('mobileNumber').matches(/^\+[0-9]{1,4}[0-9]{10,15}$/).withMessage('Valid international mobile number is required')
+  body('mobile').matches(/^\+[0-9]{1,4}[0-9]{10,15}$/).withMessage('Valid international mobile number is required')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -760,22 +760,22 @@ router.post('/forgot-password-sms', [
       return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
     }
 
-    const { mobileNumber } = req.body;
+    const { mobile } = req.body;
     
     // Check if user exists
-    const user = await User.findOne({ mobileNumber });
+    const user = await User.findOne({ mobile });
     if (!user) {
       return res.status(404).json({ message: 'No account found with this mobile number' });
     }
 
     // Send SMS OTP using Twilio Verify
     try {
-      const smsResult = await sendSMSOTP(mobileNumber);
+      const smsResult = await sendSMSOTP(mobile);
       console.log('SMS OTP sent successfully:', smsResult);
       
       res.json({ 
         message: 'Password reset OTP sent successfully via SMS',
-        mobileNumber: mobileNumber,
+        mobile: mobile,
         sid: smsResult.sid
       });
     } catch (smsError) {
@@ -791,7 +791,7 @@ router.post('/forgot-password-sms', [
 
 // Verify SMS OTP and reset password
 router.post('/reset-password-sms', [
-  body('mobileNumber').matches(/^\+[0-9]{1,4}[0-9]{10,15}$/).withMessage('Valid international mobile number is required'),
+  body('mobile').matches(/^\+[0-9]{1,4}[0-9]{10,15}$/).withMessage('Valid international mobile number is required'),
   body('otp').isLength({ min: 4, max: 8 }).withMessage('OTP must be between 4-8 digits'),
   body('newPassword').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
   body('confirmPassword').custom((value, { req }) => value === req.body.newPassword).withMessage('Passwords do not match')
@@ -802,16 +802,16 @@ router.post('/reset-password-sms', [
       return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
     }
 
-    const { mobileNumber, otp, newPassword } = req.body;
+    const { mobile, otp, newPassword } = req.body;
     
     // Verify SMS OTP using Twilio Verify
-    const verificationResult = await verifySMSOTP(mobileNumber, otp);
+    const verificationResult = await verifySMSOTP(mobile, otp);
     if (!verificationResult.success) {
       return res.status(400).json({ message: 'Invalid or expired OTP' });
     }
     
     // Find user
-    const user = await User.findOne({ mobileNumber });
+    const user = await User.findOne({ mobile });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -830,7 +830,7 @@ router.post('/reset-password-sms', [
 
 // Verify SMS OTP (for frontend validation)
 router.post('/verify-sms-otp', [
-  body('mobileNumber').matches(/^\+[0-9]{1,4}[0-9]{10,15}$/).withMessage('Valid international mobile number is required'),
+  body('mobile').matches(/^\+[0-9]{1,4}[0-9]{10,15}$/).withMessage('Valid international mobile number is required'),
   body('otp').isLength({ min: 4, max: 8 }).withMessage('OTP must be between 4-8 digits')
 ], async (req, res) => {
   try {
@@ -839,10 +839,10 @@ router.post('/verify-sms-otp', [
       return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
     }
 
-    const { mobileNumber, otp } = req.body;
+    const { mobile, otp } = req.body;
     
     // Verify SMS OTP using Twilio Verify
-    const verificationResult = await verifySMSOTP(mobileNumber, otp);
+    const verificationResult = await verifySMSOTP(mobile, otp);
     if (!verificationResult.success) {
       return res.status(400).json({ message: 'Invalid or expired OTP' });
     }
@@ -857,7 +857,7 @@ router.post('/verify-sms-otp', [
 
 // Alternative SMS method using direct SMS API (fallback)
 router.post('/forgot-password-sms-direct', [
-  body('mobileNumber').matches(/^\+[0-9]{1,4}[0-9]{10,15}$/).withMessage('Valid international mobile number is required')
+  body('mobile').matches(/^\+[0-9]{1,4}[0-9]{10,15}$/).withMessage('Valid international mobile number is required')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -865,10 +865,10 @@ router.post('/forgot-password-sms-direct', [
       return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
     }
 
-    const { mobileNumber } = req.body;
+    const { mobile } = req.body;
     
     // Check if user exists
-    const user = await User.findOne({ mobileNumber });
+    const user = await User.findOne({ mobile });
     if (!user) {
       return res.status(404).json({ message: 'No account found with this mobile number' });
     }
@@ -888,12 +888,12 @@ router.post('/forgot-password-sms-direct', [
     
     // Send password reset SMS
     try {
-      const smsResult = await sendPasswordResetSMS(mobileNumber, user.name, otp);
+      const smsResult = await sendPasswordResetSMS(mobile, user.name, otp);
       console.log('SMS sent successfully:', smsResult);
       
       res.json({ 
         message: 'Password reset OTP sent successfully via SMS',
-        mobileNumber: mobileNumber
+        mobile: mobile
       });
     } catch (smsError) {
       console.error('SMS sending failed:', smsError);

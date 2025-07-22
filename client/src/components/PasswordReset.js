@@ -85,7 +85,7 @@ const PasswordReset = ({ onBackToLogin }) => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ mobileNumber }),
+          body: JSON.stringify({ mobile: mobileNumber }),
         });
 
         const data = await response.json();
@@ -129,7 +129,7 @@ const PasswordReset = ({ onBackToLogin }) => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ mobileNumber, otp }),
+          body: JSON.stringify({ mobile: mobileNumber, otp }),
         });
 
         const data = await response.json();
@@ -175,7 +175,7 @@ const PasswordReset = ({ onBackToLogin }) => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ mobileNumber, otp, newPassword, confirmPassword }),
+          body: JSON.stringify({ mobile: mobileNumber, otp, newPassword, confirmPassword }),
         });
 
         const data = await response.json();
