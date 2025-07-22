@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 
 // Create transporter for Gmail (you'll need to set up app-specific password)
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER || 'support@gooofit.com',
