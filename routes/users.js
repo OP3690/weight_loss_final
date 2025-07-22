@@ -657,13 +657,20 @@ router.post('/forgot-password', [
     await passwordReset.save();
     
     // Send password reset email
-    const emailResult = await sendPasswordResetEmail(email, user.name, otp);
-    
-    // Since we're using mock email service, always return success
-    res.json({ 
-      message: 'Password reset OTP sent successfully',
-      email: email // Return email for frontend reference
-    });
+    try {
+      const emailResult = await sendPasswordResetEmail(email, user.name, otp);
+      console.log('Email sent successfully:', emailResult);
+      
+      res.json({ 
+        message: 'Password reset OTP sent successfully',
+        email: email // Return email for frontend reference
+      });
+    } catch (emailError) {
+      console.error('Email sending failed:', emailError);
+      // Delete the password reset record if email fails
+      await passwordReset.deleteOne();
+      return res.status(500).json({ message: 'Failed to send OTP email. Please try again.' });
+    }
     
   } catch (error) {
     console.error('Password reset request error:', error);

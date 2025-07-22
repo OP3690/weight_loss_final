@@ -1,8 +1,6 @@
-// const nodemailer = require('nodemailer'); // Temporarily disabled
+const nodemailer = require('nodemailer');
 
 // Create transporter for GoDaddy email (gooofit.com)
-// Temporarily disabled to fix server crash
-/*
 const transporter = nodemailer.createTransport({
   host: 'smtpout.secureserver.net', // GoDaddy's own SMTP server
   port: 587,
@@ -12,7 +10,6 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
   }
 });
-*/
 
 // Welcome Email Template
 const createWelcomeEmail = (userName) => {
@@ -324,7 +321,7 @@ const createWelcomeEmail = (userName) => {
   `;
 };
 
-// Password Reset Email Template
+// Enhanced Password Reset Email Template
 const createPasswordResetEmail = (userName, otp) => {
   return `
     <!DOCTYPE html>
@@ -344,76 +341,238 @@ const createPasswordResetEmail = (userName, otp) => {
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 line-height: 1.6;
                 color: #333;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
                 padding: 20px;
+                min-height: 100vh;
             }
             
             .email-container {
                 max-width: 500px;
                 margin: 0 auto;
                 background: #ffffff;
-                border-radius: 20px;
+                border-radius: 24px;
                 overflow: hidden;
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+                position: relative;
             }
             
             .header {
-                background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-                padding: 40px 30px;
+                background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+                padding: 50px 30px;
                 text-align: center;
                 color: white;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .header::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+                animation: float 6s ease-in-out infinite;
+            }
+            
+            @keyframes float {
+                0%, 100% { transform: translateY(0px) rotate(0deg); }
+                50% { transform: translateY(-20px) rotate(180deg); }
             }
             
             .logo {
-                font-size: 32px;
+                font-size: 42px;
                 font-weight: bold;
-                margin-bottom: 10px;
+                margin-bottom: 15px;
+                text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+                position: relative;
+                z-index: 1;
+            }
+            
+            .logo-icon {
+                display: inline-block;
+                width: 50px;
+                height: 50px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 50%;
+                margin-right: 15px;
+                vertical-align: middle;
+                position: relative;
+            }
+            
+            .logo-icon::before {
+                content: '🎯';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 24px;
+            }
+            
+            .tagline {
+                font-size: 18px;
+                opacity: 0.95;
+                font-weight: 300;
+                position: relative;
+                z-index: 1;
             }
             
             .content {
-                padding: 40px 30px;
+                padding: 50px 40px;
                 text-align: center;
             }
             
             .title {
-                font-size: 24px;
+                font-size: 32px;
                 color: #1f2937;
-                margin-bottom: 20px;
-                font-weight: 600;
+                margin-bottom: 25px;
+                font-weight: 700;
+                background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
             }
             
             .message {
-                font-size: 16px;
+                font-size: 18px;
                 color: #6b7280;
-                margin-bottom: 30px;
+                margin-bottom: 40px;
                 line-height: 1.8;
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: auto;
             }
             
             .otp-section {
                 background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-                border-radius: 15px;
-                padding: 30px;
-                margin: 30px 0;
+                border-radius: 20px;
+                padding: 40px 30px;
+                margin: 40px 0;
+                border: 2px solid #e5e7eb;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .otp-section::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, #ff6b6b, #ff8e53, #ff6b6b);
+                background-size: 200% 100%;
+                animation: shimmer 2s linear infinite;
+            }
+            
+            @keyframes shimmer {
+                0% { background-position: -200% 0; }
+                100% { background-position: 200% 0; }
+            }
+            
+            .otp-label {
+                font-size: 16px;
+                color: #6b7280;
+                margin-bottom: 20px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 1px;
             }
             
             .otp-code {
-                font-size: 48px;
+                font-size: 56px;
                 font-weight: bold;
-                color: #4f46e5;
-                letter-spacing: 8px;
-                margin: 20px 0;
+                color: #ff6b6b;
+                letter-spacing: 12px;
+                margin: 25px 0;
                 font-family: 'Courier New', monospace;
+                text-shadow: 0 2px 4px rgba(255, 107, 107, 0.3);
+                background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
             }
             
             .otp-note {
                 font-size: 14px;
                 color: #6b7280;
-                margin-top: 15px;
+                margin-top: 20px;
+                line-height: 1.6;
+                background: rgba(255, 255, 255, 0.8);
+                padding: 15px;
+                border-radius: 10px;
+                border-left: 4px solid #ff6b6b;
+            }
+            
+            .security-info {
+                background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+                border-radius: 15px;
+                padding: 25px;
+                margin: 30px 0;
+                border: 1px solid #f59e0b;
+            }
+            
+            .security-title {
+                font-size: 18px;
+                color: #92400e;
+                margin-bottom: 15px;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .security-title::before {
+                content: '🔒';
+                margin-right: 10px;
+                font-size: 20px;
+            }
+            
+            .security-text {
+                font-size: 14px;
+                color: #92400e;
+                line-height: 1.6;
+            }
+            
+            .steps-section {
+                margin: 40px 0;
+                text-align: left;
+            }
+            
+            .step {
+                display: flex;
+                align-items: center;
+                margin-bottom: 20px;
+                padding: 15px;
+                background: #f8f9fa;
+                border-radius: 12px;
+                border-left: 4px solid #ff6b6b;
+            }
+            
+            .step-number {
+                width: 30px;
+                height: 30px;
+                background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+                color: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                margin-right: 15px;
+                flex-shrink: 0;
+            }
+            
+            .step-text {
+                font-size: 14px;
+                color: #6b7280;
+                font-weight: 500;
             }
             
             .footer {
-                background: #f8f9fa;
-                padding: 30px;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                padding: 40px 30px;
                 text-align: center;
                 border-top: 1px solid #e5e7eb;
             }
@@ -421,47 +580,157 @@ const createPasswordResetEmail = (userName, otp) => {
             .footer-text {
                 color: #6b7280;
                 font-size: 14px;
-                margin-bottom: 10px;
+                margin-bottom: 15px;
+                line-height: 1.6;
+            }
+            
+            .contact-info {
+                background: rgba(255, 255, 255, 0.8);
+                padding: 20px;
+                border-radius: 12px;
+                margin: 20px 0;
+                border: 1px solid #e5e7eb;
+            }
+            
+            .contact-email {
+                color: #ff6b6b;
+                font-weight: 600;
+                text-decoration: none;
             }
             
             .copyright {
                 color: #9ca3af;
                 font-size: 12px;
+                margin-top: 20px;
+            }
+            
+            .warning-box {
+                background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+                border: 1px solid #f87171;
+                border-radius: 12px;
+                padding: 20px;
+                margin: 30px 0;
+                text-align: center;
+            }
+            
+            .warning-title {
+                font-size: 16px;
+                color: #dc2626;
+                margin-bottom: 10px;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .warning-title::before {
+                content: '⚠️';
+                margin-right: 8px;
+            }
+            
+            .warning-text {
+                font-size: 14px;
+                color: #dc2626;
+                line-height: 1.5;
+            }
+            
+            @media (max-width: 600px) {
+                .content {
+                    padding: 40px 25px;
+                }
+                
+                .header {
+                    padding: 40px 25px;
+                }
+                
+                .logo {
+                    font-size: 32px;
+                }
+                
+                .otp-code {
+                    font-size: 42px;
+                    letter-spacing: 8px;
+                }
+                
+                .title {
+                    font-size: 28px;
+                }
             }
         </style>
     </head>
     <body>
         <div class="email-container">
             <div class="header">
-                <div class="logo">GoooFit</div>
+                <div class="logo">
+                    <span class="logo-icon"></span>
+                    GoooFit
+                </div>
+                <div class="tagline">Secure Password Reset</div>
             </div>
             
             <div class="content">
                 <div class="title">Password Reset Request</div>
                 <div class="message">
-                    Hi ${userName},<br><br>
-                    We received a request to reset your password for your GoooFit account. Use the OTP below to complete your password reset.
+                    Hi <strong>${userName}</strong>,<br><br>
+                    We received a request to reset your password for your GoooFit account. Use the secure OTP below to complete your password reset process.
                 </div>
                 
                 <div class="otp-section">
+                    <div class="otp-label">Your Security Code</div>
                     <div class="otp-code">${otp}</div>
                     <div class="otp-note">
-                        This OTP will expire in 10 minutes.<br>
-                        If you didn't request this, please ignore this email.
+                        <strong>⏰ Expires in 10 minutes</strong><br>
+                        <strong>🔐 One-time use only</strong><br>
+                        <strong>📧 Sent to your registered email</strong>
                     </div>
                 </div>
                 
-                <div class="message">
-                    Enter this code in the password reset form to create a new password for your account.
+                <div class="steps-section">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-text">Copy the 6-digit code above</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-text">Paste it into the OTP field on GoooFit</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-text">Create your new secure password</div>
+                    </div>
+                </div>
+                
+                <div class="security-info">
+                    <div class="security-title">Security Notice</div>
+                    <div class="security-text">
+                        This OTP is valid for 10 minutes only. If you didn't request this password reset, 
+                        please ignore this email and ensure your account is secure. Your password will remain unchanged.
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <div class="warning-title">Important Security Reminder</div>
+                    <div class="warning-text">
+                        Never share this OTP with anyone. GoooFit staff will never ask for your password or OTP codes.
+                        If you receive suspicious requests, please contact us immediately.
+                    </div>
                 </div>
             </div>
             
             <div class="footer">
                 <div class="footer-text">
-                    If you have any questions, contact us at <strong>support@gooofit.com</strong>
+                    Need help? We're here to support you!
+                </div>
+                <div class="contact-info">
+                    <div class="footer-text">
+                        Contact us at: <a href="mailto:support@gooofit.com" class="contact-email">support@gooofit.com</a>
+                    </div>
+                    <div class="footer-text">
+                        Visit: <a href="https://www.gooofit.com" style="color: #ff6b6b; text-decoration: none;">www.gooofit.com</a>
+                    </div>
                 </div>
                 <div class="copyright">
-                    © 2024 GoooFit. All rights reserved.
+                    © 2024 GoooFit. All rights reserved. | Secure • Private • Reliable
                 </div>
             </div>
         </div>
@@ -473,9 +742,6 @@ const createPasswordResetEmail = (userName, otp) => {
 // Send Welcome Email
 const sendWelcomeEmail = async (userEmail, userName) => {
   try {
-    console.log('Welcome email would be sent to:', userEmail, 'for user:', userName);
-    // Temporarily disabled email sending
-    /*
     const mailOptions = {
       from: '"GoooFit Team" <support@gooofit.com>',
       to: userEmail,
@@ -486,8 +752,6 @@ const sendWelcomeEmail = async (userEmail, userName) => {
     const info = await transporter.sendMail(mailOptions);
     console.log('Welcome email sent successfully to:', userEmail);
     return info;
-    */
-    return { messageId: 'mock-email-id' };
   } catch (error) {
     console.error('Failed to send welcome email:', error);
     throw error;
@@ -497,21 +761,16 @@ const sendWelcomeEmail = async (userEmail, userName) => {
 // Send Password Reset Email
 const sendPasswordResetEmail = async (userEmail, userName, otp) => {
   try {
-    console.log('Password reset email would be sent to:', userEmail, 'with OTP:', otp);
-    // Temporarily disabled email sending
-    /*
     const mailOptions = {
-      from: '"GoooFit Team" <support@gooofit.com>',
+      from: '"GoooFit Security" <support@gooofit.com>',
       to: userEmail,
-      subject: '🔐 Password Reset - GoooFit',
+      subject: '🔐 Password Reset - GoooFit Security Code',
       html: createPasswordResetEmail(userName, otp)
     };
 
     const info = await transporter.sendMail(mailOptions);
     console.log('Password reset email sent successfully to:', userEmail);
     return info;
-    */
-    return { messageId: 'mock-email-id' };
   } catch (error) {
     console.error('Failed to send password reset email:', error);
     throw error;
