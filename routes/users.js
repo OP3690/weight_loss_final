@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const WeightEntry = require('../models/WeightEntry');
 const { sendWelcomeEmail, sendPasswordResetEmail, generateOTP } = require('../services/emailService');
+const { sendSMSOTP, verifySMSOTP, sendPasswordResetSMS } = require('../services/smsService');
 const PasswordReset = require('../models/PasswordReset');
 
 // Validation middleware
@@ -744,6 +745,166 @@ router.post('/verify-otp', [
   } catch (error) {
     console.error('OTP verification error:', error);
     res.status(500).json({ message: 'Failed to verify OTP' });
+  }
+});
+
+// SMS-based Password Reset Routes
+
+// Request SMS password reset (send OTP via SMS)
+router.post('/forgot-password-sms', [
+  body('mobileNumber').matches(/^\+[0-9]{1,4}[0-9]{10,15}$/).withMessage('Valid international mobile number is required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
+    }
+
+    const { mobileNumber } = req.body;
+    
+    // Check if user exists
+    const user = await User.findOne({ mobileNumber });
+    if (!user) {
+      return res.status(404).json({ message: 'No account found with this mobile number' });
+    }
+
+    // Send SMS OTP using Twilio Verify
+    try {
+      const smsResult = await sendSMSOTP(mobileNumber);
+      console.log('SMS OTP sent successfully:', smsResult);
+      
+      res.json({ 
+        message: 'Password reset OTP sent successfully via SMS',
+        mobileNumber: mobileNumber,
+        sid: smsResult.sid
+      });
+    } catch (smsError) {
+      console.error('SMS sending failed:', smsError);
+      return res.status(500).json({ message: 'Failed to send OTP SMS. Please try again.' });
+    }
+    
+  } catch (error) {
+    console.error('SMS password reset request error:', error);
+    res.status(500).json({ message: 'Failed to process SMS password reset request' });
+  }
+});
+
+// Verify SMS OTP and reset password
+router.post('/reset-password-sms', [
+  body('mobileNumber').matches(/^\+[0-9]{1,4}[0-9]{10,15}$/).withMessage('Valid international mobile number is required'),
+  body('otp').isLength({ min: 4, max: 8 }).withMessage('OTP must be between 4-8 digits'),
+  body('newPassword').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+  body('confirmPassword').custom((value, { req }) => value === req.body.newPassword).withMessage('Passwords do not match')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
+    }
+
+    const { mobileNumber, otp, newPassword } = req.body;
+    
+    // Verify SMS OTP using Twilio Verify
+    const verificationResult = await verifySMSOTP(mobileNumber, otp);
+    if (!verificationResult.success) {
+      return res.status(400).json({ message: 'Invalid or expired OTP' });
+    }
+    
+    // Find user
+    const user = await User.findOne({ mobileNumber });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Update password
+    user.password = newPassword;
+    await user.save();
+    
+    res.json({ message: 'Password reset successfully via SMS' });
+    
+  } catch (error) {
+    console.error('SMS password reset error:', error);
+    res.status(500).json({ message: 'Failed to reset password via SMS' });
+  }
+});
+
+// Verify SMS OTP (for frontend validation)
+router.post('/verify-sms-otp', [
+  body('mobileNumber').matches(/^\+[0-9]{1,4}[0-9]{10,15}$/).withMessage('Valid international mobile number is required'),
+  body('otp').isLength({ min: 4, max: 8 }).withMessage('OTP must be between 4-8 digits')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
+    }
+
+    const { mobileNumber, otp } = req.body;
+    
+    // Verify SMS OTP using Twilio Verify
+    const verificationResult = await verifySMSOTP(mobileNumber, otp);
+    if (!verificationResult.success) {
+      return res.status(400).json({ message: 'Invalid or expired OTP' });
+    }
+    
+    res.json({ message: 'SMS OTP verified successfully' });
+    
+  } catch (error) {
+    console.error('SMS OTP verification error:', error);
+    res.status(500).json({ message: 'Failed to verify SMS OTP' });
+  }
+});
+
+// Alternative SMS method using direct SMS API (fallback)
+router.post('/forgot-password-sms-direct', [
+  body('mobileNumber').matches(/^\+[0-9]{1,4}[0-9]{10,15}$/).withMessage('Valid international mobile number is required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
+    }
+
+    const { mobileNumber } = req.body;
+    
+    // Check if user exists
+    const user = await User.findOne({ mobileNumber });
+    if (!user) {
+      return res.status(404).json({ message: 'No account found with this mobile number' });
+    }
+
+    // Generate OTP
+    const otp = generateOTP();
+    
+    // Invalidate any existing OTPs for this mobile number
+    await PasswordReset.invalidateAllOTPs(user.email);
+    
+    // Create new password reset record
+    const passwordReset = new PasswordReset({
+      email: user.email,
+      otp: otp
+    });
+    await passwordReset.save();
+    
+    // Send password reset SMS
+    try {
+      const smsResult = await sendPasswordResetSMS(mobileNumber, user.name, otp);
+      console.log('SMS sent successfully:', smsResult);
+      
+      res.json({ 
+        message: 'Password reset OTP sent successfully via SMS',
+        mobileNumber: mobileNumber
+      });
+    } catch (smsError) {
+      console.error('SMS sending failed:', smsError);
+      // Delete the password reset record if SMS fails
+      await passwordReset.deleteOne();
+      return res.status(500).json({ message: 'Failed to send OTP SMS. Please try again.' });
+    }
+    
+  } catch (error) {
+    console.error('Direct SMS password reset request error:', error);
+    res.status(500).json({ message: 'Failed to process SMS password reset request' });
   }
 });
 

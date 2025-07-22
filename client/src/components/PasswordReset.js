@@ -10,10 +10,12 @@ import {
   LockClosedIcon,
   ShieldCheckIcon,
   ClockIcon,
-  XMarkIcon
+  XMarkIcon,
+  DevicePhoneMobileIcon
 } from '@heroicons/react/24/outline';
 import { userAPI } from '../services/api';
 import toast from 'react-hot-toast';
+import SMSPasswordReset from './SMSPasswordReset';
 
 const PasswordReset = ({ onBackToLogin }) => {
   const [step, setStep] = useState(1); // 1: email, 2: OTP, 3: new password
@@ -27,6 +29,8 @@ const PasswordReset = ({ onBackToLogin }) => {
   const [otpSent, setOtpSent] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [error, setError] = useState('');
+  const [resetMethod, setResetMethod] = useState('email'); // 'email' or 'sms'
+  const [showSMSReset, setShowSMSReset] = useState(false);
 
   // Countdown timer for resend OTP
   React.useEffect(() => {
@@ -145,51 +149,99 @@ const PasswordReset = ({ onBackToLogin }) => {
         </div>
         <h2 className="text-3xl font-bold text-gray-900 mb-4">Forgot Password?</h2>
         <p className="text-gray-600 leading-relaxed text-lg max-w-sm mx-auto">
-          No worries! Enter your email address and we'll send you a secure OTP to reset your password.
+          Choose how you'd like to reset your password
         </p>
       </div>
 
+      {/* Reset Method Selection */}
       <div className="space-y-4">
-        <div className="space-y-2">
-          <label htmlFor="email" className="block text-sm font-semibold text-gray-700">
-            Email Address
-          </label>
-          <div className="relative">
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-5 py-4 pl-14 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-base bg-gray-50 focus:bg-white"
-              placeholder="Enter your email address"
-              disabled={loading}
-            />
-            <EnvelopeIcon className="absolute left-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" />
-          </div>
+        <div className="grid grid-cols-2 gap-4">
+          <button
+            onClick={() => setResetMethod('email')}
+            className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+              resetMethod === 'email'
+                ? 'border-orange-500 bg-orange-50 text-orange-700'
+                : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+            }`}
+          >
+            <EnvelopeIcon className="w-8 h-8 mx-auto mb-2" />
+            <div className="text-sm font-medium">Email OTP</div>
+            <div className="text-xs text-gray-500">Send to your email</div>
+          </button>
+          
+          <button
+            onClick={() => setResetMethod('sms')}
+            className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+              resetMethod === 'sms'
+                ? 'border-orange-500 bg-orange-50 text-orange-700'
+                : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+            }`}
+          >
+            <DevicePhoneMobileIcon className="w-8 h-8 mx-auto mb-2" />
+            <div className="text-sm font-medium">SMS OTP</div>
+            <div className="text-xs text-gray-500">Send to your phone</div>
+          </button>
         </div>
 
-        {error && (
-          <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-lg">
-            <ExclamationCircleIcon className="h-5 w-5 flex-shrink-0" />
-            <span className="text-sm font-medium">{error}</span>
+        {resetMethod === 'email' ? (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-700">
+                Email Address
+              </label>
+              <div className="relative">
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-5 py-4 pl-14 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-base bg-gray-50 focus:bg-white"
+                  placeholder="Enter your email address"
+                  disabled={loading}
+                />
+                <EnvelopeIcon className="absolute left-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" />
+              </div>
+            </div>
+
+            {error && (
+              <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-lg">
+                <ExclamationCircleIcon className="h-5 w-5 flex-shrink-0" />
+                <span className="text-sm font-medium">{error}</span>
+              </div>
+            )}
+
+            <button
+              onClick={handleSendOTP}
+              disabled={loading || !email}
+              className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
+                  Sending OTP...
+                </div>
+              ) : (
+                'Send Email OTP'
+              )}
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="text-center">
+              <p className="text-gray-600 mb-4">
+                Reset your password using SMS verification
+              </p>
+            </div>
+            
+            <button
+              onClick={() => setShowSMSReset(true)}
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-6 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              Continue with SMS
+            </button>
           </div>
         )}
       </div>
-
-      <button
-        onClick={handleSendOTP}
-        disabled={loading || !email}
-        className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-      >
-        {loading ? (
-          <div className="flex items-center justify-center">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
-            Sending OTP...
-          </div>
-        ) : (
-          'Send OTP'
-        )}
-      </button>
     </motion.div>
   );
 
@@ -394,57 +446,70 @@ const PasswordReset = ({ onBackToLogin }) => {
   );
 
   return (
-    <div className="w-full max-w-lg mx-auto p-6">
-      {/* Header with Close Button */}
-      <div className="flex items-center justify-between mb-8">
-        <button
-          onClick={onBackToLogin}
-          className="flex items-center text-gray-600 hover:text-gray-900 transition-colors text-base font-medium group"
-        >
-          <ArrowLeftIcon className="h-5 w-5 mr-2 group-hover:-translate-x-1 transition-transform" />
-          Back to Login
-        </button>
-        <button
-          onClick={onBackToLogin}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          <XMarkIcon className="h-6 w-6 text-gray-500" />
-        </button>
-      </div>
-
-      {/* Step Indicator */}
-      <div className="flex items-center justify-center mb-10">
-        <div className="flex items-center space-x-4">
-          {[1, 2, 3].map((stepNumber) => (
-            <div key={stepNumber} className="flex items-center">
-              <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center text-base font-semibold transition-all duration-300 ${
-                  step >= stepNumber
-                    ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg'
-                    : 'bg-gray-200 text-gray-500'
-                }`}
-              >
-                {stepNumber}
-              </div>
-              {stepNumber < 3 && (
-                <div
-                  className={`w-12 h-1 mx-3 rounded-full transition-all duration-300 ${
-                    step > stepNumber ? 'bg-gradient-to-r from-orange-500 to-red-500' : 'bg-gray-200'
-                  }`}
-                />
-              )}
-            </div>
-          ))}
+    <>
+      <div className="w-full max-w-lg mx-auto p-6">
+        {/* Header with Close Button */}
+        <div className="flex items-center justify-between mb-8">
+          <button
+            onClick={onBackToLogin}
+            className="flex items-center text-gray-600 hover:text-gray-900 transition-colors text-base font-medium group"
+          >
+            <ArrowLeftIcon className="h-5 w-5 mr-2 group-hover:-translate-x-1 transition-transform" />
+            Back to Login
+          </button>
+          <button
+            onClick={onBackToLogin}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <XMarkIcon className="h-6 w-6 text-gray-500" />
+          </button>
         </div>
+
+        {/* Step Indicator */}
+        <div className="flex items-center justify-center mb-10">
+          <div className="flex items-center space-x-4">
+            {[1, 2, 3].map((stepNumber) => (
+              <div key={stepNumber} className="flex items-center">
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center text-base font-semibold transition-all duration-300 ${
+                    step >= stepNumber
+                      ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg'
+                      : 'bg-gray-200 text-gray-500'
+                  }`}
+                >
+                  {stepNumber}
+                </div>
+                {stepNumber < 3 && (
+                  <div
+                    className={`w-12 h-1 mx-3 rounded-full transition-all duration-300 ${
+                      step > stepNumber ? 'bg-gradient-to-r from-orange-500 to-red-500' : 'bg-gray-200'
+                    }`}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Step Content */}
+        <AnimatePresence mode="wait">
+          {step === 1 && renderStep1()}
+          {step === 2 && renderStep2()}
+          {step === 3 && renderStep3()}
+        </AnimatePresence>
       </div>
 
-      {/* Step Content */}
-      <AnimatePresence mode="wait">
-        {step === 1 && renderStep1()}
-        {step === 2 && renderStep2()}
-        {step === 3 && renderStep3()}
-      </AnimatePresence>
-    </div>
+      {/* SMS Password Reset Modal */}
+      {showSMSReset && (
+        <SMSPasswordReset
+          onClose={() => setShowSMSReset(false)}
+          onSuccess={() => {
+            setShowSMSReset(false);
+            onBackToLogin();
+          }}
+        />
+      )}
+    </>
   );
 };
 
