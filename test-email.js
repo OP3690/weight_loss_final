@@ -1,8 +1,10 @@
 const nodemailer = require('nodemailer');
 
-// Test email configuration
+// Test email configuration for GoDaddy email
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtpout.secureserver.net', // GoDaddy's own SMTP server
+  port: 587,
+  secure: false, // true for 465, false for other ports
   auth: {
     user: 'support@gooofit.com',
     pass: 'Fortune$$336699'
@@ -34,10 +36,11 @@ const testEmail = async () => {
   } catch (error) {
     console.error('❌ Email test failed:', error.message);
     console.log('\n🔧 Troubleshooting tips:');
-    console.log('1. Check if 2-Factor Authentication is enabled on your Gmail account');
-    console.log('2. Generate an app-specific password for "WeightPro Email Service"');
+    console.log('1. Verify your GoDaddy email credentials are correct');
+    console.log('2. Check if your GoDaddy email is properly configured');
     console.log('3. Make sure the password is correct');
-    console.log('4. Check if Gmail allows "less secure app access" (if not using 2FA)');
+    console.log('4. Contact GoDaddy support if email is not working');
+    console.log('5. Try using GoDaddy\'s webmail interface to verify access');
   }
 };
 
