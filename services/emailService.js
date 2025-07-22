@@ -1,16 +1,13 @@
 const nodemailer = require('nodemailer');
 
-// Create transporter for GoDaddy email (gooofit.com)
+// Create transporter for SendGrid
 const transporter = nodemailer.createTransport({
-  host: 'smtpout.secureserver.net', // GoDaddy's own SMTP server
-  port: 465, // Try port 465 with SSL
-  secure: true, // Use SSL
+  host: 'smtp.sendgrid.net',
+  port: 587,
+  secure: false, // true for 465, false for other ports
   auth: {
-    user: process.env.EMAIL_USER || 'support@gooofit.com',
-    pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
-  },
-  tls: {
-    rejectUnauthorized: false
+    user: 'apikey', // This is always 'apikey' for SendGrid
+    pass: process.env.SENDGRID_API_KEY
   },
   debug: true, // Enable debug output
   logger: true // Log to console
