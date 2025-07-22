@@ -113,15 +113,15 @@ const PasswordReset = ({ onBackToLogin }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="space-y-6"
+      className="space-y-4"
     >
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Forgot Password?</h2>
-        <p className="text-gray-600">Enter your email address and we'll send you an OTP to reset your password.</p>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">Forgot Password?</h2>
+        <p className="text-sm text-gray-600">Enter your email address and we'll send you an OTP to reset your password.</p>
       </div>
 
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
           Email Address
         </label>
         <input
@@ -129,7 +129,7 @@ const PasswordReset = ({ onBackToLogin }) => {
           id="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
           placeholder="Enter your email address"
           disabled={loading}
         />
@@ -138,7 +138,7 @@ const PasswordReset = ({ onBackToLogin }) => {
       <button
         onClick={handleSendOTP}
         disabled={loading || !email}
-        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+        className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-2.5 px-4 rounded-lg font-medium hover:from-orange-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-sm"
       >
         {loading ? 'Sending OTP...' : 'Send OTP'}
       </button>
@@ -149,17 +149,17 @@ const PasswordReset = ({ onBackToLogin }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="space-y-6"
+      className="space-y-4"
     >
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Enter OTP</h2>
-        <p className="text-gray-600">
-          We've sent a 6-digit OTP to <span className="font-medium text-blue-600">{email}</span>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">Enter OTP</h2>
+        <p className="text-sm text-gray-600">
+          We've sent a 6-digit OTP to <span className="font-medium text-orange-600">{email}</span>
         </p>
       </div>
 
       <div>
-        <label htmlFor="otp" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="otp" className="block text-sm font-medium text-gray-700 mb-1">
           OTP Code
         </label>
         <input
@@ -167,7 +167,7 @@ const PasswordReset = ({ onBackToLogin }) => {
           id="otp"
           value={otp}
           onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center text-2xl font-mono tracking-widest"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-center text-lg font-mono tracking-widest text-sm"
           placeholder="000000"
           maxLength={6}
           disabled={loading}
@@ -178,20 +178,20 @@ const PasswordReset = ({ onBackToLogin }) => {
         <button
           onClick={handleVerifyOTP}
           disabled={loading || otp.length !== 6}
-          className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+          className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white py-2.5 px-4 rounded-lg font-medium hover:from-orange-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-sm"
         >
           {loading ? 'Verifying...' : 'Verify OTP'}
         </button>
       </div>
 
       <div className="text-center">
-        <p className="text-sm text-gray-600 mb-2">
+        <p className="text-xs text-gray-600 mb-2">
           Didn't receive the OTP?
         </p>
         <button
           onClick={handleResendOTP}
           disabled={countdown > 0 || loading}
-          className="text-blue-600 hover:text-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          className="text-orange-600 hover:text-orange-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed text-sm"
         >
           {countdown > 0 ? `Resend in ${countdown}s` : 'Resend OTP'}
         </button>
@@ -203,15 +203,15 @@ const PasswordReset = ({ onBackToLogin }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="space-y-6"
+      className="space-y-4"
     >
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Set New Password</h2>
-        <p className="text-gray-600">Enter your new password below.</p>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">Set New Password</h2>
+        <p className="text-sm text-gray-600">Enter your new password below.</p>
       </div>
 
       <div>
-        <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">
           New Password
         </label>
         <div className="relative">
@@ -220,7 +220,7 @@ const PasswordReset = ({ onBackToLogin }) => {
             id="newPassword"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
             placeholder="Enter new password"
             disabled={loading}
           />
@@ -230,22 +230,22 @@ const PasswordReset = ({ onBackToLogin }) => {
             className="absolute inset-y-0 right-0 pr-3 flex items-center"
           >
             {showPassword ? (
-              <EyeSlashIcon className="h-5 w-5 text-gray-400" />
+              <EyeSlashIcon className="h-4 w-4 text-gray-400" />
             ) : (
-              <EyeIcon className="h-5 w-5 text-gray-400" />
+              <EyeIcon className="h-4 w-4 text-gray-400" />
             )}
           </button>
         </div>
         {newPassword && newPassword.length < 6 && (
-          <p className="mt-1 text-sm text-red-600 flex items-center">
-            <ExclamationCircleIcon className="h-4 w-4 mr-1" />
+          <p className="mt-1 text-xs text-red-600 flex items-center">
+            <ExclamationCircleIcon className="h-3 w-3 mr-1" />
             Password must be at least 6 characters
           </p>
         )}
       </div>
 
       <div>
-        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
           Confirm New Password
         </label>
         <div className="relative">
@@ -254,7 +254,7 @@ const PasswordReset = ({ onBackToLogin }) => {
             id="confirmPassword"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
             placeholder="Confirm new password"
             disabled={loading}
           />
@@ -264,21 +264,21 @@ const PasswordReset = ({ onBackToLogin }) => {
             className="absolute inset-y-0 right-0 pr-3 flex items-center"
           >
             {showConfirmPassword ? (
-              <EyeSlashIcon className="h-5 w-5 text-gray-400" />
+              <EyeSlashIcon className="h-4 w-4 text-gray-400" />
             ) : (
-              <EyeIcon className="h-5 w-5 text-gray-400" />
+              <EyeIcon className="h-4 w-4 text-gray-400" />
             )}
           </button>
         </div>
         {confirmPassword && newPassword !== confirmPassword && (
-          <p className="mt-1 text-sm text-red-600 flex items-center">
-            <ExclamationCircleIcon className="h-4 w-4 mr-1" />
+          <p className="mt-1 text-xs text-red-600 flex items-center">
+            <ExclamationCircleIcon className="h-3 w-3 mr-1" />
             Passwords do not match
           </p>
         )}
         {confirmPassword && newPassword === confirmPassword && newPassword.length >= 6 && (
-          <p className="mt-1 text-sm text-green-600 flex items-center">
-            <CheckCircleIcon className="h-4 w-4 mr-1" />
+          <p className="mt-1 text-xs text-green-600 flex items-center">
+            <CheckCircleIcon className="h-3 w-3 mr-1" />
             Passwords match
           </p>
         )}
@@ -287,7 +287,7 @@ const PasswordReset = ({ onBackToLogin }) => {
       <button
         onClick={handleResetPassword}
         disabled={loading || !newPassword || !confirmPassword || newPassword !== confirmPassword || newPassword.length < 6}
-        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+        className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-2.5 px-4 rounded-lg font-medium hover:from-orange-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-sm"
       >
         {loading ? 'Resetting Password...' : 'Reset Password'}
       </button>
@@ -295,58 +295,46 @@ const PasswordReset = ({ onBackToLogin }) => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          {/* Back Button */}
-          <button
-            onClick={onBackToLogin}
-            className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors"
-          >
-            <ArrowLeftIcon className="h-5 w-5 mr-2" />
-            Back to Login
-          </button>
+    <div className="w-full">
+      {/* Back Button */}
+      <button
+        onClick={onBackToLogin}
+        className="flex items-center text-gray-600 hover:text-gray-900 mb-4 transition-colors text-sm"
+      >
+        <ArrowLeftIcon className="h-4 w-4 mr-2" />
+        Back to Login
+      </button>
 
-          {/* Logo */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-              WeightPro
-            </h1>
-            <p className="text-gray-600 mt-2">Password Reset</p>
-          </div>
-
-          {/* Step Indicator */}
-          <div className="flex items-center justify-center mb-8">
-            <div className="flex items-center space-x-4">
-              {[1, 2, 3].map((stepNumber) => (
-                <div key={stepNumber} className="flex items-center">
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                      step >= stepNumber
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-600'
-                    }`}
-                  >
-                    {stepNumber}
-                  </div>
-                  {stepNumber < 3 && (
-                    <div
-                      className={`w-12 h-1 mx-2 ${
-                        step > stepNumber ? 'bg-blue-600' : 'bg-gray-200'
-                      }`}
-                    />
-                  )}
-                </div>
-              ))}
+      {/* Step Indicator */}
+      <div className="flex items-center justify-center mb-4">
+        <div className="flex items-center space-x-2">
+          {[1, 2, 3].map((stepNumber) => (
+            <div key={stepNumber} className="flex items-center">
+              <div
+                className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
+                  step >= stepNumber
+                    ? 'bg-orange-600 text-white'
+                    : 'bg-gray-200 text-gray-600'
+                }`}
+              >
+                {stepNumber}
+              </div>
+              {stepNumber < 3 && (
+                <div
+                  className={`w-6 h-1 mx-1 ${
+                    step > stepNumber ? 'bg-orange-600' : 'bg-gray-200'
+                  }`}
+                />
+              )}
             </div>
-          </div>
-
-          {/* Step Content */}
-          {step === 1 && renderStep1()}
-          {step === 2 && renderStep2()}
-          {step === 3 && renderStep3()}
+          ))}
         </div>
       </div>
+
+      {/* Step Content */}
+      {step === 1 && renderStep1()}
+      {step === 2 && renderStep2()}
+      {step === 3 && renderStep3()}
     </div>
   );
 };
