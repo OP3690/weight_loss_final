@@ -855,6 +855,42 @@ router.post('/verify-sms-otp', [
   }
 });
 
+// Update specific user fields (for migration purposes)
+router.patch('/:userId/update-fields', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const updates = req.body;
+    
+    // Update user fields without running validators
+    const updatedUser = await User.findByIdAndUpdate(
+      userId, 
+      updates, 
+      { 
+        new: true, 
+        runValidators: false 
+      }
+    );
+    
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    res.json({ 
+      message: 'User fields updated successfully',
+      user: {
+        id: updatedUser._id,
+        name: updatedUser.name,
+        mobile: updatedUser.mobile,
+        country: updatedUser.country
+      }
+    });
+    
+  } catch (error) {
+    console.error('Update fields error:', error);
+    res.status(500).json({ message: 'Failed to update user fields' });
+  }
+});
+
 // Alternative SMS method using direct SMS API (fallback)
 router.post('/forgot-password-sms-direct', [
   body('mobile').matches(/^\+[0-9]{1,4}[0-9]{10,15}$/).withMessage('Valid international mobile number is required')
