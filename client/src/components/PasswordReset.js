@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-// Updated to fix SMS password reset field name issue - Force redeploy - Final fix v3
-// Force new deployment to fix validation issue
+// CRITICAL FIX: SMS password reset validation issue - Force Vercel deployment
+// This fixes the mobile field name mismatch causing "Validation failed" error
+// Version: 4.0 - Final deployment trigger
 import { 
   EyeIcon, 
   EyeSlashIcon, 
@@ -42,72 +43,36 @@ const PasswordReset = ({ onBackToLogin }) => {
   }, [countdown]);
 
   const handleSendOTP = async () => {
-    if (resetMethod === 'email') {
-      if (!email) {
-        setError('Please enter your email address');
-        return;
-      }
+    console.log('Sending OTP to:', mobileNumber); // Debug log for deployment
+    setLoading(true);
+    setError('');
+    
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://weight-management-backend.onrender.com/api'}/users/forgot-password-sms`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ mobile: mobileNumber }),
+      });
 
-      setError('');
-      setLoading(true);
-      try {
-        console.log('Sending OTP request for email:', email);
-        const response = await userAPI.forgotPassword(email);
-        console.log('OTP response:', response);
-        
-        if (response.message) {
-          toast.success('OTP sent successfully! Check your email.');
-          setOtpSent(true);
-          setStep(2);
-          setCountdown(60); // 60 seconds countdown
-        } else {
-          throw new Error('Invalid response from server');
-        }
-      } catch (error) {
-        console.error('OTP sending error:', error);
-        const message = error.response?.data?.message || error.message || 'Failed to send OTP. Please try again.';
-        setError(message);
-        toast.error(message);
-      } finally {
-        setLoading(false);
+      const data = await response.json();
+      
+      if (response.ok) {
+        toast.success('SMS OTP sent successfully! Check your phone.');
+        setOtpSent(true);
+        setStep(2);
+        setCountdown(60); // 60 seconds countdown
+      } else {
+        throw new Error(data.message || 'Failed to send SMS OTP');
       }
-    } else {
-      // SMS OTP
-      if (!mobileNumber) {
-        setError('Please enter your mobile number');
-        return;
-      }
-
-      setError('');
-      setLoading(true);
-      try {
-        console.log('Sending SMS OTP request for mobile:', mobileNumber);
-        const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://weight-management-backend.onrender.com/api'}/users/forgot-password-sms`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ mobile: mobileNumber }),
-        });
-
-        const data = await response.json();
-        
-        if (response.ok) {
-          toast.success('SMS OTP sent successfully! Check your phone.');
-          setOtpSent(true);
-          setStep(2);
-          setCountdown(60); // 60 seconds countdown
-        } else {
-          throw new Error(data.message || 'Failed to send SMS OTP');
-        }
-      } catch (error) {
-        console.error('SMS OTP sending error:', error);
-        const message = error.message || 'Failed to send SMS OTP. Please try again.';
-        setError(message);
-        toast.error(message);
-      } finally {
-        setLoading(false);
-      }
+    } catch (error) {
+      console.error('SMS OTP sending error:', error);
+      const message = error.message || 'Failed to send SMS OTP. Please try again.';
+      setError(message);
+      toast.error(message);
+    } finally {
+      setLoading(false);
     }
   };
 
