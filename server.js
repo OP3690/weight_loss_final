@@ -15,6 +15,8 @@ app.use(compression());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
     ? [
+        'https://gooofit.com',
+        'https://www.gooofit.com',
         'https://weight-loss-lac.vercel.app',
         'https://client-9jm305kpo-omprakash-utahas-projects.vercel.app',
         'https://weight-management-frontend.vercel.app',
