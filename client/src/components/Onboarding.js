@@ -337,33 +337,33 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[95vh] overflow-hidden flex flex-col"
       >
         {/* Header */}
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-4 border-b border-gray-200 flex-shrink-0">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">G</span>
+              <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
+                <span className="text-white font-bold text-sm">G</span>
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">GoooFit</h2>
-                <p className="text-sm text-gray-500">Transform Your Weight Loss Journey</p>
+                <h2 className="text-xl font-bold text-gray-900">GoooFit</h2>
+                <p className="text-xs text-gray-500">Transform Your Weight Loss Journey</p>
               </div>
             </div>
             <button
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              <X className="w-5 h-5 text-gray-500" />
+              <X className="w-4 h-4 text-gray-500" />
             </button>
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-4 flex-1 overflow-y-auto">
           {/* Mode Toggle */}
-          <div className="flex bg-gray-100 rounded-lg p-1 mb-6">
+          <div className="flex bg-gray-100 rounded-lg p-1 mb-4">
             <button
               onClick={() => setMode('login')}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
@@ -388,17 +388,17 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
 
           {/* Progress Steps for Registration */}
           {mode === 'register' && (
-            <div className="flex items-center justify-center mb-6">
+            <div className="flex items-center justify-center mb-4">
               <div className="flex items-center space-x-2">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
                   step >= 1 ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-500'
                 }`}>
                   1
                 </div>
-                <div className={`w-12 h-1 ${
+                <div className={`w-8 h-1 ${
                   step >= 2 ? 'bg-orange-600' : 'bg-gray-200'
                 }`}></div>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
                   step >= 2 ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-500'
                 }`}>
                   2
@@ -407,26 +407,26 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
             {mode === 'register' && step === 1 && (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Full Name
                   </label>
                   <input
                     type="text"
                     {...register('name', { required: 'Name is required' })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
                     placeholder="Enter your full name"
                   />
                   {errors.name && (
-                    <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Email
                   </label>
                   <input
@@ -438,23 +438,23 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                         message: 'Invalid email address'
                       }
                     })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
                     placeholder="Enter your email"
                   />
                   {errors.email && (
-                    <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
                   )}
                 </div>
 
                 {/* Country Selection */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Country
                   </label>
                   <select
                     value={selectedCountry}
                     onChange={(e) => handleCountryChange(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
                   >
                     {countries.map((country) => (
                       <option key={country.code} value={country.code}>
@@ -466,11 +466,11 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
 
                 {/* Mobile Number */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Mobile Number
                   </label>
                   <div className="flex">
-                    <div className="flex-shrink-0 px-3 py-2 bg-gray-100 border border-r-0 border-gray-300 rounded-l-lg text-sm font-medium text-gray-700 min-w-[80px] flex items-center justify-center">
+                    <div className="flex-shrink-0 px-3 py-2 bg-gray-100 border border-r-0 border-gray-300 rounded-l-lg text-sm font-medium text-gray-700 min-w-[70px] flex items-center justify-center">
                       {countryCode}
                     </div>
                     <input
@@ -482,18 +482,18 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                           message: 'Mobile number must be exactly 10 digits'
                         }
                       })}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
                       placeholder="Enter 10-digit mobile number"
                       maxLength="10"
                     />
                   </div>
                   {errors.mobileNumber && (
-                    <p className="text-red-500 text-sm mt-1">{errors.mobileNumber.message}</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.mobileNumber.message}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Password
                   </label>
                   <input
@@ -505,11 +505,11 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                         message: 'Password must be at least 6 characters'
                       }
                     })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
                     placeholder="Create a password (min 6 characters)"
                   />
                   {errors.password && (
-                    <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
                   )}
                 </div>
               </>
@@ -517,9 +517,9 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
 
             {mode === 'register' && step === 2 && (
               <>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Current Weight (kg)
                     </label>
                     <input
@@ -530,16 +530,16 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                         min: { value: 20, message: 'Weight must be at least 20kg' },
                         max: { value: 300, message: 'Weight must be less than 300kg' }
                       })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
                       placeholder="70.5"
                     />
                     {errors.currentWeight && (
-                      <p className="text-red-500 text-sm mt-1">{errors.currentWeight.message}</p>
+                      <p className="text-red-500 text-xs mt-1">{errors.currentWeight.message}</p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Goal Weight (kg)
                     </label>
                     <input
@@ -550,18 +550,18 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                         min: { value: 20, message: 'Weight must be at least 20kg' },
                         max: { value: 300, message: 'Weight must be less than 300kg' }
                       })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
                       placeholder="65.0"
                     />
                     {errors.goalWeight && (
-                      <p className="text-red-500 text-sm mt-1">{errors.goalWeight.message}</p>
+                      <p className="text-red-500 text-xs mt-1">{errors.goalWeight.message}</p>
                     )}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Height (cm)
                     </label>
                     <input
@@ -571,16 +571,16 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                         min: { value: 100, message: 'Height must be at least 100cm' },
                         max: { value: 250, message: 'Height must be less than 250cm' }
                       })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
                       placeholder="170"
                     />
                     {errors.height && (
-                      <p className="text-red-500 text-sm mt-1">{errors.height.message}</p>
+                      <p className="text-red-500 text-xs mt-1">{errors.height.message}</p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Age
                     </label>
                     <input
@@ -590,22 +590,22 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                         min: { value: 13, message: 'Age must be at least 13' },
                         max: { value: 120, message: 'Age must be less than 120' }
                       })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
                       placeholder="25"
                     />
                     {errors.age && (
-                      <p className="text-red-500 text-sm mt-1">{errors.age.message}</p>
+                      <p className="text-red-500 text-xs mt-1">{errors.age.message}</p>
                     )}
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Gender
                   </label>
                   <select
                     {...register('gender', { required: 'Gender is required' })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
                   >
                     <option value="">Select gender</option>
                     <option value="male">Male</option>
@@ -613,17 +613,17 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                     <option value="other">Other</option>
                   </select>
                   {errors.gender && (
-                    <p className="text-red-500 text-sm mt-1">{errors.gender.message}</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.gender.message}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Activity Level
                   </label>
                   <select
                     {...register('activityLevel', { required: 'Activity level is required' })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
                   >
                     <option value="">Select activity level</option>
                     <option value="sedentary">Sedentary (little or no exercise)</option>
@@ -633,7 +633,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                     <option value="extremely_active">Extremely active (very hard exercise, physical job)</option>
                   </select>
                   {errors.activityLevel && (
-                    <p className="text-red-500 text-sm mt-1">{errors.activityLevel.message}</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.activityLevel.message}</p>
                   )}
                 </div>
               </>
@@ -642,7 +642,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
             {mode === 'login' && (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Email
                   </label>
                   <input
@@ -654,26 +654,26 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                         message: 'Invalid email address'
                       }
                     })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
                     placeholder="Enter your email"
                   />
                   {errors.email && (
-                    <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Password
                   </label>
                   <input
                     type="password"
                     {...register('password', { required: 'Password is required' })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
                     placeholder="Enter your password"
                   />
                   {errors.password && (
-                    <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
                   )}
                 </div>
 
@@ -692,11 +692,11 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 px-4 rounded-lg font-medium hover:from-orange-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-2.5 px-4 rounded-lg font-medium hover:from-orange-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
             >
               {loading ? (
                 <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                   {mode === 'register' ? 'Creating Account...' : 'Logging in...'}
                 </div>
               ) : (
@@ -709,7 +709,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
           {mode === 'register' && step === 2 && (
             <button
               onClick={() => setStep(1)}
-              className="w-full mt-4 text-gray-600 hover:text-gray-800 text-sm font-medium"
+              className="w-full mt-3 text-gray-600 hover:text-gray-800 text-sm font-medium"
             >
               ← Back to basic info
             </button>
