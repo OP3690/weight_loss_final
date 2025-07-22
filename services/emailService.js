@@ -8,7 +8,12 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: process.env.EMAIL_USER || 'support@gooofit.com',
     pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
-  }
+  },
+  tls: {
+    rejectUnauthorized: false
+  },
+  debug: true, // Enable debug output
+  logger: true // Log to console
 });
 
 // Welcome Email Template
@@ -761,18 +766,40 @@ const sendWelcomeEmail = async (userEmail, userName) => {
 // Send Password Reset Email
 const sendPasswordResetEmail = async (userEmail, userName, otp) => {
   try {
+    console.log('Attempting to send password reset email to:', userEmail);
+    console.log('Using email configuration:', {
+      host: 'smtpout.secureserver.net',
+      port: 587,
+      user: process.env.EMAIL_USER || 'support@gooofit.com'
+    });
+
     const mailOptions = {
       from: '"GoooFit Security" <support@gooofit.com>',
       to: userEmail,
       subject: '🔐 Password Reset - GoooFit Security Code',
-      html: createPasswordResetEmail(userName, otp)
+      html: createPasswordResetEmail(userName, otp),
+      priority: 'high'
     };
+
+    console.log('Mail options prepared:', {
+      from: mailOptions.from,
+      to: mailOptions.to,
+      subject: mailOptions.subject
+    });
 
     const info = await transporter.sendMail(mailOptions);
     console.log('Password reset email sent successfully to:', userEmail);
+    console.log('Message ID:', info.messageId);
+    console.log('Response:', info.response);
     return info;
   } catch (error) {
     console.error('Failed to send password reset email:', error);
+    console.error('Error details:', {
+      code: error.code,
+      command: error.command,
+      response: error.response,
+      responseCode: error.responseCode
+    });
     throw error;
   }
 };
