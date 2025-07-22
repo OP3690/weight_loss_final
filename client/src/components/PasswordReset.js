@@ -366,7 +366,9 @@ const PasswordReset = ({ onBackToLogin }) => {
         <h2 className="text-3xl font-bold text-gray-900 mb-4">Enter OTP</h2>
         <p className="text-gray-600 leading-relaxed text-lg">
           We've sent a 6-digit security code to{' '}
-          <span className="font-semibold text-orange-600 bg-orange-50 px-3 py-1 rounded-lg">{email}</span>
+          <span className="font-semibold text-orange-600 bg-orange-50 px-3 py-1 rounded-lg">
+            {resetMethod === 'email' ? email : mobileNumber}
+          </span>
         </p>
       </div>
 
@@ -385,7 +387,9 @@ const PasswordReset = ({ onBackToLogin }) => {
             maxLength={6}
             disabled={loading}
           />
-          <p className="text-sm text-gray-500 text-center">Enter the 6-digit code from your email</p>
+          <p className="text-sm text-gray-500 text-center">
+            Enter the 6-digit code from your {resetMethod === 'email' ? 'email' : 'SMS'}
+          </p>
         </div>
 
         {error && (
