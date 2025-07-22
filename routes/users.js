@@ -6,6 +6,8 @@ const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const router = express.Router();
 const WeightEntry = require('../models/WeightEntry');
+const { sendWelcomeEmail, sendPasswordResetEmail, generateOTP } = require('../services/emailService');
+const PasswordReset = require('../models/PasswordReset');
 
 // Validation middleware
 const validateUserData = [
@@ -116,6 +118,16 @@ router.post('/register', [
     // Migrate any existing UUID goalIds to ObjectIds
     await migrateGoalIds(user);
     await user.save();
+    
+    // Send welcome email
+    try {
+      await sendWelcomeEmail(user.email, user.name);
+      console.log('Welcome email sent successfully to:', user.email);
+    } catch (emailError) {
+      console.error('Failed to send welcome email:', emailError);
+      // Don't fail registration if email fails
+    }
+    
     res.status(201).json({ message: 'Registration successful', user: { id: user._id, name: user.name, email: user.email, goalId: user.goalId?.toString(), goalInitialWeight: user.goalInitialWeight } });
   } catch (error) {
     console.error('Registration error:', error);
@@ -602,5 +614,127 @@ async function checkAndExpireGoal(user) {
     await user.save();
   }
 }
+
+// Password Reset Routes
+
+// Request password reset (send OTP)
+router.post('/forgot-password', [
+  body('email').isEmail().withMessage('Valid email is required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
+    }
+
+    const { email } = req.body;
+    
+    // Check if user exists
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      return res.status(404).json({ message: 'No account found with this email address' });
+    }
+
+    // Generate OTP
+    const otp = generateOTP();
+    
+    // Invalidate any existing OTPs for this email
+    await PasswordReset.invalidateAllOTPs(email);
+    
+    // Create new password reset record
+    const passwordReset = new PasswordReset({
+      email: email.toLowerCase(),
+      otp: otp
+    });
+    await passwordReset.save();
+    
+    // Send password reset email
+    const emailResult = await sendPasswordResetEmail(email, user.name, otp);
+    
+    if (emailResult.success) {
+      res.json({ 
+        message: 'Password reset OTP sent successfully',
+        email: email // Return email for frontend reference
+      });
+    } else {
+      // Delete the password reset record if email failed
+      await passwordReset.deleteOne();
+      res.status(500).json({ message: 'Failed to send password reset email. Please try again.' });
+    }
+    
+  } catch (error) {
+    console.error('Password reset request error:', error);
+    res.status(500).json({ message: 'Failed to process password reset request' });
+  }
+});
+
+// Verify OTP and reset password
+router.post('/reset-password', [
+  body('email').isEmail().withMessage('Valid email is required'),
+  body('otp').isLength({ min: 6, max: 6 }).withMessage('OTP must be 6 digits'),
+  body('newPassword').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+  body('confirmPassword').custom((value, { req }) => value === req.body.newPassword).withMessage('Passwords do not match')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
+    }
+
+    const { email, otp, newPassword } = req.body;
+    
+    // Find valid OTP
+    const passwordReset = await PasswordReset.findValidOTP(email, otp);
+    if (!passwordReset) {
+      return res.status(400).json({ message: 'Invalid or expired OTP' });
+    }
+    
+    // Find user
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Update password
+    user.password = newPassword;
+    await user.save();
+    
+    // Mark OTP as used
+    await passwordReset.markAsUsed();
+    
+    res.json({ message: 'Password reset successfully' });
+    
+  } catch (error) {
+    console.error('Password reset error:', error);
+    res.status(500).json({ message: 'Failed to reset password' });
+  }
+});
+
+// Verify OTP (for frontend validation)
+router.post('/verify-otp', [
+  body('email').isEmail().withMessage('Valid email is required'),
+  body('otp').isLength({ min: 6, max: 6 }).withMessage('OTP must be 6 digits')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
+    }
+
+    const { email, otp } = req.body;
+    
+    // Find valid OTP
+    const passwordReset = await PasswordReset.findValidOTP(email, otp);
+    if (!passwordReset) {
+      return res.status(400).json({ message: 'Invalid or expired OTP' });
+    }
+    
+    res.json({ message: 'OTP verified successfully' });
+    
+  } catch (error) {
+    console.error('OTP verification error:', error);
+    res.status(500).json({ message: 'Failed to verify OTP' });
+  }
+});
 
 module.exports = router; 

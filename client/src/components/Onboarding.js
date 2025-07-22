@@ -4,11 +4,13 @@ import { motion } from 'framer-motion';
 import { userAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import { X } from 'lucide-react';
+import PasswordReset from './PasswordReset';
 
 const Onboarding = ({ onSuccess, onClose, initialMode }) => {
   const [mode, setMode] = useState(initialMode || 'register'); // 'register' or 'login'
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1); // 1: basic info, 2: health info
+  const [showPasswordReset, setShowPasswordReset] = useState(false);
 
   const {
     register,
@@ -222,6 +224,15 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
     </>
   );
 
+  // Show password reset component if requested
+  if (showPasswordReset) {
+    return (
+      <PasswordReset 
+        onBackToLogin={() => setShowPasswordReset(false)} 
+      />
+    );
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -278,6 +289,15 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
               >
                 <span>{loading ? 'Logging in...' : 'Login'}</span>
               </button>
+              <div className="mt-3 text-center">
+                <button
+                  type="button"
+                  onClick={() => setShowPasswordReset(true)}
+                  className="text-sm text-blue-600 hover:text-blue-700 hover:underline"
+                >
+                  Forgot Password?
+                </button>
+              </div>
             </>
           )}
         </form>
