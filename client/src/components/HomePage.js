@@ -7,7 +7,7 @@ import {
   ShieldCheckIcon,
   StarIcon,
   UserGroupIcon,
-  TrendingUpIcon,
+  ArrowTrendingUpIcon,
   HeartIcon
 } from '@heroicons/react/24/outline';
 
@@ -64,7 +64,7 @@ const HomePage = ({ onStartDemo, onRegister, onLogin }) => {
 
   const stats = [
     { number: "100+", label: "Users Onboarded", icon: UserGroupIcon },
-    { number: "4.7kg", label: "Average Weight Loss", icon: TrendingUpIcon },
+    { number: "4.7kg", label: "Average Weight Loss", icon: ArrowTrendingUpIcon },
     { number: "73.28%", label: "Daily Updates", icon: HeartIcon }
   ];
 
