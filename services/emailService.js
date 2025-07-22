@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+// const nodemailer = require('nodemailer'); // Temporarily disabled
 
 // Create transporter for GoDaddy email (gooofit.com)
 // Temporarily disabled to fix server crash
