@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+// Updated to fix SMS password reset field name issue
 import { 
   EyeIcon, 
   EyeSlashIcon, 
