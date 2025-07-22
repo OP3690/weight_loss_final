@@ -41,6 +41,7 @@ mongoose.connect(MONGODB_URI, {
 // Routes
 app.use('/api/users', require('./routes/users'));
 app.use('/api/weight-entries', require('./routes/weightEntries'));
+app.use('/api/migration', require('./routes/migration'));
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {

@@ -15,7 +15,6 @@ import {
 } from '@heroicons/react/24/outline';
 import { userAPI } from '../services/api';
 import toast from 'react-hot-toast';
-import SMSPasswordReset from './SMSPasswordReset';
 
 const PasswordReset = ({ onBackToLogin }) => {
   const [step, setStep] = useState(1); // 1: email, 2: OTP, 3: new password
@@ -30,7 +29,7 @@ const PasswordReset = ({ onBackToLogin }) => {
   const [countdown, setCountdown] = useState(0);
   const [error, setError] = useState('');
   const [resetMethod, setResetMethod] = useState('email'); // 'email' or 'sms'
-  const [showSMSReset, setShowSMSReset] = useState(false);
+  const [mobileNumber, setMobileNumber] = useState('');
 
   // Countdown timer for resend OTP
   React.useEffect(() => {
@@ -41,33 +40,72 @@ const PasswordReset = ({ onBackToLogin }) => {
   }, [countdown]);
 
   const handleSendOTP = async () => {
-    if (!email) {
-      setError('Please enter your email address');
-      return;
-    }
-
-    setError('');
-    setLoading(true);
-    try {
-      console.log('Sending OTP request for email:', email);
-      const response = await userAPI.forgotPassword(email);
-      console.log('OTP response:', response);
-      
-      if (response.message) {
-        toast.success('OTP sent successfully! Check your email.');
-        setOtpSent(true);
-        setStep(2);
-        setCountdown(60); // 60 seconds countdown
-      } else {
-        throw new Error('Invalid response from server');
+    if (resetMethod === 'email') {
+      if (!email) {
+        setError('Please enter your email address');
+        return;
       }
-    } catch (error) {
-      console.error('OTP sending error:', error);
-      const message = error.response?.data?.message || error.message || 'Failed to send OTP. Please try again.';
-      setError(message);
-      toast.error(message);
-    } finally {
-      setLoading(false);
+
+      setError('');
+      setLoading(true);
+      try {
+        console.log('Sending OTP request for email:', email);
+        const response = await userAPI.forgotPassword(email);
+        console.log('OTP response:', response);
+        
+        if (response.message) {
+          toast.success('OTP sent successfully! Check your email.');
+          setOtpSent(true);
+          setStep(2);
+          setCountdown(60); // 60 seconds countdown
+        } else {
+          throw new Error('Invalid response from server');
+        }
+      } catch (error) {
+        console.error('OTP sending error:', error);
+        const message = error.response?.data?.message || error.message || 'Failed to send OTP. Please try again.';
+        setError(message);
+        toast.error(message);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // SMS OTP
+      if (!mobileNumber) {
+        setError('Please enter your mobile number');
+        return;
+      }
+
+      setError('');
+      setLoading(true);
+      try {
+        console.log('Sending SMS OTP request for mobile:', mobileNumber);
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://weight-management-backend.onrender.com/api'}/users/forgot-password-sms`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ mobileNumber }),
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+          toast.success('SMS OTP sent successfully! Check your phone.');
+          setOtpSent(true);
+          setStep(2);
+          setCountdown(60); // 60 seconds countdown
+        } else {
+          throw new Error(data.message || 'Failed to send SMS OTP');
+        }
+      } catch (error) {
+        console.error('SMS OTP sending error:', error);
+        const message = error.message || 'Failed to send SMS OTP. Please try again.';
+        setError(message);
+        toast.error(message);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -80,9 +118,29 @@ const PasswordReset = ({ onBackToLogin }) => {
     setError('');
     setLoading(true);
     try {
-      await userAPI.verifyOTP(email, otp);
-      toast.success('OTP verified successfully!');
-      setStep(3);
+      if (resetMethod === 'email') {
+        await userAPI.verifyOTP(email, otp);
+        toast.success('OTP verified successfully!');
+        setStep(3);
+      } else {
+        // SMS OTP verification
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://weight-management-backend.onrender.com/api'}/users/verify-sms-otp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ mobileNumber, otp }),
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+          toast.success('SMS OTP verified successfully!');
+          setStep(3);
+        } else {
+          throw new Error(data.message || 'Invalid SMS OTP');
+        }
+      }
     } catch (error) {
       const message = error.response?.data?.message || error.message || 'Invalid OTP';
       setError(message);
@@ -106,9 +164,29 @@ const PasswordReset = ({ onBackToLogin }) => {
     setError('');
     setLoading(true);
     try {
-      await userAPI.resetPassword(email, otp, newPassword, confirmPassword);
-      toast.success('Password reset successfully!');
-      onBackToLogin();
+      if (resetMethod === 'email') {
+        await userAPI.resetPassword(email, otp, newPassword, confirmPassword);
+        toast.success('Password reset successfully! You can now login with your new password.');
+        onBackToLogin();
+      } else {
+        // SMS password reset
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://weight-management-backend.onrender.com/api'}/users/reset-password-sms`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ mobileNumber, otp, newPassword, confirmPassword }),
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+          toast.success('Password reset successfully! You can now login with your new password.');
+          onBackToLogin();
+        } else {
+          throw new Error(data.message || 'Failed to reset password');
+        }
+      }
     } catch (error) {
       const message = error.response?.data?.message || error.message || 'Failed to reset password';
       setError(message);
@@ -227,17 +305,45 @@ const PasswordReset = ({ onBackToLogin }) => {
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="text-center">
-              <p className="text-gray-600 mb-4">
-                Reset your password using SMS verification
-              </p>
+            <div className="space-y-2">
+              <label htmlFor="mobileNumber" className="block text-sm font-semibold text-gray-700">
+                Mobile Number
+              </label>
+              <div className="relative">
+                <input
+                  type="tel"
+                  id="mobileNumber"
+                  value={mobileNumber}
+                  onChange={(e) => setMobileNumber(e.target.value)}
+                  className="w-full px-5 py-4 pl-14 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-base bg-gray-50 focus:bg-white"
+                  placeholder="+919723231499"
+                  disabled={loading}
+                />
+                <DevicePhoneMobileIcon className="absolute left-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" />
+              </div>
+              <p className="text-xs text-gray-500">Enter your mobile number with country code</p>
             </div>
-            
+
+            {error && (
+              <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-lg">
+                <ExclamationCircleIcon className="h-5 w-5 flex-shrink-0" />
+                <span className="text-sm font-medium">{error}</span>
+              </div>
+            )}
+
             <button
-              onClick={() => setShowSMSReset(true)}
-              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-6 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              onClick={handleSendOTP}
+              disabled={loading || !mobileNumber}
+              className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
-              Continue with SMS
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
+                  Sending OTP...
+                </div>
+              ) : (
+                'Send SMS OTP'
+              )}
             </button>
           </div>
         )}
@@ -499,16 +605,7 @@ const PasswordReset = ({ onBackToLogin }) => {
         </AnimatePresence>
       </div>
 
-      {/* SMS Password Reset Modal */}
-      {showSMSReset && (
-        <SMSPasswordReset
-          onClose={() => setShowSMSReset(false)}
-          onSuccess={() => {
-            setShowSMSReset(false);
-            onBackToLogin();
-          }}
-        />
-      )}
+
     </>
   );
 };
