@@ -13,4 +13,8 @@ services:
       - key: JWT_SECRET
         sync: false
       - key: PORT
-        value: 10000 
+        value: 10000
+      - key: EMAIL_USER
+        value: support@gooofit.com
+      - key: EMAIL_PASSWORD
+        value: Fortune$$336699 
