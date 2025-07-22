@@ -12,7 +12,7 @@ import {
   ClockIcon,
   XMarkIcon
 } from '@heroicons/react/24/outline';
-import axios from 'axios';
+import { userAPI } from '../services/api';
 import toast from 'react-hot-toast';
 
 const PasswordReset = ({ onBackToLogin }) => {
@@ -46,10 +46,10 @@ const PasswordReset = ({ onBackToLogin }) => {
     setLoading(true);
     try {
       console.log('Sending OTP request for email:', email);
-      const response = await axios.post('/api/users/forgot-password', { email });
-      console.log('OTP response:', response.data);
+      const response = await userAPI.forgotPassword(email);
+      console.log('OTP response:', response);
       
-      if (response.data.message) {
+      if (response.message) {
         toast.success('OTP sent successfully! Check your email.');
         setOtpSent(true);
         setStep(2);
@@ -59,7 +59,7 @@ const PasswordReset = ({ onBackToLogin }) => {
       }
     } catch (error) {
       console.error('OTP sending error:', error);
-      const message = error.response?.data?.message || 'Failed to send OTP. Please try again.';
+      const message = error.response?.data?.message || error.message || 'Failed to send OTP. Please try again.';
       setError(message);
       toast.error(message);
     } finally {
@@ -76,11 +76,11 @@ const PasswordReset = ({ onBackToLogin }) => {
     setError('');
     setLoading(true);
     try {
-      await axios.post('/api/users/verify-otp', { email, otp });
+      await userAPI.verifyOTP(email, otp);
       toast.success('OTP verified successfully!');
       setStep(3);
     } catch (error) {
-      const message = error.response?.data?.message || 'Invalid OTP';
+      const message = error.response?.data?.message || error.message || 'Invalid OTP';
       setError(message);
       toast.error(message);
     } finally {
@@ -102,16 +102,11 @@ const PasswordReset = ({ onBackToLogin }) => {
     setError('');
     setLoading(true);
     try {
-      await axios.post('/api/users/reset-password', {
-        email,
-        otp,
-        newPassword,
-        confirmPassword
-      });
+      await userAPI.resetPassword(email, otp, newPassword, confirmPassword);
       toast.success('Password reset successfully!');
       onBackToLogin();
     } catch (error) {
-      const message = error.response?.data?.message || 'Failed to reset password';
+      const message = error.response?.data?.message || error.message || 'Failed to reset password';
       setError(message);
       toast.error(message);
     } finally {
@@ -125,11 +120,11 @@ const PasswordReset = ({ onBackToLogin }) => {
     setError('');
     setLoading(true);
     try {
-      await axios.post('/api/users/forgot-password', { email });
+      await userAPI.forgotPassword(email);
       toast.success('OTP resent successfully!');
       setCountdown(60);
     } catch (error) {
-      const message = error.response?.data?.message || 'Failed to resend OTP';
+      const message = error.response?.data?.message || error.message || 'Failed to resend OTP';
       setError(message);
       toast.error(message);
     } finally {

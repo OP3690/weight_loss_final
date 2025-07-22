@@ -1,7 +1,7 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://weight-management-backend.onrender.com/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -110,6 +110,26 @@ export const userAPI = {
 
   login: async (data) => {
     const response = await api.post('/users/login', data);
+    return response.data;
+  },
+
+  forgotPassword: async (email) => {
+    const response = await api.post('/users/forgot-password', { email });
+    return response.data;
+  },
+
+  verifyOTP: async (email, otp) => {
+    const response = await api.post('/users/verify-otp', { email, otp });
+    return response.data;
+  },
+
+  resetPassword: async (email, otp, newPassword, confirmPassword) => {
+    const response = await api.post('/users/reset-password', { 
+      email, 
+      otp, 
+      newPassword, 
+      confirmPassword 
+    });
     return response.data;
   },
 
