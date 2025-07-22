@@ -73,48 +73,45 @@ const validateGoalData = [
 router.post('/register', [
   body('name').trim().isLength({ min: 2 }).withMessage('Name must be at least 2 characters long'),
   body('email').isEmail().withMessage('Valid email is required'),
-  body('mobile').matches(/^[0-9]{10,15}$/).withMessage('Valid mobile number is required'),
+  body('mobileNumber').matches(/^\+[0-9]{1,4}[0-9]{10,15}$/).withMessage('Valid international mobile number is required'),
+  body('country').isLength({ min: 2 }).withMessage('Country is required'),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-  body('confirmPassword').custom((value, { req }) => value === req.body.password).withMessage('Passwords do not match'),
-  body('gender').isIn(['Male', 'Female', 'Other']).withMessage('Gender is required'),
-  body('height').isFloat({ min: 50, max: 300 }).withMessage('Height must be between 50 and 300 cm'),
-  body('currentWeight').isFloat({ min: 20, max: 500 }).withMessage('Weight must be between 20 and 500 kg'),
-  body('targetWeight').isFloat({ min: 20, max: 500 }).withMessage('Target weight must be between 20 and 500 kg'),
-  body('targetDate').isISO8601().custom((value) => {
-    const targetDate = new Date(value);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (targetDate <= today) {
-      throw new Error('Target date must be a future date');
-    }
-    return true;
-  }).withMessage('Target date must be a future date')
+  body('gender').isIn(['male', 'female', 'other']).withMessage('Gender must be male, female, or other'),
+  body('age').isInt({ min: 13, max: 120 }).withMessage('Age must be between 13 and 120'),
+  body('height').isFloat({ min: 100, max: 250 }).withMessage('Height must be between 100 and 250 cm'),
+  body('currentWeight').isFloat({ min: 20, max: 300 }).withMessage('Weight must be between 20 and 300 kg'),
+  body('goalWeight').isFloat({ min: 20, max: 300 }).withMessage('Goal weight must be between 20 and 300 kg'),
+  body('activityLevel').isIn(['sedentary', 'lightly_active', 'moderately_active', 'very_active', 'extremely_active']).withMessage('Activity level is required')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
     }
-    const { name, email, mobile, password, gender, age, height, currentWeight, targetWeight, targetDate } = req.body;
+    const { name, email, mobileNumber, country, password, gender, age, height, currentWeight, goalWeight, activityLevel } = req.body;
+    
     // Check for existing user
-    const existingUser = await User.findOne({ $or: [{ email }, { mobile }] });
+    const existingUser = await User.findOne({ $or: [{ email }, { mobileNumber }] });
     if (existingUser) {
-      return res.status(400).json({ message: 'Email or mobile already registered' });
+      return res.status(400).json({ message: 'Email or mobile number already registered' });
     }
+    
     const user = new User({
       name,
       email,
-      mobile,
+      mobileNumber,
+      country,
       password,
       gender,
       age: Number(age),
       height: Number(height),
       currentWeight: Number(currentWeight),
-      targetWeight: Number(targetWeight),
-      targetDate,
+      goalWeight: Number(goalWeight),
+      activityLevel,
       goalInitialWeight: Number(currentWeight),
       goalId: new mongoose.Types.ObjectId(),
     });
+    
     // Migrate any existing UUID goalIds to ObjectIds
     await migrateGoalIds(user);
     await user.save();
@@ -128,7 +125,18 @@ router.post('/register', [
       // Don't fail registration if email fails
     }
     
-    res.status(201).json({ message: 'Registration successful', user: { id: user._id, name: user.name, email: user.email, goalId: user.goalId?.toString(), goalInitialWeight: user.goalInitialWeight } });
+    res.status(201).json({ 
+      message: 'Registration successful', 
+      user: { 
+        id: user._id, 
+        name: user.name, 
+        email: user.email, 
+        mobileNumber: user.mobileNumber,
+        country: user.country,
+        goalId: user.goalId?.toString(), 
+        goalInitialWeight: user.goalInitialWeight 
+      } 
+    });
   } catch (error) {
     console.error('Registration error:', error);
     res.status(500).json({ message: 'Registration failed' });

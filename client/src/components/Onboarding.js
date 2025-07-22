@@ -11,16 +11,271 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1); // 1: basic info, 2: health info
   const [showPasswordReset, setShowPasswordReset] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState('IN'); // Default to India
+  const [countryCode, setCountryCode] = useState('+91'); // Default to India
 
   const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm();
 
   const password = watch('password', '');
+
+  // Country data with codes and dialing codes
+  const countries = [
+    { name: 'Afghanistan', code: 'AF', dialing: '+93' },
+    { name: 'Albania', code: 'AL', dialing: '+355' },
+    { name: 'Algeria', code: 'DZ', dialing: '+213' },
+    { name: 'American Samoa', code: 'AS', dialing: '+1-684' },
+    { name: 'Andorra, Principality of', code: 'AD', dialing: '+376' },
+    { name: 'Angola', code: 'AO', dialing: '+244' },
+    { name: 'Anguilla', code: 'AI', dialing: '+1-264' },
+    { name: 'Antarctica', code: 'AQ', dialing: '+672' },
+    { name: 'Antigua and Barbuda', code: 'AG', dialing: '+1-268' },
+    { name: 'Argentina', code: 'AR', dialing: '+54' },
+    { name: 'Armenia', code: 'AM', dialing: '+374' },
+    { name: 'Aruba', code: 'AW', dialing: '+297' },
+    { name: 'Australia', code: 'AU', dialing: '+61' },
+    { name: 'Austria', code: 'AT', dialing: '+43' },
+    { name: 'Azerbaijan', code: 'AZ', dialing: '+994' },
+    { name: 'Bahamas, Commonwealth of The', code: 'BS', dialing: '+1-242' },
+    { name: 'Bahrain, Kingdom of', code: 'BH', dialing: '+973' },
+    { name: 'Bangladesh', code: 'BD', dialing: '+880' },
+    { name: 'Barbados', code: 'BB', dialing: '+1-246' },
+    { name: 'Belarus', code: 'BY', dialing: '+375' },
+    { name: 'Belgium', code: 'BE', dialing: '+32' },
+    { name: 'Belize', code: 'BZ', dialing: '+501' },
+    { name: 'Benin', code: 'BJ', dialing: '+229' },
+    { name: 'Bermuda', code: 'BM', dialing: '+1-441' },
+    { name: 'Bhutan, Kingdom of', code: 'BT', dialing: '+975' },
+    { name: 'Bolivia', code: 'BO', dialing: '+591' },
+    { name: 'Bosnia and Herzegovina', code: 'BA', dialing: '+387' },
+    { name: 'Botswana', code: 'BW', dialing: '+267' },
+    { name: 'Brazil', code: 'BR', dialing: '+55' },
+    { name: 'British Indian Ocean Territory', code: 'IO', dialing: '+246' },
+    { name: 'Brunei', code: 'BN', dialing: '+673' },
+    { name: 'Bulgaria', code: 'BG', dialing: '+359' },
+    { name: 'Burkina Faso', code: 'BF', dialing: '+226' },
+    { name: 'Burundi', code: 'BI', dialing: '+257' },
+    { name: 'Cambodia, Kingdom of', code: 'KH', dialing: '+855' },
+    { name: 'Cameroon', code: 'CM', dialing: '+237' },
+    { name: 'Canada', code: 'CA', dialing: '+1' },
+    { name: 'Cape Verde', code: 'CV', dialing: '+238' },
+    { name: 'Cayman Islands', code: 'KY', dialing: '+1-345' },
+    { name: 'Central African Republic', code: 'CF', dialing: '+236' },
+    { name: 'Chad', code: 'TD', dialing: '+235' },
+    { name: 'Chile', code: 'CL', dialing: '+56' },
+    { name: 'China', code: 'CN', dialing: '+86' },
+    { name: 'Christmas Island', code: 'CX', dialing: '+53' },
+    { name: 'Cocos (Keeling) Islands', code: 'CC', dialing: '+61' },
+    { name: 'Colombia', code: 'CO', dialing: '+57' },
+    { name: 'Comoros, Union of the', code: 'KM', dialing: '+269' },
+    { name: 'Congo, Democratic Republic of the', code: 'CD', dialing: '+243' },
+    { name: 'Congo, Republic of the', code: 'CG', dialing: '+242' },
+    { name: 'Cook Islands', code: 'CK', dialing: '+682' },
+    { name: 'Costa Rica', code: 'CR', dialing: '+506' },
+    { name: 'Cote D\'Ivoire', code: 'CI', dialing: '+225' },
+    { name: 'Croatia', code: 'HR', dialing: '+385' },
+    { name: 'Cuba', code: 'CU', dialing: '+53' },
+    { name: 'Cyprus', code: 'CY', dialing: '+357' },
+    { name: 'Czech Republic', code: 'CZ', dialing: '+420' },
+    { name: 'Denmark', code: 'DK', dialing: '+45' },
+    { name: 'Djibouti', code: 'DJ', dialing: '+253' },
+    { name: 'Dominica', code: 'DM', dialing: '+1-767' },
+    { name: 'Dominican Republic', code: 'DO', dialing: '+1-809' },
+    { name: 'East Timor', code: 'TP', dialing: '+670' },
+    { name: 'Ecuador', code: 'EC', dialing: '+593' },
+    { name: 'Egypt', code: 'EG', dialing: '+20' },
+    { name: 'El Salvador', code: 'SV', dialing: '+503' },
+    { name: 'Equatorial Guinea', code: 'GQ', dialing: '+240' },
+    { name: 'Eritrea', code: 'ER', dialing: '+291' },
+    { name: 'Estonia', code: 'EE', dialing: '+372' },
+    { name: 'Ethiopia', code: 'ET', dialing: '+251' },
+    { name: 'Falkland Islands', code: 'FK', dialing: '+500' },
+    { name: 'Faroe Islands', code: 'FO', dialing: '+298' },
+    { name: 'Fiji', code: 'FJ', dialing: '+679' },
+    { name: 'Finland', code: 'FI', dialing: '+358' },
+    { name: 'France', code: 'FR', dialing: '+33' },
+    { name: 'French Guiana', code: 'GF', dialing: '+594' },
+    { name: 'French Polynesia', code: 'PF', dialing: '+689' },
+    { name: 'French Southern Territories', code: 'TF', dialing: '+262' },
+    { name: 'Gabon', code: 'GA', dialing: '+241' },
+    { name: 'Gambia, The', code: 'GM', dialing: '+220' },
+    { name: 'Georgia', code: 'GE', dialing: '+995' },
+    { name: 'Germany', code: 'DE', dialing: '+49' },
+    { name: 'Ghana', code: 'GH', dialing: '+233' },
+    { name: 'Gibraltar', code: 'GI', dialing: '+350' },
+    { name: 'Great Britain (United Kingdom)', code: 'GB', dialing: '+44' },
+    { name: 'Greece', code: 'GR', dialing: '+30' },
+    { name: 'Greenland', code: 'GL', dialing: '+299' },
+    { name: 'Grenada', code: 'GD', dialing: '+1-473' },
+    { name: 'Guadeloupe', code: 'GP', dialing: '+590' },
+    { name: 'Guam', code: 'GU', dialing: '+1-671' },
+    { name: 'Guatemala', code: 'GT', dialing: '+502' },
+    { name: 'Guinea', code: 'GN', dialing: '+224' },
+    { name: 'Guinea-Bissau', code: 'GW', dialing: '+245' },
+    { name: 'Guyana', code: 'GY', dialing: '+592' },
+    { name: 'Haiti', code: 'HT', dialing: '+509' },
+    { name: 'Heard Island and McDonald Islands', code: 'HM', dialing: '+672' },
+    { name: 'Holy See (Vatican City State)', code: 'VA', dialing: '+39' },
+    { name: 'Honduras', code: 'HN', dialing: '+504' },
+    { name: 'Hong Kong', code: 'HK', dialing: '+852' },
+    { name: 'Hungary', code: 'HU', dialing: '+36' },
+    { name: 'Iceland', code: 'IS', dialing: '+354' },
+    { name: 'India', code: 'IN', dialing: '+91' },
+    { name: 'Indonesia', code: 'ID', dialing: '+62' },
+    { name: 'Iran, Islamic Republic of', code: 'IR', dialing: '+98' },
+    { name: 'Iraq', code: 'IQ', dialing: '+964' },
+    { name: 'Ireland', code: 'IE', dialing: '+353' },
+    { name: 'Israel', code: 'IL', dialing: '+972' },
+    { name: 'Italy', code: 'IT', dialing: '+39' },
+    { name: 'Jamaica', code: 'JM', dialing: '+1-876' },
+    { name: 'Japan', code: 'JP', dialing: '+81' },
+    { name: 'Jordan', code: 'JO', dialing: '+962' },
+    { name: 'Kazakhstan', code: 'KZ', dialing: '+7' },
+    { name: 'Kenya', code: 'KE', dialing: '+254' },
+    { name: 'Kiribati', code: 'KI', dialing: '+686' },
+    { name: 'Korea, Democratic People\'s Republic of', code: 'KP', dialing: '+850' },
+    { name: 'Korea, Republic of', code: 'KR', dialing: '+82' },
+    { name: 'Kuwait', code: 'KW', dialing: '+965' },
+    { name: 'Kyrgyzstan', code: 'KG', dialing: '+996' },
+    { name: 'Lao People\'s Democratic Republic', code: 'LA', dialing: '+856' },
+    { name: 'Latvia', code: 'LV', dialing: '+371' },
+    { name: 'Lebanon', code: 'LB', dialing: '+961' },
+    { name: 'Lesotho', code: 'LS', dialing: '+266' },
+    { name: 'Liberia', code: 'LR', dialing: '+231' },
+    { name: 'Libya', code: 'LY', dialing: '+218' },
+    { name: 'Liechtenstein', code: 'LI', dialing: '+423' },
+    { name: 'Lithuania', code: 'LT', dialing: '+370' },
+    { name: 'Luxembourg', code: 'LU', dialing: '+352' },
+    { name: 'Macau', code: 'MO', dialing: '+853' },
+    { name: 'Macedonia, The Former Yugoslav Republic of', code: 'MK', dialing: '+389' },
+    { name: 'Madagascar', code: 'MG', dialing: '+261' },
+    { name: 'Malawi', code: 'MW', dialing: '+265' },
+    { name: 'Malaysia', code: 'MY', dialing: '+60' },
+    { name: 'Maldives', code: 'MV', dialing: '+960' },
+    { name: 'Mali', code: 'ML', dialing: '+223' },
+    { name: 'Malta', code: 'MT', dialing: '+356' },
+    { name: 'Marshall Islands', code: 'MH', dialing: '+692' },
+    { name: 'Martinique', code: 'MQ', dialing: '+596' },
+    { name: 'Mauritania', code: 'MR', dialing: '+222' },
+    { name: 'Mauritius', code: 'MU', dialing: '+230' },
+    { name: 'Mayotte', code: 'YT', dialing: '+269' },
+    { name: 'Mexico', code: 'MX', dialing: '+52' },
+    { name: 'Micronesia, Federated States of', code: 'FM', dialing: '+691' },
+    { name: 'Moldova, Republic of', code: 'MD', dialing: '+373' },
+    { name: 'Monaco, Principality of', code: 'MC', dialing: '+377' },
+    { name: 'Mongolia', code: 'MN', dialing: '+976' },
+    { name: 'Montserrat', code: 'MS', dialing: '+1-664' },
+    { name: 'Morocco', code: 'MA', dialing: '+212' },
+    { name: 'Mozambique', code: 'MZ', dialing: '+258' },
+    { name: 'Myanmar, Union of', code: 'MM', dialing: '+95' },
+    { name: 'Namibia', code: 'NA', dialing: '+264' },
+    { name: 'Nauru', code: 'NR', dialing: '+674' },
+    { name: 'Nepal', code: 'NP', dialing: '+977' },
+    { name: 'Netherlands', code: 'NL', dialing: '+31' },
+    { name: 'Netherlands Antilles', code: 'AN', dialing: '+599' },
+    { name: 'New Caledonia', code: 'NC', dialing: '+687' },
+    { name: 'New Zealand', code: 'NZ', dialing: '+64' },
+    { name: 'Nicaragua', code: 'NI', dialing: '+505' },
+    { name: 'Niger', code: 'NE', dialing: '+227' },
+    { name: 'Nigeria', code: 'NG', dialing: '+234' },
+    { name: 'Niue', code: 'NU', dialing: '+683' },
+    { name: 'Norfolk Island', code: 'NF', dialing: '+672' },
+    { name: 'Northern Mariana Islands', code: 'MP', dialing: '+1-670' },
+    { name: 'Norway', code: 'NO', dialing: '+47' },
+    { name: 'Oman, Sultanate of', code: 'OM', dialing: '+968' },
+    { name: 'Pakistan', code: 'PK', dialing: '+92' },
+    { name: 'Palau', code: 'PW', dialing: '+680' },
+    { name: 'Palestinian State', code: 'PS', dialing: '+970' },
+    { name: 'Panama', code: 'PA', dialing: '+507' },
+    { name: 'Papua New Guinea', code: 'PG', dialing: '+675' },
+    { name: 'Paraguay', code: 'PY', dialing: '+595' },
+    { name: 'Peru', code: 'PE', dialing: '+51' },
+    { name: 'Philippines', code: 'PH', dialing: '+63' },
+    { name: 'Pitcairn Island', code: 'PN', dialing: '+64' },
+    { name: 'Poland', code: 'PL', dialing: '+48' },
+    { name: 'Portugal', code: 'PT', dialing: '+351' },
+    { name: 'Puerto Rico', code: 'PR', dialing: '+1-787' },
+    { name: 'Qatar, State of', code: 'QA', dialing: '+974' },
+    { name: 'Reunion', code: 'RE', dialing: '+262' },
+    { name: 'Romania', code: 'RO', dialing: '+40' },
+    { name: 'Russian Federation', code: 'RU', dialing: '+7' },
+    { name: 'Rwanda', code: 'RW', dialing: '+250' },
+    { name: 'Saint Helena', code: 'SH', dialing: '+290' },
+    { name: 'Saint Kitts and Nevis', code: 'KN', dialing: '+1-869' },
+    { name: 'Saint Lucia', code: 'LC', dialing: '+1-758' },
+    { name: 'Saint Pierre and Miquelon', code: 'PM', dialing: '+508' },
+    { name: 'Saint Vincent and the Grenadines', code: 'VC', dialing: '+1-784' },
+    { name: 'Samoa', code: 'WS', dialing: '+685' },
+    { name: 'San Marino', code: 'SM', dialing: '+378' },
+    { name: 'Sao Tome and Principe', code: 'ST', dialing: '+239' },
+    { name: 'Saudi Arabia', code: 'SA', dialing: '+966' },
+    { name: 'Serbia, Republic of', code: 'RS', dialing: '+381' },
+    { name: 'Senegal', code: 'SN', dialing: '+221' },
+    { name: 'Seychelles', code: 'SC', dialing: '+248' },
+    { name: 'Sierra Leone', code: 'SL', dialing: '+232' },
+    { name: 'Singapore', code: 'SG', dialing: '+65' },
+    { name: 'Slovakia', code: 'SK', dialing: '+421' },
+    { name: 'Slovenia', code: 'SI', dialing: '+386' },
+    { name: 'Solomon Islands', code: 'SB', dialing: '+677' },
+    { name: 'Somalia', code: 'SO', dialing: '+252' },
+    { name: 'South Africa', code: 'ZA', dialing: '+27' },
+    { name: 'South Georgia and the South Sandwich Islands', code: 'GS', dialing: '+500' },
+    { name: 'Spain', code: 'ES', dialing: '+34' },
+    { name: 'Sri Lanka', code: 'LK', dialing: '+94' },
+    { name: 'Sudan', code: 'SD', dialing: '+249' },
+    { name: 'Suriname', code: 'SR', dialing: '+597' },
+    { name: 'Svalbard and Jan Mayen Islands', code: 'SJ', dialing: '+47' },
+    { name: 'Swaziland, Kingdom of', code: 'SZ', dialing: '+268' },
+    { name: 'Sweden', code: 'SE', dialing: '+46' },
+    { name: 'Switzerland', code: 'CH', dialing: '+41' },
+    { name: 'Syria', code: 'SY', dialing: '+963' },
+    { name: 'Taiwan', code: 'TW', dialing: '+886' },
+    { name: 'Tajikistan', code: 'TJ', dialing: '+992' },
+    { name: 'Tanzania, United Republic of', code: 'TZ', dialing: '+255' },
+    { name: 'Thailand', code: 'TH', dialing: '+66' },
+    { name: 'Togo', code: 'TG', dialing: '+228' },
+    { name: 'Tokelau', code: 'TK', dialing: '+690' },
+    { name: 'Tonga, Kingdom of', code: 'TO', dialing: '+676' },
+    { name: 'Trinidad and Tobago', code: 'TT', dialing: '+1-868' },
+    { name: 'Tunisia', code: 'TN', dialing: '+216' },
+    { name: 'Turkey', code: 'TR', dialing: '+90' },
+    { name: 'Turkmenistan', code: 'TM', dialing: '+993' },
+    { name: 'Turks and Caicos Islands', code: 'TC', dialing: '+1-649' },
+    { name: 'Tuvalu', code: 'TV', dialing: '+688' },
+    { name: 'Uganda, Republic of', code: 'UG', dialing: '+256' },
+    { name: 'Ukraine', code: 'UA', dialing: '+380' },
+    { name: 'United Arab Emirates', code: 'AE', dialing: '+971' },
+    { name: 'United Kingdom', code: 'GB', dialing: '+44' },
+    { name: 'United States', code: 'US', dialing: '+1' },
+    { name: 'United States Minor Outlying Islands', code: 'UM', dialing: '+246' },
+    { name: 'Uruguay, Oriental Republic of', code: 'UY', dialing: '+598' },
+    { name: 'Uzbekistan', code: 'UZ', dialing: '+998' },
+    { name: 'Vanuatu', code: 'VU', dialing: '+678' },
+    { name: 'Vatican City State', code: 'VA', dialing: '+418' },
+    { name: 'Venezuela', code: 'VE', dialing: '+58' },
+    { name: 'Vietnam', code: 'VN', dialing: '+84' },
+    { name: 'Virgin Islands, British', code: 'VI', dialing: '+1-284' },
+    { name: 'Virgin Islands, United States', code: 'VQ', dialing: '+1-340' },
+    { name: 'Wallis and Futuna Islands', code: 'WF', dialing: '+681' },
+    { name: 'Western Sahara', code: 'EH', dialing: '+212' },
+    { name: 'Yemen', code: 'YE', dialing: '+967' },
+    { name: 'Zambia, Republic of', code: 'ZM', dialing: '+260' },
+    { name: 'Zimbabwe, Republic of', code: 'ZW', dialing: '+263' }
+  ];
 
   useEffect(() => {
     if (initialMode) {
       setMode(initialMode);
     }
   }, [initialMode]);
+
+  // Handle country selection
+  const handleCountryChange = (countryCode) => {
+    setSelectedCountry(countryCode);
+    const country = countries.find(c => c.code === countryCode);
+    if (country) {
+      setCountryCode(country.dialing);
+    }
+  };
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -36,6 +291,8 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
           name: data.name,
           email: data.email,
           password: data.password,
+          mobileNumber: `${countryCode}${data.mobileNumber}`,
+          country: selectedCountry,
           goalWeight: parseFloat(data.goalWeight),
           currentWeight: parseFloat(data.currentWeight),
           height: parseFloat(data.height),
@@ -86,7 +343,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
         <div className="p-6 border-b border-gray-200">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
                 <span className="text-white font-bold text-lg">G</span>
               </div>
               <div>
@@ -111,7 +368,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
               onClick={() => setMode('login')}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
                 mode === 'login'
-                  ? 'bg-white text-indigo-600 shadow-sm'
+                  ? 'bg-white text-orange-600 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -121,7 +378,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
               onClick={() => setMode('register')}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
                 mode === 'register'
-                  ? 'bg-white text-indigo-600 shadow-sm'
+                  ? 'bg-white text-orange-600 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -134,15 +391,15 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
             <div className="flex items-center justify-center mb-6">
               <div className="flex items-center space-x-2">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                  step >= 1 ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-500'
+                  step >= 1 ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-500'
                 }`}>
                   1
                 </div>
                 <div className={`w-12 h-1 ${
-                  step >= 2 ? 'bg-indigo-600' : 'bg-gray-200'
+                  step >= 2 ? 'bg-orange-600' : 'bg-gray-200'
                 }`}></div>
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                  step >= 2 ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-500'
+                  step >= 2 ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-500'
                 }`}>
                   2
                 </div>
@@ -160,7 +417,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                   <input
                     type="text"
                     {...register('name', { required: 'Name is required' })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     placeholder="Enter your full name"
                   />
                   {errors.name && (
@@ -181,11 +438,57 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                         message: 'Invalid email address'
                       }
                     })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     placeholder="Enter your email"
                   />
                   {errors.email && (
                     <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                  )}
+                </div>
+
+                {/* Country Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Country
+                  </label>
+                  <select
+                    value={selectedCountry}
+                    onChange={(e) => handleCountryChange(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  >
+                    {countries.map((country) => (
+                      <option key={country.code} value={country.code}>
+                        {country.name} ({country.dialing})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Mobile Number */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Mobile Number
+                  </label>
+                  <div className="flex">
+                    <div className="flex-shrink-0 px-3 py-2 bg-gray-100 border border-r-0 border-gray-300 rounded-l-lg text-sm font-medium text-gray-700 min-w-[80px] flex items-center justify-center">
+                      {countryCode}
+                    </div>
+                    <input
+                      type="tel"
+                      {...register('mobileNumber', { 
+                        required: 'Mobile number is required',
+                        pattern: {
+                          value: /^\d{10}$/,
+                          message: 'Mobile number must be exactly 10 digits'
+                        }
+                      })}
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      placeholder="Enter 10-digit mobile number"
+                      maxLength="10"
+                    />
+                  </div>
+                  {errors.mobileNumber && (
+                    <p className="text-red-500 text-sm mt-1">{errors.mobileNumber.message}</p>
                   )}
                 </div>
 
@@ -202,8 +505,8 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                         message: 'Password must be at least 6 characters'
                       }
                     })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    placeholder="Create a password"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    placeholder="Create a password (min 6 characters)"
                   />
                   {errors.password && (
                     <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
@@ -227,7 +530,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                         min: { value: 20, message: 'Weight must be at least 20kg' },
                         max: { value: 300, message: 'Weight must be less than 300kg' }
                       })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                       placeholder="70.5"
                     />
                     {errors.currentWeight && (
@@ -247,7 +550,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                         min: { value: 20, message: 'Weight must be at least 20kg' },
                         max: { value: 300, message: 'Weight must be less than 300kg' }
                       })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                       placeholder="65.0"
                     />
                     {errors.goalWeight && (
@@ -268,7 +571,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                         min: { value: 100, message: 'Height must be at least 100cm' },
                         max: { value: 250, message: 'Height must be less than 250cm' }
                       })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                       placeholder="170"
                     />
                     {errors.height && (
@@ -287,7 +590,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                         min: { value: 13, message: 'Age must be at least 13' },
                         max: { value: 120, message: 'Age must be less than 120' }
                       })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                       placeholder="25"
                     />
                     {errors.age && (
@@ -302,7 +605,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                   </label>
                   <select
                     {...register('gender', { required: 'Gender is required' })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   >
                     <option value="">Select gender</option>
                     <option value="male">Male</option>
@@ -320,7 +623,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                   </label>
                   <select
                     {...register('activityLevel', { required: 'Activity level is required' })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   >
                     <option value="">Select activity level</option>
                     <option value="sedentary">Sedentary (little or no exercise)</option>
@@ -351,7 +654,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                         message: 'Invalid email address'
                       }
                     })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     placeholder="Enter your email"
                   />
                   {errors.email && (
@@ -366,7 +669,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                   <input
                     type="password"
                     {...register('password', { required: 'Password is required' })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     placeholder="Enter your password"
                   />
                   {errors.password && (
@@ -378,7 +681,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
                   <button
                     type="button"
                     onClick={() => setShowPasswordReset(true)}
-                    className="text-sm text-indigo-600 hover:text-indigo-700 hover:underline"
+                    className="text-sm text-orange-600 hover:text-orange-700 hover:underline"
                   >
                     Forgot Password?
                   </button>
@@ -389,7 +692,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 px-4 rounded-lg font-medium hover:from-orange-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="flex items-center justify-center">
