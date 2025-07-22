@@ -11,6 +11,7 @@ import WeightEntry from './components/WeightEntry';
 import Navigation from './components/Navigation';
 import Onboarding from './components/Onboarding';
 import BMICalculator from './components/BMICalculator';
+import HomePage from './components/HomePage';
 
 // Context
 import { UserProvider } from './context/UserContext';
@@ -65,44 +66,13 @@ function App() {
   return (
     <UserProvider value={{ currentUser, setCurrentUser: handleUserLogin, logout: handleUserLogout }}>
       <div className="min-h-screen bg-gradient-to-br from-primary-50 via-blue-50 to-success-50 flex flex-col">
-        {/* Hero Section */}
+        {/* Home Page */}
         {!currentUser && (
-          <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
-            <div className="max-w-lg w-full bg-white/80 glass-effect rounded-2xl shadow-xl p-10 text-center animate-float">
-              <div className="flex justify-center mb-6">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-primary-500 to-success-500 flex items-center justify-center shadow-lg">
-                  <svg width="40" height="40" fill="none" viewBox="0 0 24 24"><path d="M12 3v18m9-9H3" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </div>
-              </div>
-              <h1 className="text-3xl md:text-4xl font-extrabold text-gradient mb-2">Weight Management Dashboard</h1>
-              <p className="text-gray-600 mb-8">Track your weight, calculate BMI, and achieve your health goals with beautiful analytics and a modern experience.</p>
-              <div className="space-y-3">
-                <button
-                  onClick={() => handleUserLogin({ id: 'demo', name: 'Demo User' })}
-                  className="w-full btn-primary flex items-center justify-center space-x-2"
-                >
-                  <span>Start Demo</span>
-                </button>
-                <button
-                  onClick={() => { setShowOnboarding(true); setOnboardingMode('register'); }}
-                  className="w-full btn-secondary flex items-center justify-center space-x-2"
-                >
-                  <span>Create your profile to get started</span>
-                </button>
-                <button
-                  onClick={() => { setShowOnboarding(true); setOnboardingMode('login'); }}
-                  className="w-full btn-secondary flex items-center justify-center space-x-2 border border-primary-200"
-                >
-                  <span>Login</span>
-                </button>
-                <div className="text-center mt-2">
-                  <p className="text-sm text-gray-500">
-                    Already have an account? Use your email to login.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <HomePage
+            onStartDemo={() => handleUserLogin({ id: 'demo', name: 'Demo User' })}
+            onRegister={() => { setShowOnboarding(true); setOnboardingMode('register'); }}
+            onLogin={() => { setShowOnboarding(true); setOnboardingMode('login'); }}
+          />
         )}
 
         {/* Main App Content */}
@@ -129,17 +99,7 @@ function App() {
           />
         )}
 
-        {/* Footer */}
-        <footer className="w-full py-6 bg-white/80 border-t border-gray-200 text-center mt-auto">
-          <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between px-4">
-            <div className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} Weight Management Dashboard. All rights reserved.</div>
-            <div className="flex space-x-4 mt-2 md:mt-0">
-              <a href="#features" className="text-primary-600 hover:underline">Features</a>
-              <a href="#contact" className="text-primary-600 hover:underline">Contact</a>
-              <a href="#privacy" className="text-primary-600 hover:underline">Privacy</a>
-            </div>
-          </div>
-        </footer>
+
       </div>
     </UserProvider>
   );
