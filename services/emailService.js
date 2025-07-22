@@ -3,8 +3,8 @@ const nodemailer = require('nodemailer');
 // Create transporter for GoDaddy email (gooofit.com)
 const transporter = nodemailer.createTransport({
   host: 'smtpout.secureserver.net', // GoDaddy's own SMTP server
-  port: 587,
-  secure: false, // true for 465, false for other ports
+  port: 465, // Try port 465 with SSL
+  secure: true, // Use SSL
   auth: {
     user: process.env.EMAIL_USER || 'support@gooofit.com',
     pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
