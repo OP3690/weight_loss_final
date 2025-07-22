@@ -343,8 +343,15 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
         <div className="p-4 border-b border-gray-200 flex-shrink-0">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-sm">G</span>
+              <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center relative">
+                {/* Bull's eye target design */}
+                <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+                  <div className="w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center">
+                    <div className="w-2 h-2 bg-red-500 rounded-full flex items-center justify-center">
+                      <div className="w-1 h-1 bg-white rounded-full"></div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div>
                 <h2 className="text-xl font-bold text-gray-900">GoooFit</h2>
