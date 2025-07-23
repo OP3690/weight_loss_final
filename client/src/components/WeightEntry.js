@@ -70,25 +70,8 @@ const WeightEntry = ({ onEntryAdded, onSuccess, defaultDate, goalId }) => {
     return (min + ((max - min) * i) / 7).toFixed(1);
   });
 
-  // Check if user has a valid goal
-  const hasValidGoal = goalId && (goalId === 'demo' || isValidObjectId(goalId));
-  
-  if (!hasValidGoal) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg p-8">
-        <div className="text-center">
-          <Scale className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">No Active Goal</h3>
-          <p className="text-gray-600 mb-6">Please create a weight goal first to start tracking your progress.</p>
-          <button 
-            onClick={() => window.location.href = '/profile'}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-          >
-            Create Goal
-          </button>
-        </div>
-      </div>
-    );
+  if (!goalId || (goalId !== 'demo' && !isValidObjectId(goalId))) {
+    return <div className="text-red-500">No valid active goal. Please create a goal first.</div>;
   }
 
   const onSubmit = async (data) => {

@@ -1,22 +1,7 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-// CRITICAL FIX: SMS password reset validation issue - Force Vercel deployment
-// This fixes the mobile field name mismatch causing "Validation failed" error
-// Version: 5.0 - Final deployment trigger - README update
-import { 
-  EyeIcon, 
-  EyeSlashIcon, 
-  ArrowLeftIcon, 
-  CheckCircleIcon, 
-  ExclamationCircleIcon,
-  EnvelopeIcon,
-  LockClosedIcon,
-  ShieldCheckIcon,
-  ClockIcon,
-  XMarkIcon,
-  DevicePhoneMobileIcon
-} from '@heroicons/react/24/outline';
-import { userAPI } from '../services/api';
+import { motion } from 'framer-motion';
+import { EyeIcon, EyeSlashIcon, ArrowLeftIcon, CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
+import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const PasswordReset = ({ onBackToLogin }) => {
@@ -30,9 +15,6 @@ const PasswordReset = ({ onBackToLogin }) => {
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [countdown, setCountdown] = useState(0);
-  const [error, setError] = useState('');
-  const [resetMethod, setResetMethod] = useState('email'); // 'email' or 'sms'
-  const [mobileNumber, setMobileNumber] = useState('');
 
   // Countdown timer for resend OTP
   React.useEffect(() => {
@@ -43,33 +25,20 @@ const PasswordReset = ({ onBackToLogin }) => {
   }, [countdown]);
 
   const handleSendOTP = async () => {
-    console.log('Sending OTP to:', mobileNumber); // Debug log for deployment
-    setLoading(true);
-    setError('');
-    
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://weight-management-backend.onrender.com/api'}/users/forgot-password-sms`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ mobile: mobileNumber }),
-      });
+    if (!email) {
+      toast.error('Please enter your email address');
+      return;
+    }
 
-      const data = await response.json();
-      
-      if (response.ok) {
-        toast.success('SMS OTP sent successfully! Check your phone.');
-        setOtpSent(true);
-        setStep(2);
-        setCountdown(60); // 60 seconds countdown
-      } else {
-        throw new Error(data.message || 'Failed to send SMS OTP');
-      }
+    setLoading(true);
+    try {
+      const response = await axios.post('/api/users/forgot-password', { email });
+      toast.success('OTP sent successfully! Check your email.');
+      setOtpSent(true);
+      setStep(2);
+      setCountdown(60); // 60 seconds countdown
     } catch (error) {
-      console.error('SMS OTP sending error:', error);
-      const message = error.message || 'Failed to send SMS OTP. Please try again.';
-      setError(message);
+      const message = error.response?.data?.message || 'Failed to send OTP';
       toast.error(message);
     } finally {
       setLoading(false);
@@ -78,39 +47,17 @@ const PasswordReset = ({ onBackToLogin }) => {
 
   const handleVerifyOTP = async () => {
     if (!otp || otp.length !== 6) {
-      setError('Please enter a valid 6-digit OTP');
+      toast.error('Please enter a valid 6-digit OTP');
       return;
     }
 
-    setError('');
     setLoading(true);
     try {
-      if (resetMethod === 'email') {
-        await userAPI.verifyOTP(email, otp);
-        toast.success('OTP verified successfully!');
-        setStep(3);
-      } else {
-        // SMS OTP verification
-        const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://weight-management-backend.onrender.com/api'}/users/verify-sms-otp`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ mobile: mobileNumber, otp }),
-        });
-
-        const data = await response.json();
-        
-        if (response.ok) {
-          toast.success('SMS OTP verified successfully!');
-          setStep(3);
-        } else {
-          throw new Error(data.message || 'Invalid SMS OTP');
-        }
-      }
+      await axios.post('/api/users/verify-otp', { email, otp });
+      toast.success('OTP verified successfully!');
+      setStep(3);
     } catch (error) {
-      const message = error.response?.data?.message || error.message || 'Invalid OTP';
-      setError(message);
+      const message = error.response?.data?.message || 'Invalid OTP';
       toast.error(message);
     } finally {
       setLoading(false);
@@ -119,44 +66,27 @@ const PasswordReset = ({ onBackToLogin }) => {
 
   const handleResetPassword = async () => {
     if (!newPassword || newPassword.length < 6) {
-      setError('Password must be at least 6 characters');
+      toast.error('Password must be at least 6 characters');
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError('Passwords do not match');
+      toast.error('Passwords do not match');
       return;
     }
 
-    setError('');
     setLoading(true);
     try {
-      if (resetMethod === 'email') {
-        await userAPI.resetPassword(email, otp, newPassword, confirmPassword);
-        toast.success('Password reset successfully! You can now login with your new password.');
-        onBackToLogin();
-      } else {
-        // SMS password reset
-        const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://weight-management-backend.onrender.com/api'}/users/reset-password-sms`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ mobile: mobileNumber, otp, newPassword, confirmPassword }),
-        });
-
-        const data = await response.json();
-        
-        if (response.ok) {
-          toast.success('Password reset successfully! You can now login with your new password.');
-          onBackToLogin();
-        } else {
-          throw new Error(data.message || 'Failed to reset password');
-        }
-      }
+      await axios.post('/api/users/reset-password', {
+        email,
+        otp,
+        newPassword,
+        confirmPassword
+      });
+      toast.success('Password reset successfully!');
+      onBackToLogin();
     } catch (error) {
-      const message = error.response?.data?.message || error.message || 'Failed to reset password';
-      setError(message);
+      const message = error.response?.data?.message || 'Failed to reset password';
       toast.error(message);
     } finally {
       setLoading(false);
@@ -166,15 +96,13 @@ const PasswordReset = ({ onBackToLogin }) => {
   const handleResendOTP = async () => {
     if (countdown > 0) return;
     
-    setError('');
     setLoading(true);
     try {
-      await userAPI.forgotPassword(email);
+      await axios.post('/api/users/forgot-password', { email });
       toast.success('OTP resent successfully!');
       setCountdown(60);
     } catch (error) {
-      const message = error.response?.data?.message || error.message || 'Failed to resend OTP';
-      setError(message);
+      const message = error.response?.data?.message || 'Failed to resend OTP';
       toast.error(message);
     } finally {
       setLoading(false);
@@ -185,136 +113,35 @@ const PasswordReset = ({ onBackToLogin }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="space-y-8"
+      className="space-y-4"
     >
       <div className="text-center">
-        <div className="w-20 h-20 bg-gradient-to-r from-orange-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <EnvelopeIcon className="w-10 h-10 text-orange-600" />
-        </div>
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">Forgot Password?</h2>
-        <p className="text-gray-600 leading-relaxed text-lg max-w-sm mx-auto">
-          Choose how you'd like to reset your password
-        </p>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">Forgot Password?</h2>
+        <p className="text-sm text-gray-600">Enter your email address and we'll send you an OTP to reset your password.</p>
       </div>
 
-      {/* Reset Method Selection */}
-      <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <button
-            onClick={() => setResetMethod('email')}
-            className={`p-4 rounded-xl border-2 transition-all duration-200 ${
-              resetMethod === 'email'
-                ? 'border-orange-500 bg-orange-50 text-orange-700'
-                : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
-            }`}
-          >
-            <EnvelopeIcon className="w-8 h-8 mx-auto mb-2" />
-            <div className="text-sm font-medium">Email OTP</div>
-            <div className="text-xs text-gray-500">Send to your email</div>
-          </button>
-          
-          <button
-            onClick={() => setResetMethod('sms')}
-            className={`p-4 rounded-xl border-2 transition-all duration-200 ${
-              resetMethod === 'sms'
-                ? 'border-orange-500 bg-orange-50 text-orange-700'
-                : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
-            }`}
-          >
-            <DevicePhoneMobileIcon className="w-8 h-8 mx-auto mb-2" />
-            <div className="text-sm font-medium">SMS OTP</div>
-            <div className="text-xs text-gray-500">Send to your phone</div>
-          </button>
-        </div>
-
-        {resetMethod === 'email' ? (
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-semibold text-gray-700">
-                Email Address
-              </label>
-              <div className="relative">
-                <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-5 py-4 pl-14 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-base bg-gray-50 focus:bg-white"
-                  placeholder="Enter your email address"
-                  disabled={loading}
-                />
-                <EnvelopeIcon className="absolute left-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" />
-              </div>
-            </div>
-
-            {error && (
-              <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-lg">
-                <ExclamationCircleIcon className="h-5 w-5 flex-shrink-0" />
-                <span className="text-sm font-medium">{error}</span>
-              </div>
-            )}
-
-            <button
-              onClick={handleSendOTP}
-              disabled={loading || !email}
-              className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-            >
-              {loading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
-                  Sending OTP...
-                </div>
-              ) : (
-                'Send Email OTP'
-              )}
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="mobileNumber" className="block text-sm font-semibold text-gray-700">
-                Mobile Number
-              </label>
-              <div className="relative">
-                <input
-                  type="tel"
-                  id="mobileNumber"
-                  value={mobileNumber}
-                  onChange={(e) => setMobileNumber(e.target.value)}
-                  className="w-full px-5 py-4 pl-14 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-base bg-gray-50 focus:bg-white"
-                  placeholder="+919723231499"
-                  disabled={loading}
-                />
-                <DevicePhoneMobileIcon className="absolute left-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" />
-              </div>
-              <p className="text-xs text-gray-500">Enter your mobile number with country code</p>
-            </div>
-
-            {error && (
-              <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-lg">
-                <ExclamationCircleIcon className="h-5 w-5 flex-shrink-0" />
-                <span className="text-sm font-medium">{error}</span>
-              </div>
-            )}
-
-            <button
-              onClick={handleSendOTP}
-              disabled={loading || !mobileNumber}
-              className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-            >
-              {loading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
-                  Sending OTP...
-                </div>
-              ) : (
-                'Send SMS OTP'
-              )}
-            </button>
-          </div>
-        )}
+      <div>
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+          Email Address
+        </label>
+        <input
+          type="email"
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
+          placeholder="Enter your email address"
+          disabled={loading}
+        />
       </div>
+
+      <button
+        onClick={handleSendOTP}
+        disabled={loading || !email}
+        className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-2.5 px-4 rounded-lg font-medium hover:from-orange-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-sm"
+      >
+        {loading ? 'Sending OTP...' : 'Send OTP'}
+      </button>
     </motion.div>
   );
 
@@ -322,76 +149,49 @@ const PasswordReset = ({ onBackToLogin }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="space-y-8"
+      className="space-y-4"
     >
       <div className="text-center">
-        <div className="w-20 h-20 bg-gradient-to-r from-orange-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <ShieldCheckIcon className="w-10 h-10 text-orange-600" />
-        </div>
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">Enter OTP</h2>
-        <p className="text-gray-600 leading-relaxed text-lg">
-          We've sent a 6-digit security code to{' '}
-          <span className="font-semibold text-orange-600 bg-orange-50 px-3 py-1 rounded-lg">
-            {resetMethod === 'email' ? email : mobileNumber}
-          </span>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">Enter OTP</h2>
+        <p className="text-sm text-gray-600">
+          We've sent a 6-digit OTP to <span className="font-medium text-orange-600">{email}</span>
         </p>
       </div>
 
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <label htmlFor="otp" className="block text-sm font-semibold text-gray-700">
-            OTP Code
-          </label>
-          <input
-            type="text"
-            id="otp"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-            className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent text-center text-2xl font-mono tracking-widest bg-gray-50 focus:bg-white transition-all duration-200"
-            placeholder="000000"
-            maxLength={6}
-            disabled={loading}
-          />
-          <p className="text-sm text-gray-500 text-center">
-            Enter the 6-digit code from your {resetMethod === 'email' ? 'email' : 'SMS'}
-          </p>
-        </div>
-
-        {error && (
-          <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-lg">
-            <ExclamationCircleIcon className="h-5 w-5 flex-shrink-0" />
-            <span className="text-sm font-medium">{error}</span>
-          </div>
-        )}
+      <div>
+        <label htmlFor="otp" className="block text-sm font-medium text-gray-700 mb-1">
+          OTP Code
+        </label>
+        <input
+          type="text"
+          id="otp"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-center text-lg font-mono tracking-widest text-sm"
+          placeholder="000000"
+          maxLength={6}
+          disabled={loading}
+        />
       </div>
 
-      <button
-        onClick={handleVerifyOTP}
-        disabled={loading || otp.length !== 6}
-        className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-      >
-        {loading ? (
-          <div className="flex items-center justify-center">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
-            Verifying...
-          </div>
-        ) : (
-          'Verify OTP'
-        )}
-      </button>
+      <div className="flex space-x-3">
+        <button
+          onClick={handleVerifyOTP}
+          disabled={loading || otp.length !== 6}
+          className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white py-2.5 px-4 rounded-lg font-medium hover:from-orange-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-sm"
+        >
+          {loading ? 'Verifying...' : 'Verify OTP'}
+        </button>
+      </div>
 
-      <div className="text-center space-y-4">
-        <div className="flex items-center justify-center text-gray-500">
-          <ClockIcon className="w-5 h-5 mr-2" />
-          <span className="text-base">
-            {countdown > 0 ? `Resend available in ${countdown}s` : 'Didn\'t receive the OTP?'}
-          </span>
-        </div>
+      <div className="text-center">
+        <p className="text-xs text-gray-600 mb-2">
+          Didn't receive the OTP?
+        </p>
         <button
           onClick={handleResendOTP}
           disabled={countdown > 0 || loading}
-          className="text-orange-600 hover:text-orange-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed text-base transition-colors duration-200 hover:underline"
+          className="text-orange-600 hover:text-orange-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed text-sm"
         >
           {countdown > 0 ? `Resend in ${countdown}s` : 'Resend OTP'}
         </button>
@@ -403,181 +203,139 @@ const PasswordReset = ({ onBackToLogin }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="space-y-8"
+      className="space-y-4"
     >
       <div className="text-center">
-        <div className="w-20 h-20 bg-gradient-to-r from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <LockClosedIcon className="w-10 h-10 text-green-600" />
-        </div>
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">Set New Password</h2>
-        <p className="text-gray-600 leading-relaxed text-lg max-w-sm mx-auto">
-          Create a strong new password for your account. Make sure it's secure and memorable.
-        </p>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">Set New Password</h2>
+        <p className="text-sm text-gray-600">Enter your new password below.</p>
       </div>
 
-      <div className="space-y-6">
-        <div className="space-y-3">
-          <label htmlFor="newPassword" className="block text-sm font-semibold text-gray-700">
-            New Password
-          </label>
-          <div className="relative">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              id="newPassword"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full px-5 py-4 pr-14 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-base bg-gray-50 focus:bg-white"
-              placeholder="Enter new password"
-              disabled={loading}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 pr-5 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              {showPassword ? (
-                <EyeSlashIcon className="h-6 w-6" />
-              ) : (
-                <EyeIcon className="h-6 w-6" />
-              )}
-            </button>
-          </div>
-          {newPassword && (
-            <div className="flex items-center space-x-2 text-sm">
-              {newPassword.length >= 6 ? (
-                <CheckCircleIcon className="h-5 w-5 text-green-500" />
-              ) : (
-                <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-              )}
-              <span className={newPassword.length >= 6 ? 'text-green-600' : 'text-red-600'}>
-                At least 6 characters
-              </span>
-            </div>
-          )}
+      <div>
+        <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">
+          New Password
+        </label>
+        <div className="relative">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            id="newPassword"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
+            placeholder="Enter new password"
+            disabled={loading}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute inset-y-0 right-0 pr-3 flex items-center"
+          >
+            {showPassword ? (
+              <EyeSlashIcon className="h-4 w-4 text-gray-400" />
+            ) : (
+              <EyeIcon className="h-4 w-4 text-gray-400" />
+            )}
+          </button>
         </div>
+        {newPassword && newPassword.length < 6 && (
+          <p className="mt-1 text-xs text-red-600 flex items-center">
+            <ExclamationCircleIcon className="h-3 w-3 mr-1" />
+            Password must be at least 6 characters
+          </p>
+        )}
+      </div>
 
-        <div className="space-y-3">
-          <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700">
-            Confirm New Password
-          </label>
-          <div className="relative">
-            <input
-              type={showConfirmPassword ? 'text' : 'password'}
-              id="confirmPassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-5 py-4 pr-14 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-base bg-gray-50 focus:bg-white"
-              placeholder="Confirm new password"
-              disabled={loading}
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute inset-y-0 right-0 pr-5 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              {showConfirmPassword ? (
-                <EyeSlashIcon className="h-6 w-6" />
-              ) : (
-                <EyeIcon className="h-6 w-6" />
-              )}
-            </button>
-          </div>
-          {confirmPassword && (
-            <div className="flex items-center space-x-2 text-sm">
-              {newPassword === confirmPassword && newPassword.length >= 6 ? (
-                <CheckCircleIcon className="h-5 w-5 text-green-500" />
-              ) : (
-                <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-              )}
-              <span className={newPassword === confirmPassword && newPassword.length >= 6 ? 'text-green-600' : 'text-red-600'}>
-                {newPassword === confirmPassword ? 'Passwords match' : 'Passwords do not match'}
-              </span>
-            </div>
-          )}
+      <div>
+        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+          Confirm New Password
+        </label>
+        <div className="relative">
+          <input
+            type={showConfirmPassword ? 'text' : 'password'}
+            id="confirmPassword"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
+            placeholder="Confirm new password"
+            disabled={loading}
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute inset-y-0 right-0 pr-3 flex items-center"
+          >
+            {showConfirmPassword ? (
+              <EyeSlashIcon className="h-4 w-4 text-gray-400" />
+            ) : (
+              <EyeIcon className="h-4 w-4 text-gray-400" />
+            )}
+          </button>
         </div>
-
-        {error && (
-          <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-lg">
-            <ExclamationCircleIcon className="h-5 w-5 flex-shrink-0" />
-            <span className="text-sm font-medium">{error}</span>
-          </div>
+        {confirmPassword && newPassword !== confirmPassword && (
+          <p className="mt-1 text-xs text-red-600 flex items-center">
+            <ExclamationCircleIcon className="h-3 w-3 mr-1" />
+            Passwords do not match
+          </p>
+        )}
+        {confirmPassword && newPassword === confirmPassword && newPassword.length >= 6 && (
+          <p className="mt-1 text-xs text-green-600 flex items-center">
+            <CheckCircleIcon className="h-3 w-3 mr-1" />
+            Passwords match
+          </p>
         )}
       </div>
 
       <button
         onClick={handleResetPassword}
         disabled={loading || !newPassword || !confirmPassword || newPassword !== confirmPassword || newPassword.length < 6}
-        className="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white py-4 px-6 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+        className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-2.5 px-4 rounded-lg font-medium hover:from-orange-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-sm"
       >
-        {loading ? (
-          <div className="flex items-center justify-center">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
-            Resetting Password...
-          </div>
-        ) : (
-          'Reset Password'
-        )}
+        {loading ? 'Resetting Password...' : 'Reset Password'}
       </button>
     </motion.div>
   );
 
   return (
-    <>
-      <div className="w-full max-w-lg mx-auto p-6">
-        {/* Header with Close Button */}
-        <div className="flex items-center justify-between mb-8">
-          <button
-            onClick={onBackToLogin}
-            className="flex items-center text-gray-600 hover:text-gray-900 transition-colors text-base font-medium group"
-          >
-            <ArrowLeftIcon className="h-5 w-5 mr-2 group-hover:-translate-x-1 transition-transform" />
-            Back to Login
-          </button>
-          <button
-            onClick={onBackToLogin}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <XMarkIcon className="h-6 w-6 text-gray-500" />
-          </button>
-        </div>
+    <div className="w-full">
+      {/* Back Button */}
+      <button
+        onClick={onBackToLogin}
+        className="flex items-center text-gray-600 hover:text-gray-900 mb-4 transition-colors text-sm"
+      >
+        <ArrowLeftIcon className="h-4 w-4 mr-2" />
+        Back to Login
+      </button>
 
-        {/* Step Indicator */}
-        <div className="flex items-center justify-center mb-10">
-          <div className="flex items-center space-x-4">
-            {[1, 2, 3].map((stepNumber) => (
-              <div key={stepNumber} className="flex items-center">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center text-base font-semibold transition-all duration-300 ${
-                    step >= stepNumber
-                      ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg'
-                      : 'bg-gray-200 text-gray-500'
-                  }`}
-                >
-                  {stepNumber}
-                </div>
-                {stepNumber < 3 && (
-                  <div
-                    className={`w-12 h-1 mx-3 rounded-full transition-all duration-300 ${
-                      step > stepNumber ? 'bg-gradient-to-r from-orange-500 to-red-500' : 'bg-gray-200'
-                    }`}
-                  />
-                )}
+      {/* Step Indicator */}
+      <div className="flex items-center justify-center mb-4">
+        <div className="flex items-center space-x-2">
+          {[1, 2, 3].map((stepNumber) => (
+            <div key={stepNumber} className="flex items-center">
+              <div
+                className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
+                  step >= stepNumber
+                    ? 'bg-orange-600 text-white'
+                    : 'bg-gray-200 text-gray-600'
+                }`}
+              >
+                {stepNumber}
               </div>
-            ))}
-          </div>
+              {stepNumber < 3 && (
+                <div
+                  className={`w-6 h-1 mx-1 ${
+                    step > stepNumber ? 'bg-orange-600' : 'bg-gray-200'
+                  }`}
+                />
+              )}
+            </div>
+          ))}
         </div>
-
-        {/* Step Content */}
-        <AnimatePresence mode="wait">
-          {step === 1 && renderStep1()}
-          {step === 2 && renderStep2()}
-          {step === 3 && renderStep3()}
-        </AnimatePresence>
       </div>
 
-
-    </>
+      {/* Step Content */}
+      {step === 1 && renderStep1()}
+      {step === 2 && renderStep2()}
+      {step === 3 && renderStep3()}
+    </div>
   );
 };
 
