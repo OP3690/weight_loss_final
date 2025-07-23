@@ -7,7 +7,7 @@ const transporter = nodemailer.createTransport({
   secure: false, // Use STARTTLS for port 587
   auth: {
     user: process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com',
-    pass: process.env.EMAIL_PASSWORD || 'Forex$$336699'
+    pass: process.env.EMAIL_PASSWORD || 'Forex$$336699336699'
   },
   tls: {
     rejectUnauthorized: false
