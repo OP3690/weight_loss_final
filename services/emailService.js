@@ -13,7 +13,8 @@ const transporter = nodemailer.createTransport({
     rejectUnauthorized: false
   },
   debug: true, // Enable debug output
-  logger: true // Log to console
+  logger: true, // Log to console
+  authMethod: 'PLAIN' // Explicitly set authentication method
 });
 
 // Log email configuration (without password)
@@ -36,7 +37,27 @@ const createAlternativeTransporter = () => {
       rejectUnauthorized: false
     },
     debug: true,
-    logger: true
+    logger: true,
+    authMethod: 'LOGIN' // Try LOGIN method for port 587
+  });
+};
+
+// Create transporter with different authentication methods
+const createTransporterWithAuth = (authMethod) => {
+  return nodemailer.createTransport({
+    host: 'smtpout.secureserver.net',
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.EMAIL_USER || 'support@gooofit.com',
+      pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
+    },
+    tls: {
+      rejectUnauthorized: false
+    },
+    debug: true,
+    logger: true,
+    authMethod: authMethod
   });
 };
 
@@ -82,7 +103,7 @@ const testEmailConfig = async () => {
     console.log('   NODE_ENV:', process.env.NODE_ENV || 'NOT SET');
     
     // Try primary configuration (port 465, SSL) - GoDaddy recommended
-    console.log('🔧 Testing primary configuration (port 465, SSL)...');
+    console.log('🔧 Testing primary configuration (port 465, SSL, PLAIN auth)...');
     const isVerified = await verifyTransporter();
     if (isVerified) {
       console.log('✅ Primary email configuration is working');
@@ -104,6 +125,17 @@ const testEmailConfig = async () => {
         console.error('❌ Test email failed:', testError.message);
         return false;
       }
+    }
+    
+    // Try LOGIN authentication method
+    console.log('🔧 Testing LOGIN authentication method...');
+    try {
+      const loginTransporter = createTransporterWithAuth('LOGIN');
+      await loginTransporter.verify();
+      console.log('✅ LOGIN authentication method is working');
+      return true;
+    } catch (loginError) {
+      console.error('❌ LOGIN authentication failed:', loginError.message);
     }
     
     // Try alternative configuration (port 587, STARTTLS) - backup
