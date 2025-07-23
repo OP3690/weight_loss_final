@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 // CRITICAL FIX: SMS password reset validation issue - Force Vercel deployment
 // This fixes the mobile field name mismatch causing "Validation failed" error
-// Version: 4.0 - Final deployment trigger
+// Version: 5.0 - Final deployment trigger - README update
 import { 
   EyeIcon, 
   EyeSlashIcon, 
