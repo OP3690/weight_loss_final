@@ -1,13 +1,13 @@
 const nodemailer = require('nodemailer');
 
-// Create transporter with environment variables
+// Create transporter with Gmail SMTP (more reliable)
 const transporter = nodemailer.createTransport({
-  host: 'smtpout.secureserver.net', // GoDaddy SMTP server
+  host: 'smtp.gmail.com', // Gmail SMTP server
   port: 587,
   secure: false, // true for 465, false for other ports
   auth: {
-    user: process.env.EMAIL_USER || 'support@gooofit.com',
-    pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
+    user: process.env.EMAIL_USER || 'gooofit.support@gmail.com',
+    pass: process.env.EMAIL_PASSWORD || 'your-app-password'
   },
   tls: {
     rejectUnauthorized: false
@@ -18,19 +18,19 @@ const transporter = nodemailer.createTransport({
 
 // Log email configuration (without password)
 console.log('📧 Email Configuration:');
-console.log('   Host:', 'smtpout.secureserver.net');
-console.log('   User:', process.env.EMAIL_USER || 'support@gooofit.com');
+console.log('   Host:', 'smtp.gmail.com');
+console.log('   User:', process.env.EMAIL_USER || 'gooofit.support@gmail.com');
 console.log('   Password:', process.env.EMAIL_PASSWORD ? '***SET***' : '***NOT SET***');
 
 // Alternative transporter for testing different configurations
 const createAlternativeTransporter = () => {
   return nodemailer.createTransport({
-    host: 'smtpout.secureserver.net',
+    host: 'smtp.gmail.com',
     port: 465,
     secure: true, // Use SSL
     auth: {
-      user: process.env.EMAIL_USER || 'support@gooofit.com',
-      pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
+      user: process.env.EMAIL_USER || 'gooofit.support@gmail.com',
+      pass: process.env.EMAIL_PASSWORD || 'your-app-password'
     },
     tls: {
       rejectUnauthorized: false
@@ -588,7 +588,7 @@ const sendPasswordResetEmail = async (userEmail, userName, otp) => {
     `;
     
     const mailOptions = {
-      from: '"GoooFit Support" <support@gooofit.com>',
+      from: '"GoooFit Support" <gooofit.support@gmail.com>',
       to: userEmail,
       subject: 'Password Reset Code - GoooFit 🔐',
       html: resetEmailHTML,
