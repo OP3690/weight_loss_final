@@ -27,69 +27,71 @@ const Profile = () => {
   } = useForm();
 
   useEffect(() => {
-    if (currentUser && currentUser.id !== 'demo') {
-      loadUserProfile();
-      // Fetch weight entries for progress bar
-      (async () => {
-        try {
-          const today = new Date();
-          const startDate = userProfile?.createdAt ? new Date(userProfile.createdAt) : new Date();
-          const entries = await weightEntryAPI.getUserEntries(currentUser.id, {
-            startDate: startDate.toISOString().slice(0, 10),
-            endDate: today.toISOString().slice(0, 10)
+    if (currentUser) {
+      if (currentUser.id !== 'demo') {
+        loadUserProfile();
+        // Fetch weight entries for progress bar
+        (async () => {
+          try {
+            const today = new Date();
+            const startDate = userProfile?.createdAt ? new Date(userProfile.createdAt) : new Date();
+            const entries = await weightEntryAPI.getUserEntries(currentUser.id, {
+              startDate: startDate.toISOString().slice(0, 10),
+              endDate: today.toISOString().slice(0, 10)
+            });
+            setWeightEntries(entries.entries || []);
+          } catch (e) {
+            setWeightEntries([]);
+          }
+        })();
+      } else {
+        const demoProfile = {
+          id: 'demo',
+          name: 'Demo User',
+          email: 'demo@example.com',
+          mobile: '+1234567890',
+          gender: 'Other',
+          age: 30,
+          height: 170,
+          currentWeight: 75,
+          targetWeight: 70,
+          targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          goalStatus: 'active',
+          goalCreatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          pastGoals: [
+            {
+              goalId: 'demo-goal-1',
+              currentWeight: 80,
+              targetWeight: 75,
+              targetDate: new Date(Date.now() - 100 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+              startedAt: new Date(Date.now() - 200 * 24 * 60 * 60 * 1000).toISOString(),
+              endedAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
+              status: 'achieved',
+            },
+          ],
+        };
+        setUserProfile(demoProfile);
+        calculateBMIAnalytics(demoProfile);
+        // Generate demo weight entries for the active goal period
+        const days = 30;
+        const entries = [];
+        const startWeight = 76;
+        for (let i = days - 1; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          const baseWeight = startWeight - (days - i) * 0.1;
+          const fluctuation = (Math.random() - 0.5) * 0.5;
+          const weight = Math.round((baseWeight + fluctuation) * 10) / 10;
+          entries.push({
+            date: date.toISOString(),
+            weight,
+            bmi: calculateBMI(weight, 170),
+            notes: i % 7 === 0 ? 'Weekly check-in' : ''
           });
-          setWeightEntries(entries.entries || []);
-        } catch (e) {
-          setWeightEntries([]);
         }
-      })();
-    } else if (currentUser && currentUser.id === 'demo') {
-      const demoProfile = {
-        id: 'demo',
-        name: 'Demo User',
-        email: 'demo@example.com',
-        mobile: '+1234567890',
-        gender: 'Other',
-        age: 30,
-        height: 170,
-        currentWeight: 75,
-        targetWeight: 70,
-        targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        goalStatus: 'active',
-        goalCreatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        pastGoals: [
-          {
-            goalId: 'demo-goal-1',
-            currentWeight: 80,
-            targetWeight: 75,
-            targetDate: new Date(Date.now() - 100 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-            startedAt: new Date(Date.now() - 200 * 24 * 60 * 60 * 1000).toISOString(),
-            endedAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
-            status: 'achieved',
-          },
-        ],
-      };
-      setUserProfile(demoProfile);
-      calculateBMIAnalytics(demoProfile);
-      // Generate demo weight entries for the active goal period
-      const days = 30;
-      const entries = [];
-      const startWeight = 76;
-      for (let i = days - 1; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        const baseWeight = startWeight - (days - i) * 0.1;
-        const fluctuation = (Math.random() - 0.5) * 0.5;
-        const weight = Math.round((baseWeight + fluctuation) * 10) / 10;
-        entries.push({
-          date: date.toISOString(),
-          weight,
-          bmi: calculateBMI(weight, 170),
-          notes: i % 7 === 0 ? 'Weekly check-in' : ''
-        });
+        setWeightEntries(entries);
+        setIsCreatingGoal(false);
       }
-      setWeightEntries(entries);
-      setIsCreatingGoal(false);
     }
   }, [currentUser, userProfile?.createdAt]);
 
