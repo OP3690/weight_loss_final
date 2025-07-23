@@ -59,7 +59,16 @@ app.get('/api/test-email', async (req, res) => {
     res.json({
       success: result,
       message: result ? 'Email configuration is working' : 'Email configuration failed',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      troubleshooting: result ? null : {
+        steps: [
+          '1. Check GoDaddy email password in Render environment variables',
+          '2. Verify email account is active and not suspended',
+          '3. Try using an app-specific password if available',
+          '4. Check if SMTP is enabled in GoDaddy email settings',
+          '5. Contact GoDaddy support if authentication continues to fail'
+        ]
+      }
     });
   } catch (error) {
     res.status(500).json({
