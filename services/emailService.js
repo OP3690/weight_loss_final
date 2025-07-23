@@ -44,11 +44,25 @@ const createAlternativeTransporter = () => {
 const verifyTransporter = async () => {
   try {
     console.log('🔧 Verifying email transporter...');
+    console.log('📧 Using configuration:');
+    console.log('   Host:', 'smtpout.secureserver.net');
+    console.log('   Port:', 465);
+    console.log('   Secure:', true);
+    console.log('   User:', process.env.EMAIL_USER || 'support@gooofit.com');
+    console.log('   Password length:', process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.length : 0);
+    
     await transporter.verify();
     console.log('✅ Email transporter verified successfully');
     return true;
   } catch (error) {
     console.error('❌ Email transporter verification failed:', error);
+    console.error('❌ Error details:', {
+      code: error.code,
+      command: error.command,
+      responseCode: error.responseCode,
+      response: error.response,
+      message: error.message
+    });
     return false;
   }
 };
@@ -72,7 +86,24 @@ const testEmailConfig = async () => {
     const isVerified = await verifyTransporter();
     if (isVerified) {
       console.log('✅ Primary email configuration is working');
-      return true;
+      
+      // Try sending a test email
+      console.log('📤 Attempting to send test email...');
+      try {
+        const testResult = await transporter.sendMail({
+          from: '"GoooFit Test" <support@gooofit.com>',
+          to: 'support@gooofit.com',
+          subject: 'Test Email - GoooFit',
+          text: 'This is a test email to verify GoDaddy SMTP is working correctly.',
+          html: '<p>This is a test email to verify GoDaddy SMTP is working correctly.</p>'
+        });
+        console.log('✅ Test email sent successfully!');
+        console.log('📧 Message ID:', testResult.messageId);
+        return true;
+      } catch (testError) {
+        console.error('❌ Test email failed:', testError.message);
+        return false;
+      }
     }
     
     // Try alternative configuration (port 587, STARTTLS) - backup
