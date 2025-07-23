@@ -42,10 +42,23 @@ mongoose.connect(MONGODB_URI, {
 app.use('/api/users', require('./routes/users'));
 app.use('/api/weight-entries', require('./routes/weightEntries'));
 
-// Serve static assets in production
+// Health check endpoint for Render
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    message: 'Weight Management API is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Serve static assets in production (only for non-API routes)
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));
-  app.get('*', (req, res) => {
+  app.get('*', (req, res, next) => {
+    // Skip API routes
+    if (req.path.startsWith('/api/')) {
+      return next();
+    }
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
   });
 }
