@@ -1,13 +1,13 @@
 const nodemailer = require('nodemailer');
 
-// Create transporter with Gmail SMTP (more reliable)
+// Create transporter with environment variables (using correct GoDaddy SSL settings)
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com', // Gmail SMTP server
-  port: 587,
-  secure: false, // true for 465, false for other ports
+  host: 'smtpout.secureserver.net', // GoDaddy SMTP server
+  port: 465, // SSL port as per GoDaddy settings
+  secure: true, // Use SSL for port 465
   auth: {
-    user: process.env.EMAIL_USER || 'gooofit.support@gmail.com',
-    pass: process.env.EMAIL_PASSWORD || 'your-app-password'
+    user: process.env.EMAIL_USER || 'support@gooofit.com',
+    pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
   },
   tls: {
     rejectUnauthorized: false
@@ -18,19 +18,19 @@ const transporter = nodemailer.createTransport({
 
 // Log email configuration (without password)
 console.log('📧 Email Configuration:');
-console.log('   Host:', 'smtp.gmail.com');
-console.log('   User:', process.env.EMAIL_USER || 'gooofit.support@gmail.com');
+console.log('   Host:', 'smtpout.secureserver.net');
+console.log('   User:', process.env.EMAIL_USER || 'support@gooofit.com');
 console.log('   Password:', process.env.EMAIL_PASSWORD ? '***SET***' : '***NOT SET***');
 
-// Alternative transporter for testing different configurations
+// Alternative transporter for testing different configurations (port 587 as backup)
 const createAlternativeTransporter = () => {
   return nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // Use SSL
+    host: 'smtpout.secureserver.net',
+    port: 587,
+    secure: false, // Use STARTTLS for port 587
     auth: {
-      user: process.env.EMAIL_USER || 'gooofit.support@gmail.com',
-      pass: process.env.EMAIL_PASSWORD || 'your-app-password'
+      user: process.env.EMAIL_USER || 'support@gooofit.com',
+      pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
     },
     tls: {
       rejectUnauthorized: false
@@ -67,16 +67,16 @@ const testEmailConfig = async () => {
     console.log('   EMAIL_PASSWORD:', process.env.EMAIL_PASSWORD ? 'SET' : 'NOT SET');
     console.log('   NODE_ENV:', process.env.NODE_ENV || 'NOT SET');
     
-    // Try primary configuration (port 587, STARTTLS)
-    console.log('🔧 Testing primary configuration (port 587, STARTTLS)...');
+    // Try primary configuration (port 465, SSL) - GoDaddy recommended
+    console.log('🔧 Testing primary configuration (port 465, SSL)...');
     const isVerified = await verifyTransporter();
     if (isVerified) {
       console.log('✅ Primary email configuration is working');
       return true;
     }
     
-    // Try alternative configuration (port 465, SSL)
-    console.log('🔧 Testing alternative configuration (port 465, SSL)...');
+    // Try alternative configuration (port 587, STARTTLS) - backup
+    console.log('🔧 Testing alternative configuration (port 587, STARTTLS)...');
     const altTransporter = createAlternativeTransporter();
     try {
       await altTransporter.verify();
@@ -588,7 +588,7 @@ const sendPasswordResetEmail = async (userEmail, userName, otp) => {
     `;
     
     const mailOptions = {
-      from: '"GoooFit Support" <gooofit.support@gmail.com>',
+      from: '"GoooFit Support" <support@gooofit.com>',
       to: userEmail,
       subject: 'Password Reset Code - GoooFit 🔐',
       html: resetEmailHTML,
