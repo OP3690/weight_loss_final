@@ -51,6 +51,26 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Email test endpoint
+app.get('/api/test-email', async (req, res) => {
+  try {
+    const { testEmailConfig } = require('./services/emailService');
+    const result = await testEmailConfig();
+    res.json({
+      success: result,
+      message: result ? 'Email configuration is working' : 'Email configuration failed',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Email test failed',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Serve static assets in production (only for non-API routes)
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));

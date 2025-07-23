@@ -1,13 +1,13 @@
 const nodemailer = require('nodemailer');
 
-// Create transporter with GoDaddy email credentials
+// Create transporter with environment variables
 const transporter = nodemailer.createTransport({
   host: 'smtpout.secureserver.net', // GoDaddy SMTP server
   port: 587,
   secure: false, // true for 465, false for other ports
   auth: {
-    user: 'support@gooofit.com',
-    pass: 'Fortune$$336699'
+    user: process.env.EMAIL_USER || 'support@gooofit.com',
+    pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
   },
   tls: {
     rejectUnauthorized: false
@@ -15,6 +15,12 @@ const transporter = nodemailer.createTransport({
   debug: true, // Enable debug output
   logger: true // Log to console
 });
+
+// Log email configuration (without password)
+console.log('📧 Email Configuration:');
+console.log('   Host:', 'smtpout.secureserver.net');
+console.log('   User:', process.env.EMAIL_USER || 'support@gooofit.com');
+console.log('   Password:', process.env.EMAIL_PASSWORD ? '***SET***' : '***NOT SET***');
 
 // Verify transporter configuration
 const verifyTransporter = async () => {
@@ -32,6 +38,29 @@ const verifyTransporter = async () => {
 // Generate OTP
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+// Test email configuration
+const testEmailConfig = async () => {
+  try {
+    console.log('🧪 Testing email configuration...');
+    console.log('📧 Environment variables:');
+    console.log('   EMAIL_USER:', process.env.EMAIL_USER || 'NOT SET');
+    console.log('   EMAIL_PASSWORD:', process.env.EMAIL_PASSWORD ? 'SET' : 'NOT SET');
+    console.log('   NODE_ENV:', process.env.NODE_ENV || 'NOT SET');
+    
+    const isVerified = await verifyTransporter();
+    if (isVerified) {
+      console.log('✅ Email configuration is working');
+      return true;
+    } else {
+      console.log('❌ Email configuration failed');
+      return false;
+    }
+  } catch (error) {
+    console.error('❌ Email configuration test failed:', error);
+    return false;
+  }
 };
 
 // Send Welcome Email
@@ -570,5 +599,6 @@ module.exports = {
   sendWelcomeEmail,
   sendPasswordResetEmail,
   generateOTP,
-  verifyTransporter
+  verifyTransporter,
+  testEmailConfig
 }; 
