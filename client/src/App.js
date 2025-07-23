@@ -39,6 +39,7 @@ function App() {
   const handleUserLogin = (user) => {
     setCurrentUser(user);
     localStorage.setItem('currentUser', JSON.stringify(user));
+    setShowOnboarding(false); // Close the modal after successful login
     toast.success(`Welcome back, ${user.name}!`);
   };
 
@@ -91,7 +92,7 @@ function App() {
         )}
 
         {/* Onboarding Modal */}
-        {showOnboarding && (
+        {showOnboarding && !currentUser && (
           <Onboarding
             onSuccess={handleUserLogin}
             onClose={() => setShowOnboarding(false)}
