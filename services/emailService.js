@@ -17,6 +17,25 @@ const transporter = nodemailer.createTransport({
   authMethod: 'PLAIN' // Explicitly set authentication method
 });
 
+// Alternative GoDaddy SMTP servers to try
+const createAlternativeGoDaddyTransporter = () => {
+  return nodemailer.createTransport({
+    host: 'smtp.secureserver.net', // Alternative GoDaddy SMTP server
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.EMAIL_USER || 'support@gooofit.com',
+      pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
+    },
+    tls: {
+      rejectUnauthorized: false
+    },
+    debug: true,
+    logger: true,
+    authMethod: 'PLAIN'
+  });
+};
+
 // Log email configuration (without password)
 console.log('📧 Email Configuration:');
 console.log('   Host:', 'smtpout.secureserver.net');
@@ -136,6 +155,17 @@ const testEmailConfig = async () => {
       return true;
     } catch (loginError) {
       console.error('❌ LOGIN authentication failed:', loginError.message);
+    }
+    
+    // Try alternative GoDaddy SMTP server
+    console.log('🔧 Testing alternative GoDaddy SMTP server (smtp.secureserver.net)...');
+    try {
+      const altGoDaddyTransporter = createAlternativeGoDaddyTransporter();
+      await altGoDaddyTransporter.verify();
+      console.log('✅ Alternative GoDaddy SMTP server is working');
+      return true;
+    } catch (altGoDaddyError) {
+      console.error('❌ Alternative GoDaddy SMTP server failed:', altGoDaddyError.message);
     }
     
     // Try alternative configuration (port 587, STARTTLS) - backup
