@@ -1,20 +1,19 @@
 const nodemailer = require('nodemailer');
 
-// Create transporter with environment variables (using correct GoDaddy SSL settings)
+// Create transporter with environment variables (using Gmail SMTP)
 const transporter = nodemailer.createTransport({
-  host: 'smtpout.secureserver.net', // GoDaddy SMTP server
-  port: 465, // SSL port as per GoDaddy settings
-  secure: true, // Use SSL for port 465
+  host: 'smtp.gmail.com', // Gmail SMTP server
+  port: 587, // Gmail SMTP port
+  secure: false, // Use STARTTLS for port 587
   auth: {
-    user: process.env.EMAIL_USER || 'support@gooofit.com',
-    pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
+    user: process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com',
+    pass: process.env.EMAIL_PASSWORD || 'Forex$$336699'
   },
   tls: {
     rejectUnauthorized: false
   },
   debug: true, // Enable debug output
-  logger: true, // Log to console
-  authMethod: 'PLAIN' // Explicitly set authentication method
+  logger: true // Log to console
 });
 
 // Alternative GoDaddy SMTP servers to try
@@ -38,8 +37,8 @@ const createAlternativeGoDaddyTransporter = () => {
 
 // Log email configuration (without password)
 console.log('📧 Email Configuration:');
-console.log('   Host:', 'smtpout.secureserver.net');
-console.log('   User:', process.env.EMAIL_USER || 'support@gooofit.com');
+console.log('   Host:', 'smtp.gmail.com');
+console.log('   User:', process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com');
 console.log('   Password:', process.env.EMAIL_PASSWORD ? '***SET***' : '***NOT SET***');
 
 // Alternative transporter for testing different configurations (port 587 as backup)
@@ -85,10 +84,10 @@ const verifyTransporter = async () => {
   try {
     console.log('🔧 Verifying email transporter...');
     console.log('📧 Using configuration:');
-    console.log('   Host:', 'smtpout.secureserver.net');
-    console.log('   Port:', 465);
-    console.log('   Secure:', true);
-    console.log('   User:', process.env.EMAIL_USER || 'support@gooofit.com');
+    console.log('   Host:', 'smtp.gmail.com');
+    console.log('   Port:', 587);
+    console.log('   Secure:', false);
+    console.log('   User:', process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com');
     console.log('   Password length:', process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.length : 0);
     
     await transporter.verify();
@@ -121,21 +120,21 @@ const testEmailConfig = async () => {
     console.log('   EMAIL_PASSWORD:', process.env.EMAIL_PASSWORD ? 'SET' : 'NOT SET');
     console.log('   NODE_ENV:', process.env.NODE_ENV || 'NOT SET');
     
-    // Try primary configuration (port 465, SSL) - GoDaddy recommended
-    console.log('🔧 Testing primary configuration (port 465, SSL, PLAIN auth)...');
+    // Try primary configuration (Gmail SMTP)
+    console.log('🔧 Testing Gmail SMTP configuration...');
     const isVerified = await verifyTransporter();
     if (isVerified) {
-      console.log('✅ Primary email configuration is working');
+      console.log('✅ Gmail email configuration is working');
       
       // Try sending a test email
       console.log('📤 Attempting to send test email...');
       try {
         const testResult = await transporter.sendMail({
-          from: '"GoooFit Test" <support@gooofit.com>',
-          to: 'support@gooofit.com',
+          from: '"GoooFit Test" <onboarding.gooofit@gmail.com>',
+          to: 'onboarding.gooofit@gmail.com',
           subject: 'Test Email - GoooFit',
-          text: 'This is a test email to verify GoDaddy SMTP is working correctly.',
-          html: '<p>This is a test email to verify GoDaddy SMTP is working correctly.</p>'
+          text: 'This is a test email to verify Gmail SMTP is working correctly.',
+          html: '<p>This is a test email to verify Gmail SMTP is working correctly.</p>'
         });
         console.log('✅ Test email sent successfully!');
         console.log('📧 Message ID:', testResult.messageId);
@@ -513,7 +512,7 @@ const sendWelcomeEmail = async (userEmail, userName) => {
     `;
     
     const mailOptions = {
-      from: '"GoooFit" <support@gooofit.com>',
+      from: '"GoooFit" <onboarding.gooofit@gmail.com>',
       to: userEmail,
       subject: 'Welcome to GoooFit - Your Health Journey Begins',
       html: welcomeEmailHTML,
@@ -681,7 +680,7 @@ const sendPasswordResetEmail = async (userEmail, userName, otp) => {
     `;
     
     const mailOptions = {
-      from: '"GoooFit Support" <support@gooofit.com>',
+      from: '"GoooFit Support" <onboarding.gooofit@gmail.com>',
       to: userEmail,
       subject: 'Password Reset Code - GoooFit 🔐',
       html: resetEmailHTML,
