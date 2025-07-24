@@ -558,7 +558,8 @@ const Analytics = () => {
                   />
                   <YAxis 
                     yAxisId="left"
-                    label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280' } }}
+                    domain={['dataMin - 2', 'dataMax + 2']}
+                    label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280', fontWeight: 'bold' } }}
                     tick={{ fontSize: 12, fill: '#6b7280' }}
                     axisLine={{ stroke: '#e5e7eb' }}
                     tickLine={{ stroke: '#e5e7eb' }}
@@ -566,7 +567,8 @@ const Analytics = () => {
                   <YAxis 
                     yAxisId="right"
                     orientation="right"
-                    label={{ value: 'BMI', angle: 90, position: 'insideRight', style: { textAnchor: 'middle', fill: '#6b7280' } }}
+                    domain={['dataMin - 1', 'dataMax + 1']}
+                    label={{ value: 'BMI', angle: 90, position: 'insideRight', style: { textAnchor: 'middle', fill: '#6b7280', fontWeight: 'bold' } }}
                     tick={{ fontSize: 12, fill: '#6b7280' }}
                     axisLine={{ stroke: '#e5e7eb' }}
                     tickLine={{ stroke: '#e5e7eb' }}
@@ -580,24 +582,49 @@ const Analytics = () => {
                       padding: '12px'
                     }}
                     labelFormatter={(value) => new Date(value).toLocaleDateString()}
+                    formatter={(value, name) => [
+                      name === 'weight' ? `${value} kg` : value.toFixed(1),
+                      name === 'weight' ? 'Weight' : 'BMI'
+                    ]}
                   />
                   <Line 
                     yAxisId="left"
                     type="monotone" 
                     dataKey="weight" 
                     stroke="#3b82f6" 
-                    strokeWidth={3}
-                    dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
-                    activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 2 }}
+                    strokeWidth={4}
+                    dot={{ fill: '#3b82f6', strokeWidth: 3, r: 6, stroke: '#ffffff' }}
+                    activeDot={{ r: 8, stroke: '#3b82f6', strokeWidth: 3, fill: '#ffffff' }}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <Line 
                     yAxisId="right"
                     type="monotone" 
                     dataKey="bmi" 
                     stroke="#10b981" 
-                    strokeWidth={3}
-                    dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }}
-                    activeDot={{ r: 6, stroke: '#10b981', strokeWidth: 2 }}
+                    strokeWidth={4}
+                    dot={{ fill: '#10b981', strokeWidth: 3, r: 6, stroke: '#ffffff' }}
+                    activeDot={{ r: 8, stroke: '#10b981', strokeWidth: 3, fill: '#ffffff' }}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  {/* Add reference lines for better visualization */}
+                  <ReferenceLine 
+                    yAxisId="left"
+                    y={sortedEntries[0]?.weight} 
+                    stroke="#3b82f6" 
+                    strokeDasharray="5 5" 
+                    strokeOpacity={0.5}
+                    label={{ value: 'Starting Weight', position: 'top', fill: '#3b82f6', fontSize: 10 }}
+                  />
+                  <ReferenceLine 
+                    yAxisId="right"
+                    y={25} 
+                    stroke="#f59e0b" 
+                    strokeDasharray="3 3" 
+                    strokeOpacity={0.7}
+                    label={{ value: 'Overweight Threshold', position: 'top', fill: '#f59e0b', fontSize: 10 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -637,7 +664,8 @@ const Analytics = () => {
                       tickLine={{ stroke: '#e5e7eb' }}
                     />
                     <YAxis 
-                      label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280' } }}
+                      domain={['dataMin - 1', 'dataMax + 1']}
+                      label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280', fontWeight: 'bold' } }}
                       tick={{ fontSize: 10, fill: '#6b7280' }}
                       axisLine={{ stroke: '#e5e7eb' }}
                       tickLine={{ stroke: '#e5e7eb' }}
@@ -651,13 +679,27 @@ const Analytics = () => {
                         padding: '12px'
                       }}
                       labelFormatter={(value) => new Date(value).toLocaleDateString()}
+                      formatter={(value) => [`${value} kg`, 'Weight']}
                     />
-                    <Bar dataKey="weight" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                    <Bar 
+                      dataKey="weight" 
+                      fill="url(#weightGradient)" 
+                      radius={[6, 6, 0, 0]}
+                      stroke="#3b82f6"
+                      strokeWidth={1}
+                    />
+                    <defs>
+                      <linearGradient id="weightGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                        <stop offset="100%" stopColor="#1d4ed8" stopOpacity={0.6}/>
+                      </linearGradient>
+                    </defs>
                     <ReferenceLine 
                       y={medianWeight} 
                       stroke="#ef4444" 
                       strokeDasharray="3 3" 
-                      label={{ value: 'Median Weight', position: 'top', fill: '#ef4444' }}
+                      strokeWidth={2}
+                      label={{ value: 'Median Weight', position: 'top', fill: '#ef4444', fontSize: 10, fontWeight: 'bold' }}
                     />
                   </BarChart>
                 </ResponsiveContainer>
@@ -695,7 +737,8 @@ const Analytics = () => {
                       tickLine={{ stroke: '#e5e7eb' }}
                     />
                     <YAxis 
-                      label={{ value: 'BMI', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280' } }}
+                      domain={['dataMin - 0.5', 'dataMax + 0.5']}
+                      label={{ value: 'BMI', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280', fontWeight: 'bold' } }}
                       tick={{ fontSize: 10, fill: '#6b7280' }}
                       axisLine={{ stroke: '#e5e7eb' }}
                       tickLine={{ stroke: '#e5e7eb' }}
@@ -709,20 +752,32 @@ const Analytics = () => {
                         padding: '12px'
                       }}
                       labelFormatter={(value) => new Date(value).toLocaleDateString()}
+                      formatter={(value) => [value.toFixed(1), 'BMI']}
                     />
                     <Line 
                       type="monotone" 
                       dataKey="bmi" 
                       stroke="#10b981" 
-                      strokeWidth={3}
-                      dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }}
-                      activeDot={{ r: 6, stroke: '#10b981', strokeWidth: 2 }}
+                      strokeWidth={4}
+                      dot={{ fill: '#10b981', strokeWidth: 3, r: 5, stroke: '#ffffff' }}
+                      activeDot={{ r: 7, stroke: '#10b981', strokeWidth: 3, fill: '#ffffff' }}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
                     <ReferenceLine 
                       y={25} 
                       stroke="#f59e0b" 
                       strokeDasharray="3 3" 
-                      label={{ value: 'Overweight', position: 'top', fill: '#f59e0b' }}
+                      strokeWidth={2}
+                      label={{ value: 'Overweight Threshold', position: 'top', fill: '#f59e0b', fontSize: 10, fontWeight: 'bold' }}
+                    />
+                    <ReferenceLine 
+                      y={18.5} 
+                      stroke="#3b82f6" 
+                      strokeDasharray="3 3" 
+                      strokeWidth={2}
+                      strokeOpacity={0.7}
+                      label={{ value: 'Normal Weight', position: 'bottom', fill: '#3b82f6', fontSize: 10, fontWeight: 'bold' }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
