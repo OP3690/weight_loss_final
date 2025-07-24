@@ -13,7 +13,7 @@ import {
   Plus
 } from 'lucide-react';
 import { useUser } from '../context/UserContext';
-import { calculateBMI, getBMICategory, userAPI, weightEntryAPI, isValidObjectId } from '../services/api';
+import { calculateBMI, getBMICategory, userAPI, weightEntryAPI, isValidObjectId, checkBackendHealth } from '../services/api';
 
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Legend } from 'recharts';
@@ -297,17 +297,36 @@ const Dashboard = () => {
   // Define loadUserProfile function
   const loadUserProfile = async () => {
     if (!currentUser || !currentUser.id) return;
+    
+    // Check backend health first
+    const isHealthy = await checkBackendHealth();
+    if (!isHealthy) {
+      console.error('Backend is not healthy, skipping profile load');
+      setError('Backend connection failed. Please try again later.');
+      return;
+    }
+    
     try {
       const profile = await userAPI.getUser(currentUser.id);
       setUserProfile(profile);
+      setError(null); // Clear any previous errors
     } catch (error) {
       console.error('Error loading user profile:', error);
+      setError('Failed to load user profile. Please try again.');
     }
   };
 
   // Define loadGoalEntries function
   const loadGoalEntries = async () => {
     if (!currentUser || !currentUser.id) return;
+    
+    // Check backend health first
+    const isHealthy = await checkBackendHealth();
+    if (!isHealthy) {
+      console.error('Backend is not healthy, skipping goal entries load');
+      return;
+    }
+    
     try {
       // Pass the active goalId to the analytics API
       const response = await weightEntryAPI.getAnalytics(currentUser.id, { 
@@ -325,6 +344,7 @@ const Dashboard = () => {
       }
     } catch (error) {
       console.error('Error loading goal entries:', error);
+      setError('Failed to load weight entries. Please try again.');
     }
   };
 
@@ -332,8 +352,14 @@ const Dashboard = () => {
   useEffect(() => {
     if (currentUser && currentUser.id) {
       console.log('[DASHBOARD] Loading fresh user profile and goal entries for user:', currentUser.id);
-      loadUserProfile();
-      loadGoalEntries();
+      
+      // Add a small delay to prevent rapid successive calls
+      const timer = setTimeout(() => {
+        loadUserProfile();
+        loadGoalEntries();
+      }, 500);
+      
+      return () => clearTimeout(timer);
     }
   }, [currentUser]);
 
@@ -349,8 +375,14 @@ const Dashboard = () => {
     const handleVisibilityChange = () => {
       if (!document.hidden && currentUser && currentUser.id) {
         console.log('[DASHBOARD] Page became visible, refreshing data...');
-        loadUserProfile();
-        loadGoalEntries();
+        
+        // Add a delay to prevent rapid successive calls
+        const timer = setTimeout(() => {
+          loadUserProfile();
+          loadGoalEntries();
+        }, 1000);
+        
+        return () => clearTimeout(timer);
       }
     };
 
@@ -619,6 +651,38 @@ const Dashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 relative">
+      {/* Error Display */}
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="bg-gradient-to-r from-red-500 to-red-600 rounded-2xl p-6 shadow-xl border border-red-400/20 relative"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white mb-1">Connection Issue</h3>
+                <p className="text-red-100 text-lg">{error}</p>
+              </div>
+            </div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={refreshData}
+              className="bg-white text-red-600 px-6 py-3 rounded-xl font-semibold hover:bg-red-50 transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              Retry
+            </motion.button>
+          </div>
+        </motion.div>
+      )}
+      
       {/* Goal Creation Notification */}
       {hasNoActiveGoal && showGoalNotification && (
         <motion.div

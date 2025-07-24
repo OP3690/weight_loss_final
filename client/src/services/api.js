@@ -7,11 +7,26 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://weight-loss-final
 console.log('🔍 API_BASE_URL:', API_BASE_URL);
 console.log('🔍 REACT_APP_API_URL env var:', process.env.REACT_APP_API_URL);
 
+// Health check function
+export const checkBackendHealth = async () => {
+  try {
+    const response = await api.get('/health');
+    console.log('✅ Backend health check passed:', response.data);
+    return true;
+  } catch (error) {
+    console.error('❌ Backend health check failed:', error);
+    return false;
+  }
+};
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 10000, // 10 second timeout
+  retry: 3, // Retry failed requests
+  retryDelay: 1000, // Wait 1 second between retries
 });
 
 // Utility function to validate MongoDB ObjectId
@@ -51,15 +66,40 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor
+// Response interceptor with retry logic
 api.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error) => {
-    const message = error.response?.data?.message || error.message || 'Something went wrong';
-    toast.error(message);
-    return Promise.reject(error);
+  async (error) => {
+    const { config } = error;
+    
+    // Initialize retry count if not set
+    config.retryCount = config.retryCount || 0;
+    
+    // Don't retry if we've already retried or if it's not a network error
+    if (config.retryCount >= config.retry || error.code !== 'ERR_NETWORK') {
+      const message = error.response?.data?.message || error.message || 'Something went wrong';
+      
+      // Only show toast for non-retry errors to avoid spam
+      if (config.retryCount >= config.retry) {
+        console.error('API Error after retries:', error);
+        toast.error(`Connection failed: ${message}`);
+      }
+      
+      return Promise.reject(error);
+    }
+    
+    // Increment retry count
+    config.retryCount += 1;
+    
+    console.log(`Retrying request (${config.retryCount}/${config.retry}):`, config.url);
+    
+    // Wait before retrying
+    await new Promise(resolve => setTimeout(resolve, config.retryDelay || 1000));
+    
+    // Retry the request
+    return api(config);
   }
 );
 
