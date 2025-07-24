@@ -102,16 +102,38 @@ const Profile = () => {
     }
   }, [currentUser, userProfile?.createdAt]);
 
-  // TEMPORARILY DISABLED: Backend server is down
+  // ENABLED: Goal expiration check
   useEffect(() => {
-    // Goal expiration check disabled due to server issues
-    console.log('Goal expiration check disabled due to server issues');
+    if (
+      userProfile &&
+      userProfile.goalStatus === 'active' &&
+      userProfile.targetDate &&
+      new Date(userProfile.targetDate) < new Date()
+    ) {
+      (async () => {
+        try {
+          await userAPI.discardGoal(userProfile.id, { status: 'expired' });
+          await loadUserProfile();
+        } catch (e) {
+          console.error('Goal expiration check failed:', e);
+        }
+      })();
+    }
   }, [userProfile]);
 
-  // TEMPORARILY DISABLED: Backend server is down
+  // ENABLED: For goal management functions
   const loadUserProfile = async () => {
-    console.log('Backend API calls temporarily disabled due to server issues');
-    return;
+    try {
+      setLoading(true);
+      const profile = await userAPI.getUser(currentUser.id);
+      setUserProfile(profile);
+      calculateBMIAnalytics(profile);
+    } catch (error) {
+      console.error('Error loading profile:', error);
+      // Don't show toast error for data loading
+    } finally {
+      setLoading(false);
+    }
   };
 
   const calculateBMIAnalytics = (profile) => {

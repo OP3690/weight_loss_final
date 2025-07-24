@@ -368,9 +368,9 @@ const Dashboard = () => {
         };
         
         setUserProfile(realUserProfile);
-        setGoalEntries([]); // Empty entries for real users
+        // Load actual weight entries for real users
+        loadGoalEntries();
         setIsLoading(false);
-        return;
       }
       
       // Demo user - use demo data

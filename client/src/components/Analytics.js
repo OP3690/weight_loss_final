@@ -24,10 +24,30 @@ const Analytics = () => {
   const [showGoalNotification, setShowGoalNotification] = useState(true);
   const [hasAttemptedLoad, setHasAttemptedLoad] = useState(false);
 
-  // TEMPORARILY DISABLED: Backend server is down
+  // ENABLED: For real user data loading
   const loadUserProfileAndAnalytics = useCallback(async (retryCount = 0) => {
-    console.log('Backend API calls temporarily disabled due to server issues');
-    return;
+    try {
+      setLoading(true);
+      
+      // Load user profile
+      const profile = await userAPI.getUser(currentUser.id);
+      setUserProfile(profile);
+      
+      // Load analytics data
+      const analyticsResponse = await weightEntryAPI.getAnalytics(currentUser.id, {
+        period: selectedPeriod,
+        goalId: profile.goalId
+      });
+      
+      if (analyticsResponse.analytics) {
+        setAnalytics(analyticsResponse.analytics);
+      }
+    } catch (error) {
+      console.error('Error loading analytics:', error);
+      // Don't show toast error for data loading
+    } finally {
+      setLoading(false);
+    }
   }, [currentUser, selectedPeriod, loading]);
 
   const generateSampleAnalytics = useCallback(() => {
@@ -100,27 +120,9 @@ const Analytics = () => {
 
   useEffect(() => {
     if (currentUser && currentUser.id !== 'demo') {
-              // For real users, show actual profile data from currentUser context
-        console.log('Real user - showing actual profile data from context');
-        setAnalytics({
-          totalEntries: 0,
-          averageWeight: 78.5,
-          weightChange: 0,
-          trend: 'stable',
-          entries: [],
-          currentWeight: 78.5,
-          targetWeight: 65,
-          progressToTarget: 13.5,
-          initialWeight: 78.5
-        });
-        setUserProfile({
-          id: currentUser.id,
-          name: currentUser.name,
-          currentWeight: 78.5,
-          targetWeight: 65,
-          goalStatus: 'active'
-        });
-      setLoading(false);
+                      // For real users, load actual data from backend
+        console.log('Real user - loading actual data from backend');
+        loadUserProfileAndAnalytics();
       return;
     } else if (currentUser && currentUser.id === 'demo') {
       // Demo user - generate sample analytics data
