@@ -96,50 +96,39 @@ const Profile = () => {
         id: 'demo',
         name: 'Demo User',
         email: 'demo@example.com',
-        mobile: '+1234567890',
+        mobileNumber: '+1234567890',
         gender: 'Other',
-        age: 30,
+        age: 25,
         height: 170,
-        currentWeight: 75,
-        targetWeight: 70,
-        targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        currentWeight: 70,
+        targetWeight: 65,
         goalStatus: 'active',
-        goalCreatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        goalCreatedAt: new Date().toISOString(),
         pastGoals: [
           {
             goalId: 'demo-goal-1',
-            currentWeight: 80,
-            targetWeight: 75,
-            targetDate: new Date(Date.now() - 100 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-            startedAt: new Date(Date.now() - 200 * 24 * 60 * 60 * 1000).toISOString(),
-            endedAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
+            targetWeight: 68,
+            currentWeight: 75,
             status: 'achieved',
+            startedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+            targetDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString()
           },
-        ],
+          {
+            goalId: 'demo-goal-2',
+            targetWeight: 70,
+            currentWeight: 78,
+            status: 'discarded',
+            startedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+            targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
+          }
+        ]
       };
       setUserProfile(demoProfile);
       calculateBMIAnalytics(demoProfile);
-      // Generate demo weight entries for the active goal period
-      const days = 30;
-      const entries = [];
-      const startWeight = 76;
-      for (let i = days - 1; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        const baseWeight = startWeight - (days - i) * 0.1;
-        const fluctuation = (Math.random() - 0.5) * 0.5;
-        const weight = Math.round((baseWeight + fluctuation) * 10) / 10;
-        entries.push({
-          date: date.toISOString(),
-          weight,
-          bmi: calculateBMI(weight, 170),
-          notes: i % 7 === 0 ? 'Weekly check-in' : ''
-        });
-      }
-      setWeightEntries(entries);
-      setIsCreatingGoal(false);
     }
-  }, [currentUser, userProfile?.createdAt, loadUserProfile]);
+    // Reset loading state when component mounts
+    setLoading(false);
+  }, [currentUser, loadUserProfile]);
 
   // ENABLED: Goal expiration check
   useEffect(() => {
@@ -707,12 +696,22 @@ const Profile = () => {
                   {/* Current BMI Display */}
                   <div className="text-center">
                     <div className="text-4xl font-bold text-gray-900 mb-2">{bmiAnalytics.currentBMI}</div>
-                    <div className={`status-badge ${
-                      bmiAnalytics.category === 'Normal' ? 'status-active' :
-                      bmiAnalytics.category === 'Overweight' ? 'status-inactive' :
-                      bmiAnalytics.category === 'Obese' ? 'status-discarded' : 'status-inactive'
+                    <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
+                      bmiAnalytics.currentBMI < 16 ? 'bg-red-100 text-red-800' :
+                      bmiAnalytics.currentBMI < 18.5 ? 'bg-blue-100 text-blue-800' :
+                      bmiAnalytics.currentBMI < 25 ? 'bg-green-100 text-green-800' :
+                      bmiAnalytics.currentBMI < 30 ? 'bg-yellow-100 text-yellow-800' :
+                      bmiAnalytics.currentBMI < 35 ? 'bg-orange-100 text-orange-800' :
+                      bmiAnalytics.currentBMI < 40 ? 'bg-red-100 text-red-800' :
+                      'bg-red-100 text-red-800'
                     }`}>
-                      {bmiAnalytics.category}
+                      {bmiAnalytics.currentBMI < 16 ? 'Extreme Underweight' :
+                       bmiAnalytics.currentBMI < 18.5 ? 'Underweight' :
+                       bmiAnalytics.currentBMI < 25 ? 'Normal' :
+                       bmiAnalytics.currentBMI < 30 ? 'Overweight' :
+                       bmiAnalytics.currentBMI < 35 ? 'Obese Class-1' :
+                       bmiAnalytics.currentBMI < 40 ? 'Obese Class-2' :
+                       'Obese Class-3'}
                     </div>
                     <p className="text-sm text-gray-600 mt-2">Current BMI</p>
                   </div>
@@ -726,6 +725,7 @@ const Profile = () => {
                     <div className="w-full bg-gray-200 rounded-full h-3">
                       <div 
                         className={`h-3 rounded-full transition-all duration-300 ${
+                          bmiAnalytics.currentBMI < 16 ? 'bg-red-500' :
                           bmiAnalytics.currentBMI < 18.5 ? 'bg-blue-500' :
                           bmiAnalytics.currentBMI < 25 ? 'bg-green-500' :
                           bmiAnalytics.currentBMI < 30 ? 'bg-yellow-500' :
@@ -749,7 +749,10 @@ const Profile = () => {
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                     <h4 className="font-semibold text-blue-900 mb-2">Health Insights</h4>
                     <div className="text-sm text-blue-800 space-y-1">
-                      {bmiAnalytics.currentBMI < 18.5 && (
+                      {bmiAnalytics.currentBMI < 16 && (
+                        <p>• Consider gaining weight for better health</p>
+                      )}
+                      {bmiAnalytics.currentBMI >= 16 && bmiAnalytics.currentBMI < 18.5 && (
                         <p>• Consider gaining weight for better health</p>
                       )}
                       {bmiAnalytics.currentBMI >= 18.5 && bmiAnalytics.currentBMI < 25 && (
@@ -768,45 +771,45 @@ const Profile = () => {
                   <div className="space-y-3">
                     <h4 className="font-semibold text-gray-900">BMI Categories</h4>
                     <div className="space-y-2 text-sm">
-                      <div className="flex justify-between items-center p-2 rounded ${
+                      <div className={`flex justify-between items-center p-2 rounded ${
                         bmiAnalytics.currentBMI < 16 ? 'bg-red-100 border border-red-200' : ''
-                      }">
+                      }`}>
                         <span className="text-gray-600">Extreme Underweight</span>
                         <span className="font-medium">&lt; 16.0</span>
                       </div>
-                      <div className="flex justify-between items-center p-2 rounded ${
+                      <div className={`flex justify-between items-center p-2 rounded ${
                         bmiAnalytics.currentBMI >= 16 && bmiAnalytics.currentBMI < 18.5 ? 'bg-blue-100 border border-blue-200' : ''
-                      }">
+                      }`}>
                         <span className="text-gray-600">Underweight</span>
                         <span className="font-medium">16.0 - 18.4</span>
                       </div>
-                      <div className="flex justify-between items-center p-2 rounded ${
+                      <div className={`flex justify-between items-center p-2 rounded ${
                         bmiAnalytics.currentBMI >= 18.5 && bmiAnalytics.currentBMI < 25 ? 'bg-green-100 border border-green-200' : ''
-                      }">
+                      }`}>
                         <span className="text-gray-600">Normal</span>
                         <span className="font-medium">18.5 - 24.9</span>
                       </div>
-                      <div className="flex justify-between items-center p-2 rounded ${
+                      <div className={`flex justify-between items-center p-2 rounded ${
                         bmiAnalytics.currentBMI >= 25 && bmiAnalytics.currentBMI < 30 ? 'bg-yellow-100 border border-yellow-200' : ''
-                      }">
+                      }`}>
                         <span className="text-gray-600">Overweight</span>
                         <span className="font-medium">25.0 - 29.9</span>
                       </div>
-                      <div className="flex justify-between items-center p-2 rounded ${
+                      <div className={`flex justify-between items-center p-2 rounded ${
                         bmiAnalytics.currentBMI >= 30 && bmiAnalytics.currentBMI < 35 ? 'bg-orange-100 border border-orange-200' : ''
-                      }">
+                      }`}>
                         <span className="text-gray-600">Obese Class-1</span>
                         <span className="font-medium">30.0 - 34.9</span>
                       </div>
-                      <div className="flex justify-between items-center p-2 rounded ${
+                      <div className={`flex justify-between items-center p-2 rounded ${
                         bmiAnalytics.currentBMI >= 35 && bmiAnalytics.currentBMI < 40 ? 'bg-red-100 border border-red-200' : ''
-                      }">
+                      }`}>
                         <span className="text-gray-600">Obese Class-2</span>
                         <span className="font-medium">35.0 - 39.9</span>
                       </div>
-                      <div className="flex justify-between items-center p-2 rounded ${
+                      <div className={`flex justify-between items-center p-2 rounded ${
                         bmiAnalytics.currentBMI >= 40 ? 'bg-red-100 border border-red-200' : ''
-                      }">
+                      }`}>
                         <span className="text-gray-600">Obese Class-3</span>
                         <span className="font-medium">≥ 40.0</span>
                       </div>
