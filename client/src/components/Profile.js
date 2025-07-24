@@ -70,8 +70,8 @@ const Profile = () => {
             console.log('[PROFILE] Set weight entries:', entriesResponse.entries.length, 'entries');
           } else {
             console.log('[PROFILE] No entries found in response');
-            setWeightEntries([]);
-          }
+          setWeightEntries([]);
+        }
         } catch (entriesError) {
           console.error('Error loading weight entries:', entriesError);
           setWeightEntries([]);
@@ -394,110 +394,110 @@ const Profile = () => {
                     <User className="w-5 h-5 text-white" />
                   </div>
                   <h2 className="text-xl font-bold text-white">Personal Information</h2>
-                </div>
-                {!isEditing && (
+              </div>
+              {!isEditing && (
                   <button onClick={handleEdit} className="bg-white/20 hover:bg-white/30 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center space-x-2">
                     <Edit className="w-4 h-4" />
                     <span>Edit</span>
                   </button>
-                )}
-              </div>
+              )}
+            </div>
             </div>
             <div className="p-6">
-              {isEditing ? (
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            {isEditing ? (
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Name */}
+                  {/* Name */}
                     <div className="space-y-2">
                       <label className="block text-sm font-medium text-gray-700">Name *</label>
-                      <input
-                        type="text"
-                        {...register('name', { required: 'Name is required', minLength: { value: 2, message: 'Name must be at least 2 characters' } })}
-                        className="input-field"
+                    <input
+                      type="text"
+                      {...register('name', { required: 'Name is required', minLength: { value: 2, message: 'Name must be at least 2 characters' } })}
+                      className="input-field"
                         defaultValue={userProfile.name}
-                      />
-                      {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
-                    </div>
-                    {/* Email */}
+                    />
+                    {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
+                  </div>
+                  {/* Email */}
                     <div className="space-y-2">
                       <label className="block text-sm font-medium text-gray-700">Email *</label>
-                      <input
-                        type="email"
-                        {...register('email', { required: 'Email is required', pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: 'Invalid email address' } })}
-                        className="input-field"
+                    <input
+                      type="email"
+                      {...register('email', { required: 'Email is required', pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: 'Invalid email address' } })}
+                      className="input-field"
                         defaultValue={userProfile.email}
-                      />
-                      {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
-                    </div>
-                    {/* Mobile */}
+                    />
+                    {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
+                  </div>
+                  {/* Mobile */}
                     <div className="space-y-2">
                       <label className="block text-sm font-medium text-gray-700">Mobile *</label>
-                      <input
-                        type="tel"
-                        {...register('mobile', { required: 'Mobile number is required', pattern: { value: /^\+?[\d\s-()]+$/, message: 'Invalid mobile number' } })}
-                        className="input-field"
+                    <input
+                      type="tel"
+                      {...register('mobile', { required: 'Mobile number is required', pattern: { value: /^\+?[\d\s-()]+$/, message: 'Invalid mobile number' } })}
+                      className="input-field"
                         defaultValue={userProfile.mobileNumber}
-                      />
-                      {errors.mobile && <p className="text-sm text-red-600">{errors.mobile.message}</p>}
-                    </div>
-                    {/* Gender */}
+                    />
+                    {errors.mobile && <p className="text-sm text-red-600">{errors.mobile.message}</p>}
+                  </div>
+                  {/* Gender */}
                     <div className="space-y-2">
                       <label className="block text-sm font-medium text-gray-700">Gender *</label>
                       <select {...register('gender', { required: 'Gender is required' })} className="input-field" defaultValue={userProfile.gender}>
-                        <option value="">Select gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                      </select>
-                      {errors.gender && <p className="text-sm text-red-600">{errors.gender.message}</p>}
-                    </div>
-                    {/* Age */}
+                      <option value="">Select gender</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                    </select>
+                    {errors.gender && <p className="text-sm text-red-600">{errors.gender.message}</p>}
+                  </div>
+                  {/* Age */}
                     <div className="space-y-2">
                       <label className="block text-sm font-medium text-gray-700">Age *</label>
-                      <input
-                        type="number"
-                        {...register('age', { required: 'Age is required', min: { value: 13, message: 'Age must be at least 13' }, max: { value: 120, message: 'Age cannot exceed 120' } })}
-                        className="input-field"
+                    <input
+                      type="number"
+                      {...register('age', { required: 'Age is required', min: { value: 13, message: 'Age must be at least 13' }, max: { value: 120, message: 'Age cannot exceed 120' } })}
+                      className="input-field"
                         defaultValue={userProfile.age}
-                      />
-                      {errors.age && <p className="text-sm text-red-600">{errors.age.message}</p>}
-                    </div>
-                    {/* Height */}
+                    />
+                    {errors.age && <p className="text-sm text-red-600">{errors.age.message}</p>}
+                  </div>
+                  {/* Height */}
                     <div className="space-y-2">
                       <label className="block text-sm font-medium text-gray-700">Height (cm) *</label>
-                      <input
-                        type="number"
-                        step="0.1"
-                        {...register('height', { required: 'Height is required', min: { value: 100, message: 'Height must be at least 100 cm' }, max: { value: 250, message: 'Height cannot exceed 250 cm' } })}
-                        className="input-field"
+                    <input
+                      type="number"
+                      step="0.1"
+                      {...register('height', { required: 'Height is required', min: { value: 100, message: 'Height must be at least 100 cm' }, max: { value: 250, message: 'Height cannot exceed 250 cm' } })}
+                      className="input-field"
                         defaultValue={userProfile.height}
-                      />
-                      {errors.height && <p className="text-sm text-red-600">{errors.height.message}</p>}
-                    </div>
+                    />
+                    {errors.height && <p className="text-sm text-red-600">{errors.height.message}</p>}
                   </div>
-                  <div className="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
-                    <button
-                      type="button"
-                      onClick={() => setIsEditing(false)}
-                      className="btn-secondary"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="btn-primary flex items-center space-x-2"
-                    >
-                      {loading ? (
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      ) : (
-                        <Save className="w-4 h-4" />
-                      )}
-                      <span>{loading ? 'Saving...' : 'Save Changes'}</span>
-                    </button>
-                  </div>
-                </form>
-              ) : (
+                </div>
+                <div className="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                    className="btn-secondary"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="btn-primary flex items-center space-x-2"
+                  >
+                    {loading ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    ) : (
+                      <Save className="w-4 h-4" />
+                    )}
+                    <span>{loading ? 'Saving...' : 'Save Changes'}</span>
+                  </button>
+                </div>
+              </form>
+            ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-1">
                     <span className="text-sm text-gray-500">Name</span>
@@ -531,21 +531,21 @@ const Profile = () => {
                     <span className="text-sm text-gray-500">Target Weight (kg)</span>
                     <div className="font-semibold text-gray-900">{userProfile.targetWeight || '-'}</div>
                   </div>
-                </div>
-              )}
+              </div>
+            )}
             </div>
           </div>
-
+          
           {/* Current Goal Status */}
           <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
             <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
               <div className="flex items-center space-x-3">
                 <div className="bg-white/20 p-2 rounded-lg">
                   <Target className="w-5 h-5 text-white" />
-                </div>
+                  </div>
                 <h2 className="text-xl font-bold text-white">Current Goal Status</h2>
-              </div>
-            </div>
+                        </div>
+                          </div>
             <div className="p-6">
               {userProfile.goalStatus === 'active' ? (
                 <div className="space-y-4">
@@ -553,23 +553,23 @@ const Profile = () => {
                     <div className="flex items-center space-x-2">
                       <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                       <span className="font-semibold text-green-800">Active Goal</span>
-                    </div>
+                          </div>
                     <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
                         <span className="text-sm text-gray-500">Target Weight</span>
                         <div className="font-bold text-lg text-gray-900">{userProfile.targetWeight} kg</div>
-                      </div>
+                          </div>
                       <div>
                         <span className="text-sm text-gray-500">Current Weight</span>
                         <div className="font-bold text-lg text-gray-900">{userProfile.currentWeight} kg</div>
-                      </div>
+                        </div>
                       <div>
                         <span className="text-sm text-gray-500">Progress</span>
                         <div className="font-bold text-lg text-gray-900">
                           {userProfile.currentWeight && userProfile.targetWeight && userProfile.goalInitialWeight
                             ? `${Math.round(((userProfile.goalInitialWeight - userProfile.currentWeight) / (userProfile.goalInitialWeight - userProfile.targetWeight)) * 100)}%`
                             : '0%'}
-                        </div>
+                </div>
                       </div>
                     </div>
                     <div className="mt-4 flex space-x-3">
@@ -583,9 +583,9 @@ const Profile = () => {
                         Achieve Goal
                       </button>
                     </div>
-                  </div>
                 </div>
-              ) : (
+              </div>
+            ) : (
                 <div className="text-center py-8">
                   <Target className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">No Active Goal</h3>
@@ -593,21 +593,21 @@ const Profile = () => {
                   <button onClick={() => setIsCreatingGoal(true)} className="btn-primary">
                     Create Goal
                   </button>
-                </div>
-              )}
+              </div>
+            )}
             </div>
           </div>
 
           {/* Past Goals */}
-          {userProfile.pastGoals && userProfile.pastGoals.length > 0 && (
+            {userProfile.pastGoals && userProfile.pastGoals.length > 0 && (
             <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
               <div className="bg-gradient-to-r from-purple-500 to-purple-600 px-6 py-4">
                 <div className="flex items-center space-x-3">
                   <div className="bg-white/20 p-2 rounded-lg">
                     <Target className="w-5 h-5 text-white" />
-                  </div>
-                  <h2 className="text-xl font-bold text-white">Past Goals</h2>
                 </div>
+                  <h2 className="text-xl font-bold text-white">Past Goals</h2>
+                      </div>
               </div>
               <div className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -655,29 +655,29 @@ const Profile = () => {
                 </div>
                 {userProfile.pastGoals.length > PAST_GOALS_PER_PAGE && (
                   <div className="flex items-center justify-center space-x-2 mt-6">
-                    <button
+                  <button
                       onClick={() => setPastGoalsPage(Math.max(1, pastGoalsPage - 1))}
-                      disabled={pastGoalsPage === 1}
+                    disabled={pastGoalsPage === 1}
                       className="btn-secondary px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Previous
-                    </button>
+                  >
+                    Previous
+                  </button>
                     <span className="text-sm text-gray-600">
-                      Page {pastGoalsPage} of {Math.ceil(userProfile.pastGoals.length / PAST_GOALS_PER_PAGE)}
-                    </span>
-                    <button
+                    Page {pastGoalsPage} of {Math.ceil(userProfile.pastGoals.length / PAST_GOALS_PER_PAGE)}
+                  </span>
+                  <button
                       onClick={() => setPastGoalsPage(Math.min(Math.ceil(userProfile.pastGoals.length / PAST_GOALS_PER_PAGE), pastGoalsPage + 1))}
-                      disabled={pastGoalsPage === Math.ceil(userProfile.pastGoals.length / PAST_GOALS_PER_PAGE)}
+                    disabled={pastGoalsPage === Math.ceil(userProfile.pastGoals.length / PAST_GOALS_PER_PAGE)}
                       className="btn-secondary px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Next
-                    </button>
+                  >
+                    Next
+                  </button>
                   </div>
                 )}
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
         {/* Right Column - BMI Analytics */}
         <div className="lg:col-span-1">
@@ -686,7 +686,7 @@ const Profile = () => {
               <div className="flex items-center space-x-3">
                 <div className="bg-white/20 p-2 rounded-lg">
                   <Scale className="w-5 h-5 text-white" />
-                </div>
+        </div>
                 <h2 className="text-xl font-bold text-white">BMI Analytics</h2>
               </div>
             </div>
@@ -714,14 +714,14 @@ const Profile = () => {
                        'Obese Class-3'}
                     </div>
                     <p className="text-sm text-gray-600 mt-2">Current BMI</p>
-                  </div>
+                    </div>
 
                   {/* BMI Progress Bar */}
                   <div className="space-y-3">
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">BMI Range</span>
                       <span className="font-medium">{bmiAnalytics.currentBMI} / 24.9 (Normal)</span>
-                    </div>
+                  </div>
                     <div className="w-full bg-gray-200 rounded-full h-3">
                       <div 
                         className={`h-3 rounded-full transition-all duration-300 ${
@@ -734,7 +734,7 @@ const Profile = () => {
                         }`}
                         style={{ width: `${Math.min((bmiAnalytics.currentBMI / 40) * 100, 100)}%` }}
                       ></div>
-                    </div>
+                  </div>
                     <div className="flex justify-between text-xs text-gray-500">
                       <span>16.0</span>
                       <span>18.5</span>
@@ -742,8 +742,8 @@ const Profile = () => {
                       <span>30.0</span>
                       <span>35.0</span>
                       <span>40.0</span>
-                    </div>
-                  </div>
+                </div>
+                </div>
 
                   {/* Health Insights */}
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -763,9 +763,9 @@ const Profile = () => {
                       )}
                       {bmiAnalytics.currentBMI >= 30 && (
                         <p>• Consult a healthcare provider for weight management</p>
-                      )}
-                    </div>
-                  </div>
+              )}
+            </div>
+                </div>
                   
                   {/* BMI Scale */}
                   <div className="space-y-3">
@@ -776,44 +776,44 @@ const Profile = () => {
                       }`}>
                         <span className="text-gray-600">Extreme Underweight</span>
                         <span className="font-medium">&lt; 16.0</span>
-                      </div>
+                </div>
                       <div className={`flex justify-between items-center p-2 rounded ${
                         bmiAnalytics.currentBMI >= 16 && bmiAnalytics.currentBMI < 18.5 ? 'bg-blue-100 border border-blue-200' : ''
                       }`}>
                         <span className="text-gray-600">Underweight</span>
                         <span className="font-medium">16.0 - 18.4</span>
-                      </div>
+                </div>
                       <div className={`flex justify-between items-center p-2 rounded ${
                         bmiAnalytics.currentBMI >= 18.5 && bmiAnalytics.currentBMI < 25 ? 'bg-green-100 border border-green-200' : ''
                       }`}>
                         <span className="text-gray-600">Normal</span>
                         <span className="font-medium">18.5 - 24.9</span>
-                      </div>
+                </div>
                       <div className={`flex justify-between items-center p-2 rounded ${
                         bmiAnalytics.currentBMI >= 25 && bmiAnalytics.currentBMI < 30 ? 'bg-yellow-100 border border-yellow-200' : ''
                       }`}>
                         <span className="text-gray-600">Overweight</span>
                         <span className="font-medium">25.0 - 29.9</span>
-                      </div>
+                </div>
                       <div className={`flex justify-between items-center p-2 rounded ${
                         bmiAnalytics.currentBMI >= 30 && bmiAnalytics.currentBMI < 35 ? 'bg-orange-100 border border-orange-200' : ''
                       }`}>
                         <span className="text-gray-600">Obese Class-1</span>
                         <span className="font-medium">30.0 - 34.9</span>
-                      </div>
+                </div>
                       <div className={`flex justify-between items-center p-2 rounded ${
                         bmiAnalytics.currentBMI >= 35 && bmiAnalytics.currentBMI < 40 ? 'bg-red-100 border border-red-200' : ''
                       }`}>
                         <span className="text-gray-600">Obese Class-2</span>
                         <span className="font-medium">35.0 - 39.9</span>
-                      </div>
+                </div>
                       <div className={`flex justify-between items-center p-2 rounded ${
                         bmiAnalytics.currentBMI >= 40 ? 'bg-red-100 border border-red-200' : ''
                       }`}>
                         <span className="text-gray-600">Obese Class-3</span>
                         <span className="font-medium">≥ 40.0</span>
-                      </div>
-                    </div>
+              </div>
+            </div>
                   </div>
                 </div>
               ) : (
