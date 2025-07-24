@@ -333,6 +333,48 @@ const blogPosts = [
     tags: ["mental health", "fitness", "mind-body", "calm", "wellness"],
     seoDescription: "Learn to achieve calm mind and fit body for optimal mental health and physical wellness. Balance is key.",
     cardTag: "Featured"
+  },
+  {
+    id: 25,
+    slug: "healthy-eating-happier-stronger-you",
+    title: "Healthy Eating for a Happier, Stronger You",
+    excerpt: "Transform your relationship with food to create lasting happiness and build strength from within.",
+    author: "Gooofit Research Team",
+    date: "2024-05-15",
+    readTime: "10 min read",
+    category: "Nutrition & Happiness",
+    image: "/BlogImg/charles-deluvio-1-nx1QR5dTE-unsplash.jpg",
+    tags: ["healthy eating", "happiness", "strength", "nutrition", "wellness", "food relationship"],
+    seoDescription: "Learn how healthy eating creates lasting happiness and builds inner strength. Transform your relationship with food.",
+    cardTag: "New"
+  },
+  {
+    id: 26,
+    slug: "move-daily-fitness-mental-wellness",
+    title: "Move Daily: Fitness for Mental Wellness",
+    excerpt: "Discover how daily movement and fitness activities can dramatically improve your mental health and overall well-being.",
+    author: "Gooofit Research Team",
+    date: "2024-05-20",
+    readTime: "8 min read",
+    category: "Fitness & Mental Health",
+    image: "/BlogImg/andres-ayrton-P2c80pCjeI0-unsplash.jpg",
+    tags: ["daily movement", "fitness", "mental wellness", "exercise", "well-being", "mental health"],
+    seoDescription: "Learn how daily movement and fitness activities improve mental wellness and overall well-being.",
+    cardTag: "Trending"
+  },
+  {
+    id: 27,
+    slug: "diet-smart-fuel-mind-enhance-well-being",
+    title: "Diet Smart: Fuel Mind, Enhance Well-Being",
+    excerpt: "Master the art of smart eating to fuel your mind and enhance your overall well-being and life quality.",
+    author: "Gooofit Research Team",
+    date: "2024-05-25",
+    readTime: "11 min read",
+    category: "Smart Nutrition",
+    image: "/BlogImg/edgar-castrejon-1SPu0KT-Ejg-unsplash.jpg",
+    tags: ["smart diet", "mind fuel", "well-being", "nutrition", "brain health", "life quality"],
+    seoDescription: "Master smart eating to fuel your mind and enhance well-being. Learn nutrition strategies for better life quality.",
+    cardTag: "Popular"
   }
 ];
 

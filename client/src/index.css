@@ -1557,3 +1557,91 @@ code {
     margin: 1.5rem 0;
   }
 } 
+
+/* Enhanced nutrition and happiness sections */
+.strength-nutrition, .happiness-eating, .mind-food-medicine, .practical-healthy-eating, .sustainable-healthy-eating {
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.strength-nutrition h3, .happiness-eating h3, .mind-food-medicine h3, .practical-healthy-eating h3, .sustainable-healthy-eating h3 {
+  color: #92400e;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.strength-nutrition ul, .happiness-eating ul, .mind-food-medicine ul, .practical-healthy-eating ul, .sustainable-healthy-eating ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.strength-nutrition li, .happiness-eating li, .mind-food-medicine li, .practical-healthy-eating li, .sustainable-healthy-eating li {
+  color: #a16207;
+  margin-bottom: 0.75rem;
+}
+
+/* Enhanced movement and fitness sections */
+.daily-movement-routine, .movement-types, .movement-stress-management, .daily-life-integration, .movement-barriers {
+  background: #dbeafe;
+  border: 1px solid #3b82f6;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.daily-movement-routine h3, .movement-types h3, .movement-stress-management h3, .daily-life-integration h3, .movement-barriers h3 {
+  color: #1e40af;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.daily-movement-routine ul, .movement-types ul, .movement-stress-management ul, .daily-life-integration ul, .movement-barriers ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.daily-movement-routine li, .movement-types li, .movement-stress-management li, .daily-life-integration li, .movement-barriers li {
+  color: #1e40af;
+  margin-bottom: 0.75rem;
+}
+
+/* Enhanced smart eating sections */
+.mind-fueling, .well-being-nutrition, .smart-eating-strategies, .life-quality-enhancement, .sustainable-smart-eating {
+  background: #f3e8ff;
+  border: 1px solid #8b5cf6;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.mind-fueling h3, .well-being-nutrition h3, .smart-eating-strategies h3, .life-quality-enhancement h3, .sustainable-smart-eating h3 {
+  color: #6b21a8;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.mind-fueling ul, .well-being-nutrition ul, .smart-eating-strategies ul, .life-quality-enhancement ul, .sustainable-smart-eating ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.mind-fueling li, .well-being-nutrition li, .smart-eating-strategies li, .life-quality-enhancement li, .sustainable-smart-eating li {
+  color: #7c3aed;
+  margin-bottom: 0.75rem;
+}
+
+/* Enhanced responsive design for all new sections */
+@media (max-width: 768px) {
+  .strength-nutrition, .happiness-eating, .mind-food-medicine, .practical-healthy-eating, .sustainable-healthy-eating,
+  .daily-movement-routine, .movement-types, .movement-stress-management, .daily-life-integration, .movement-barriers,
+  .mind-fueling, .well-being-nutrition, .smart-eating-strategies, .life-quality-enhancement, .sustainable-smart-eating {
+    padding: 1rem;
+    margin: 1.5rem 0;
+  }
+} 
