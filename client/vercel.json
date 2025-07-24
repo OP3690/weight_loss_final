@@ -11,6 +11,10 @@
   ],
   "routes": [
     {
+      "src": "/BlogImg/(.*)",
+      "dest": "/BlogImg/$1"
+    },
+    {
       "src": "/blog/(.*)",
       "dest": "/blog/$1"
     },
