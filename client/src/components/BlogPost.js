@@ -1,377 +1,217 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, 
-  Clock, 
   User, 
   Calendar, 
+  Clock, 
   Share2, 
-  Bookmark,
-  TrendingUp,
-  Target,
-  Activity
+  Bookmark 
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 // Blog data with SEO-optimized content using local BlogImg images
 const blogPosts = [
   {
     id: 1,
     title: "The Science of Weight Loss: Understanding Your Body's Metabolism",
-    excerpt: "Discover the scientific principles behind effective weight loss and how to optimize your metabolism for sustainable results.",
+    excerpt: "Discover how your metabolism works and learn evidence-based strategies to optimize it for sustainable weight loss.",
     content: `
-      <div class="blog-content">
-        <h2>The Fundamentals of Metabolism and Weight Loss</h2>
-        <p>Understanding how your body processes energy is crucial for successful weight management. Your metabolism is the complex biochemical process that converts food into energy, and it plays a vital role in determining your weight loss success.</p>
+      <div class="article-content">
+        <h2>Understanding Your Metabolism</h2>
+        <p>Your metabolism is the complex process by which your body converts food into energy. Understanding how it works is crucial for effective weight loss.</p>
         
-        <h3>How Metabolism Works</h3>
-        <p>Your metabolism consists of three main components:</p>
-        <ul>
-          <li><strong>Basal Metabolic Rate (BMR):</strong> The energy your body needs at rest to maintain basic functions</li>
-          <li><strong>Thermic Effect of Food (TEF):</strong> Energy used to digest, absorb, and process nutrients</li>
-          <li><strong>Physical Activity:</strong> Energy expended through movement and exercise</li>
-        </ul>
-
         <div class="info-box">
-          <h4>Key Takeaway</h4>
-          <p>Your BMR accounts for 60-75% of your total daily energy expenditure, making it the most significant factor in weight management.</p>
+          <h3>Key Metabolic Factors</h3>
+          <ul>
+            <li><strong>Basal Metabolic Rate (BMR):</strong> The calories your body burns at rest</li>
+            <li><strong>Thermic Effect of Food:</strong> Energy used to digest and process food</li>
+            <li><strong>Physical Activity:</strong> Calories burned through movement and exercise</li>
+            <li><strong>Non-Exercise Activity Thermogenesis (NEAT):</strong> Daily activities like walking, fidgeting</li>
+          </ul>
         </div>
 
-        <h3>Metabolic Rate by Age and Gender</h3>
-        <div class="table-container">
-          <table class="data-table">
+        <h2>How to Boost Your Metabolism</h2>
+        <p>Several factors influence your metabolic rate, and understanding these can help you optimize your weight loss journey.</p>
+        
+        <div class="data-table">
+          <h3>Metabolism-Boosting Strategies</h3>
+          <table>
             <thead>
               <tr>
-                <th>Age Group</th>
-                <th>Men (BMR)</th>
-                <th>Women (BMR)</th>
-                <th>Daily Activity Factor</th>
+                <th>Strategy</th>
+                <th>Impact</th>
+                <th>Implementation</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>18-30 years</td>
-                <td>1,800-2,200</td>
-                <td>1,600-1,900</td>
-                <td>1.4-1.6</td>
+                <td>Strength Training</td>
+                <td>Increases muscle mass and BMR</td>
+                <td>2-3 sessions per week</td>
               </tr>
               <tr>
-                <td>31-50 years</td>
-                <td>1,700-2,100</td>
-                <td>1,500-1,800</td>
-                <td>1.3-1.5</td>
+                <td>High-Intensity Exercise</td>
+                <td>Elevates metabolism for hours</td>
+                <td>20-30 minutes, 3x weekly</td>
               </tr>
               <tr>
-                <td>51+ years</td>
-                <td>1,600-2,000</td>
-                <td>1,400-1,700</td>
-                <td>1.2-1.4</td>
+                <td>Protein-Rich Diet</td>
+                <td>Higher thermic effect</td>
+                <td>0.8-1.2g per kg body weight</td>
+              </tr>
+              <tr>
+                <td>Adequate Sleep</td>
+                <td>Maintains hormonal balance</td>
+                <td>7-9 hours per night</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <h3>Factors That Influence Metabolism</h3>
-        <div class="factors-grid">
-          <div class="factor-card">
-            <h4>Muscle Mass</h4>
-            <p>Muscle tissue burns more calories than fat tissue, even at rest. Building lean muscle can increase your BMR by 5-10%.</p>
+        <h2>Common Metabolism Myths</h2>
+        <p>There are many misconceptions about metabolism that can hinder your weight loss progress.</p>
+        
+        <div class="myth-fact">
+          <div class="myth">
+            <h4>❌ Myth: Eating late causes weight gain</h4>
+            <p>It's not when you eat, but how much you eat that matters for weight loss.</p>
           </div>
-          <div class="factor-card">
-            <h4>Age</h4>
-            <p>Metabolism naturally slows with age, typically decreasing by 1-2% per decade after age 30.</p>
-          </div>
-          <div class="factor-card">
-            <h4>Hormones</h4>
-            <p>Thyroid hormones, insulin, and cortisol significantly impact metabolic rate and fat storage.</p>
-          </div>
-          <div class="factor-card">
-            <h4>Sleep Quality</h4>
-            <p>Poor sleep can reduce metabolic rate by up to 15% and increase hunger hormones.</p>
+          <div class="fact">
+            <h4>✅ Fact: Total daily calories matter most</h4>
+            <p>Focus on your overall daily caloric intake rather than meal timing.</p>
           </div>
         </div>
 
-        <h3>Optimizing Your Metabolism for Weight Loss</h3>
-        <p>Here are evidence-based strategies to boost your metabolism:</p>
-        
-        <h4>1. Strength Training</h4>
-        <p>Regular resistance training builds muscle mass, which increases your BMR. Aim for 2-3 sessions per week targeting all major muscle groups.</p>
-        
-        <h4>2. High-Intensity Interval Training (HIIT)</h4>
-        <p>HIIT workouts create an "afterburn effect" where your body continues to burn calories at an elevated rate for hours after exercise.</p>
-        
-        <h4>3. Protein-Rich Diet</h4>
-        <p>Protein has the highest thermic effect of all macronutrients, requiring 20-30% of its calories for digestion and processing.</p>
-        
-        <h4>4. Adequate Sleep</h4>
-        <p>Sleep deprivation can reduce metabolic rate and increase appetite. Aim for 7-9 hours of quality sleep per night.</p>
-
-        <div class="call-to-action">
-          <h4>Ready to Optimize Your Weight Loss Journey?</h4>
-          <p>Track your progress, analyze your data, and achieve your goals with our comprehensive weight management platform.</p>
-          <a href="/" class="cta-button">Start Your Journey Today</a>
-        </div>
-
-        <h3>Related Articles</h3>
-        <div class="related-posts">
-          <a href="/blog/2" class="related-post">
-            <h4>Nutrition Fundamentals for Sustainable Weight Loss</h4>
-            <p>Learn the essential nutrition principles that support healthy weight management.</p>
-          </a>
-          <a href="/blog/3" class="related-post">
-            <h4>Exercise Strategies for Maximum Fat Burning</h4>
-            <p>Discover the most effective workout routines for accelerating your weight loss.</p>
-          </a>
-        </div>
+        <h2>Practical Tips for Metabolic Health</h2>
+        <ul>
+          <li>Stay hydrated - water is essential for metabolic processes</li>
+          <li>Eat regular meals to maintain stable blood sugar</li>
+          <li>Include fiber-rich foods to support gut health</li>
+          <li>Manage stress levels to prevent cortisol-related weight gain</li>
+          <li>Get regular physical activity throughout the day</li>
+        </ul>
       </div>
     `,
-    author: "Weight Loss Research Team",
+    author: "Weight Loss Experts",
     date: "2024-01-15",
     readTime: "8 min read",
     category: "Science & Research",
     image: "/BlogImg/bruce-mars-gJtDg6WfMlQ-unsplash.jpg",
     tags: ["metabolism", "weight loss", "BMR", "exercise", "nutrition"],
-    seoDescription: "Learn the science behind metabolism and weight loss. Discover how to optimize your body's energy systems for sustainable weight management results.",
-    seoKeywords: "metabolism, weight loss, BMR, basal metabolic rate, weight management, fat burning"
+    seoDescription: "Learn the science behind metabolism and weight loss. Discover how to optimize your body's energy systems for sustainable weight management results."
   },
   {
     id: 2,
     title: "Nutrition Fundamentals for Sustainable Weight Loss",
-    excerpt: "Master the essential nutrition principles that form the foundation of successful and sustainable weight management.",
+    excerpt: "Master the basics of nutrition to create a sustainable eating plan that supports your weight loss goals.",
     content: `
-      <div class="blog-content">
-        <h2>The Foundation of Healthy Weight Loss: Nutrition</h2>
-        <p>Proper nutrition is the cornerstone of any successful weight loss journey. Understanding macronutrients, micronutrients, and how they work together is essential for achieving and maintaining your ideal weight.</p>
+      <div class="article-content">
+        <h2>The Foundation of Good Nutrition</h2>
+        <p>Understanding nutrition fundamentals is essential for creating a sustainable weight loss plan that works for your lifestyle.</p>
         
-        <h3>Understanding Macronutrients</h3>
-        <p>The three main macronutrients each play unique roles in your body:</p>
+        <div class="info-box">
+          <h3>Macronutrients Explained</h3>
+          <ul>
+            <li><strong>Proteins:</strong> Building blocks for muscle, 4 calories per gram</li>
+            <li><strong>Carbohydrates:</strong> Primary energy source, 4 calories per gram</li>
+            <li><strong>Fats:</strong> Essential for hormone production, 9 calories per gram</li>
+          </ul>
+        </div>
+
+        <h2>Optimal Macronutrient Ratios for Weight Loss</h2>
+        <p>Finding the right balance of macronutrients can significantly impact your weight loss success.</p>
         
-        <div class="macro-nutrients">
-          <div class="macro-card">
-            <h4>Proteins (4 calories/gram)</h4>
-            <ul>
-              <li>Builds and repairs muscle tissue</li>
-              <li>Highest thermic effect (20-30%)</li>
-              <li>Promotes satiety</li>
-              <li>Essential for immune function</li>
-            </ul>
-          </div>
-          <div class="macro-card">
-            <h4>Carbohydrates (4 calories/gram)</h4>
-            <ul>
-              <li>Primary energy source</li>
-              <li>Fuels brain and muscles</li>
-              <li>Supports exercise performance</li>
-              <li>Provides fiber for gut health</li>
-            </ul>
-          </div>
-          <div class="macro-card">
-            <h4>Fats (9 calories/gram)</h4>
-            <ul>
-              <li>Essential for hormone production</li>
-              <li>Absorbs fat-soluble vitamins</li>
-              <li>Provides long-lasting energy</li>
-              <li>Supports brain health</li>
-            </ul>
-          </div>
+        <div class="macronutrient-ratios">
+          <h3>Recommended Ratios</h3>
+          <ul>
+            <li><strong>Protein:</strong> 25-30% of daily calories</li>
+            <li><strong>Carbohydrates:</strong> 40-45% of daily calories</li>
+            <li><strong>Fats:</strong> 25-30% of daily calories</li>
+          </ul>
         </div>
 
-        <h3>Optimal Macronutrient Ratios for Weight Loss</h3>
-        <p>For effective weight loss, aim for this balanced distribution:</p>
-        <ul>
-          <li><strong>Protein:</strong> 25-30% of total calories</li>
-          <li><strong>Carbohydrates:</strong> 35-45% of total calories</li>
-          <li><strong>Fats:</strong> 25-35% of total calories</li>
-        </ul>
-
-        <h3>Calorie Density and Weight Loss</h3>
-        <p>Understanding calorie density helps you make better food choices:</p>
+        <h2>Meal Planning Strategies</h2>
+        <p>Effective meal planning is key to maintaining a healthy diet and achieving your weight loss goals.</p>
         
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Food Category</th>
-                <th>Calories per 100g</th>
-                <th>Satiety Level</th>
-                <th>Weight Loss Friendly</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Vegetables</td>
-                <td>20-50</td>
-                <td>High</td>
-                <td>✅ Excellent</td>
-              </tr>
-              <tr>
-                <td>Lean Proteins</td>
-                <td>100-150</td>
-                <td>Very High</td>
-                <td>✅ Excellent</td>
-              </tr>
-              <tr>
-                <td>Whole Grains</td>
-                <td>300-350</td>
-                <td>High</td>
-                <td>✅ Good</td>
-              </tr>
-              <tr>
-                <td>Processed Foods</td>
-                <td>400-600</td>
-                <td>Low</td>
-                <td>❌ Avoid</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="meal-planning-tips">
+          <h3>Weekly Meal Planning Steps</h3>
+          <ol>
+            <li>Plan your meals for the entire week</li>
+            <li>Create a shopping list based on your plan</li>
+            <li>Prep ingredients in advance</li>
+            <li>Cook in batches to save time</li>
+            <li>Store meals in portion-controlled containers</li>
+          </ol>
         </div>
 
-        <h3>Essential Micronutrients for Weight Loss</h3>
-        <div class="vitamins-minerals">
-          <div class="nutrient-group">
-            <h4>Vitamins</h4>
-            <ul>
-              <li><strong>Vitamin D:</strong> Supports metabolism and fat burning</li>
-              <li><strong>B Vitamins:</strong> Essential for energy production</li>
-              <li><strong>Vitamin C:</strong> Supports fat oxidation during exercise</li>
-            </ul>
-          </div>
-          <div class="nutrient-group">
-            <h4>Minerals</h4>
-            <ul>
-              <li><strong>Iron:</strong> Prevents fatigue and supports metabolism</li>
-              <li><strong>Zinc:</strong> Regulates appetite and metabolism</li>
-              <li><strong>Magnesium:</strong> Supports muscle function and recovery</li>
-            </ul>
-          </div>
-        </div>
-
-        <h3>Meal Timing and Frequency</h3>
-        <p>Research suggests that meal timing can impact weight loss success:</p>
+        <h2>Mindful Eating Practices</h2>
+        <p>Developing mindful eating habits can help you better understand your hunger cues and prevent overeating.</p>
         
-        <div class="timeline">
-          <div class="timeline-item">
-            <h4>Breakfast (7-9 AM)</h4>
-            <p>High-protein breakfast can reduce cravings and improve metabolism throughout the day.</p>
-          </div>
-          <div class="timeline-item">
-            <h4>Lunch (12-2 PM)</h4>
-            <p>Balanced meal with protein, complex carbs, and healthy fats to maintain energy levels.</p>
-          </div>
-          <div class="timeline-item">
-            <h4>Dinner (6-8 PM)</h4>
-            <p>Lighter meal focusing on protein and vegetables to support overnight recovery.</p>
-          </div>
-        </div>
-
-        <div class="call-to-action">
-          <h4>Track Your Nutrition Journey</h4>
-          <p>Monitor your macronutrients, track your progress, and achieve your weight loss goals with our comprehensive platform.</p>
-          <a href="/" class="cta-button">Start Tracking Today</a>
-        </div>
-
-        <h3>Related Articles</h3>
-        <div class="related-posts">
-          <a href="/blog/1" class="related-post">
-            <h4>The Science of Weight Loss: Understanding Your Body's Metabolism</h4>
-            <p>Learn how your metabolism works and how to optimize it for weight loss.</p>
-          </a>
-          <a href="/blog/3" class="related-post">
-            <h4>Exercise Strategies for Maximum Fat Burning</h4>
-            <p>Discover the most effective workout routines for accelerating your weight loss.</p>
-          </a>
+        <div class="mindful-eating">
+          <h3>Mindful Eating Techniques</h3>
+          <ul>
+            <li>Eat slowly and savor each bite</li>
+            <li>Pay attention to hunger and fullness cues</li>
+            <li>Eliminate distractions during meals</li>
+            <li>Practice gratitude for your food</li>
+            <li>Listen to your body's signals</li>
+          </ul>
         </div>
       </div>
     `,
-    author: "Nutrition Research Team",
-    date: "2024-01-18",
+    author: "Nutrition Specialists",
+    date: "2024-01-20",
     readTime: "10 min read",
     category: "Nutrition",
     image: "/BlogImg/lyfefuel-4wtxPhvQZds-unsplash.jpg",
     tags: ["nutrition", "macronutrients", "weight loss", "healthy eating", "meal planning"],
-    seoDescription: "Master the fundamentals of nutrition for sustainable weight loss. Learn about macronutrients, meal timing, and optimal food choices.",
-    seoKeywords: "nutrition, weight loss, macronutrients, healthy eating, meal planning, calorie density"
+    seoDescription: "Master the fundamentals of nutrition for sustainable weight loss. Learn about macronutrients, meal timing, and optimal food choices."
   },
   {
     id: 3,
     title: "Exercise Strategies for Maximum Fat Burning",
-    excerpt: "Discover the most effective workout routines and exercise strategies to accelerate your weight loss and build a stronger, healthier body.",
+    excerpt: "Discover the most effective exercise techniques to maximize fat burning and accelerate your weight loss journey.",
     content: `
-      <div class="blog-content">
-        <h2>Maximizing Fat Burn Through Strategic Exercise</h2>
-        <p>Exercise is a powerful tool for weight loss, but not all workouts are created equal. Understanding the science behind fat burning can help you design the most effective exercise program for your goals.</p>
+      <div class="article-content">
+        <h2>Understanding Fat Burning</h2>
+        <p>To maximize fat burning, it's important to understand how your body uses different energy systems during exercise.</p>
         
-        <h3>The Science of Fat Burning</h3>
-        <p>Your body uses different energy systems during exercise:</p>
-        
-        <div class="energy-systems">
-          <div class="system-card">
-            <h4>ATP-PC System (0-10 seconds)</h4>
-            <p>Immediate energy for explosive movements like sprinting or heavy lifting.</p>
-          </div>
-          <div class="system-card">
-            <h4>Glycolytic System (10 seconds - 2 minutes)</h4>
-            <p>Anaerobic energy from stored carbohydrates for high-intensity activities.</p>
-          </div>
-          <div class="system-card">
-            <h4>Oxidative System (2+ minutes)</h4>
-            <p>Aerobic energy using oxygen to burn fat and carbohydrates for endurance activities.</p>
-          </div>
+        <div class="info-box">
+          <h3>Energy Systems</h3>
+          <ul>
+            <li><strong>Phosphagen System:</strong> Short bursts of high-intensity activity</li>
+            <li><strong>Glycolytic System:</strong> Medium-duration, moderate to high intensity</li>
+            <li><strong>Oxidative System:</strong> Long-duration, low to moderate intensity</li>
+          </ul>
         </div>
 
-        <h3>Exercise Intensity and Fat Burning</h3>
-        <p>Understanding your heart rate zones helps optimize fat burning:</p>
+        <h2>High-Intensity Interval Training (HIIT)</h2>
+        <p>HIIT is one of the most effective methods for burning fat and improving cardiovascular fitness.</p>
         
-        <div class="intensity-zones">
-          <div class="zone-item">
-            <h4>Zone 1 (50-60% max heart rate)</h4>
-            <p>Recovery and fat burning zone - great for active recovery days</p>
-          </div>
-          <div class="zone-item">
-            <h4>Zone 2 (60-70% max heart rate)</h4>
-            <p>Aerobic base building - optimal for fat burning during longer sessions</p>
-          </div>
-          <div class="zone-item">
-            <h4>Zone 3 (70-80% max heart rate)</h4>
-            <p>Aerobic threshold - improves cardiovascular fitness</p>
-          </div>
-          <div class="zone-item">
-            <h4>Zone 4 (80-90% max heart rate)</h4>
-            <p>Lactate threshold - high-intensity training for maximum calorie burn</p>
-          </div>
-          <div class="zone-item">
-            <h4>Zone 5 (90-100% max heart rate)</h4>
-            <p>Maximum effort - short bursts for power and speed</p>
-          </div>
-        </div>
-
-        <h3>Most Effective Exercise Types for Weight Loss</h3>
-        
-        <h4>1. High-Intensity Interval Training (HIIT)</h4>
         <div class="exercise-detail">
-          <p><strong>Duration:</strong> 15-30 minutes</p>
-          <p><strong>Calories Burned:</strong> 400-600 per hour</p>
-          <p><strong>Afterburn Effect:</strong> 24-48 hours</p>
-          <p>HIIT alternates between high-intensity bursts and recovery periods, creating an "afterburn effect" that continues burning calories for hours after your workout.</p>
+          <h3>HIIT Benefits</h3>
+          <p>HIIT workouts typically last 20-30 minutes and can burn more calories than longer steady-state cardio sessions. The high-intensity intervals create an "afterburn effect" that continues to burn calories for hours after your workout.</p>
         </div>
 
-        <h4>2. Strength Training</h4>
+        <h2>Strength Training for Fat Loss</h2>
+        <p>Building muscle through strength training is crucial for long-term fat loss and metabolic health.</p>
+        
         <div class="exercise-detail">
-          <p><strong>Duration:</strong> 45-60 minutes</p>
-          <p><strong>Calories Burned:</strong> 300-500 per hour</p>
-          <p><strong>BMR Increase:</strong> 5-10%</p>
-          <p>Building muscle mass increases your basal metabolic rate, meaning you burn more calories even at rest.</p>
+          <h3>Strength Training Benefits</h3>
+          <p>Muscle tissue is metabolically active, meaning it burns calories even at rest. Regular strength training increases your basal metabolic rate and helps maintain muscle mass during weight loss.</p>
         </div>
 
-        <h4>3. Steady-State Cardio</h4>
+        <h2>Steady-State Cardio</h2>
+        <p>While HIIT is excellent for fat burning, steady-state cardio also plays an important role in your fitness routine.</p>
+        
         <div class="exercise-detail">
-          <p><strong>Duration:</strong> 30-60 minutes</p>
-          <p><strong>Calories Burned:</strong> 400-600 per hour</p>
-          <p><strong>Fat Oxidation:</strong> High during workout</p>
-          <p>Longer, moderate-intensity sessions are excellent for building endurance and burning fat during the workout.</p>
+          <h3>Steady-State Benefits</h3>
+          <p>Longer, moderate-intensity sessions are excellent for building endurance and burning fat during the workout. They're also easier to maintain for longer periods, making them ideal for beginners.</p>
         </div>
 
-        <h3>Weekly Exercise Plan for Weight Loss</h3>
+        <h2>Weekly Exercise Plan for Weight Loss</h2>
         <div class="weekly-plan">
           <div class="day-plan">
             <h4>Monday</h4>
@@ -403,55 +243,449 @@ const blogPosts = [
           </div>
         </div>
 
-        <h3>Progressive Overload for Continued Results</h3>
-        <p>To continue seeing results, you need to progressively challenge your body:</p>
+        <h2>Progressive Overload for Continued Results</h2>
+        <p>To continue seeing results, you need to progressively challenge your body.</p>
         
-        <div class="progression-methods">
-          <div class="method">
+        <div class="progressive-overload">
+          <div class="overload-card">
             <h4>Increase Weight</h4>
             <p>Gradually increase resistance in strength training</p>
           </div>
-          <div class="method">
+          <div class="overload-card">
             <h4>Increase Duration</h4>
             <p>Extend workout length for cardio sessions</p>
           </div>
-          <div class="method">
+          <div class="overload-card">
             <h4>Increase Intensity</h4>
             <p>Work harder during high-intensity intervals</p>
           </div>
-          <div class="method">
+          <div class="overload-card">
             <h4>Decrease Rest</h4>
             <p>Reduce recovery time between sets</p>
           </div>
         </div>
-
-        <div class="call-to-action">
-          <h4>Track Your Fitness Progress</h4>
-          <p>Monitor your workouts, track your progress, and achieve your fitness goals with our comprehensive platform.</p>
-          <a href="/" class="cta-button">Start Your Fitness Journey</a>
-        </div>
-
-        <h3>Related Articles</h3>
-        <div class="related-posts">
-          <a href="/blog/1" class="related-post">
-            <h4>The Science of Weight Loss: Understanding Your Body's Metabolism</h4>
-            <p>Learn how your metabolism works and how to optimize it for weight loss.</p>
-          </a>
-          <a href="/blog/2" class="related-post">
-            <h4>Nutrition Fundamentals for Sustainable Weight Loss</h4>
-            <p>Master the nutrition principles that support your exercise routine.</p>
-          </a>
-        </div>
       </div>
     `,
-    author: "Fitness Research Team",
-    date: "2024-01-20",
+    author: "Fitness Professionals",
+    date: "2024-01-25",
     readTime: "12 min read",
     category: "Fitness & Exercise",
     image: "/BlogImg/bruce-mars-tj27cwu86Wk-unsplash.jpg",
     tags: ["exercise", "workout", "HIIT", "strength training", "fat burning", "fitness"],
-    seoDescription: "Discover the most effective exercise strategies for maximum fat burning. Learn about HIIT, strength training, and optimal workout planning.",
-    seoKeywords: "exercise, workout, HIIT, strength training, fat burning, fitness, weight loss"
+    seoDescription: "Discover the most effective exercise strategies for maximum fat burning. Learn about HIIT, strength training, and optimal workout planning."
+  },
+  {
+    id: 4,
+    title: "Mindset and Motivation: The Psychology of Weight Loss",
+    excerpt: "Learn how to develop the right mindset and maintain motivation throughout your weight loss journey.",
+    content: `
+      <div class="article-content">
+        <h2>The Psychology of Weight Loss</h2>
+        <p>Weight loss is as much about mindset as it is about diet and exercise. Understanding the psychological aspects can make all the difference.</p>
+        
+        <div class="info-box">
+          <h3>Key Psychological Factors</h3>
+          <ul>
+            <li><strong>Self-Efficacy:</strong> Belief in your ability to succeed</li>
+            <li><strong>Intrinsic Motivation:</strong> Internal drive to achieve goals</li>
+            <li><strong>Goal Setting:</strong> Clear, achievable objectives</li>
+            <li><strong>Stress Management:</strong> Coping with emotional eating</li>
+          </ul>
+        </div>
+
+        <h2>Building Sustainable Motivation</h2>
+        <p>Motivation fluctuates, but you can develop strategies to maintain it consistently.</p>
+        
+        <div class="motivation-strategies">
+          <h3>Motivation Maintenance Techniques</h3>
+          <ul>
+            <li>Set SMART goals (Specific, Measurable, Achievable, Relevant, Time-bound)</li>
+            <li>Track your progress regularly</li>
+            <li>Celebrate small victories</li>
+            <li>Find an accountability partner</li>
+            <li>Visualize your success</li>
+          </ul>
+        </div>
+
+        <h2>Overcoming Common Mental Barriers</h2>
+        <p>Identifying and addressing mental barriers is crucial for long-term success.</p>
+        
+        <div class="mental-barriers">
+          <div class="barrier">
+            <h4>All-or-Nothing Thinking</h4>
+            <p>Challenge the belief that one mistake ruins everything. Progress is cumulative.</p>
+          </div>
+          <div class="barrier">
+            <h4>Comparison Trap</h4>
+            <p>Focus on your own journey rather than comparing yourself to others.</p>
+          </div>
+          <div class="barrier">
+            <h4>Impatience</h4>
+            <p>Remember that sustainable weight loss takes time. Trust the process.</p>
+          </div>
+        </div>
+      </div>
+    `,
+    author: "Psychology Experts",
+    date: "2024-02-01",
+    readTime: "7 min read",
+    category: "Mindset & Motivation",
+    image: "/BlogImg/lyfefuel-4wtxPhvQZds-unsplash.jpg",
+    tags: ["motivation", "mindset", "psychology", "weight loss", "goals"],
+    seoDescription: "Develop the right mindset for successful weight loss. Learn psychological strategies to maintain motivation and overcome mental barriers."
+  },
+  {
+    id: 5,
+    title: "Sleep and Weight Loss: The Hidden Connection",
+    excerpt: "Discover how sleep quality and duration significantly impact your weight loss efforts and overall health.",
+    content: `
+      <div class="article-content">
+        <h2>The Sleep-Weight Connection</h2>
+        <p>Sleep is often overlooked in weight loss discussions, but it plays a crucial role in regulating hormones that control hunger and metabolism.</p>
+        
+        <div class="info-box">
+          <h3>Hormones Affected by Sleep</h3>
+          <ul>
+            <li><strong>Leptin:</strong> Signals fullness to the brain</li>
+            <li><strong>Ghrelin:</strong> Stimulates hunger</li>
+            <li><strong>Cortisol:</strong> Stress hormone that affects fat storage</li>
+            <li><strong>Insulin:</strong> Regulates blood sugar and fat storage</li>
+          </ul>
+        </div>
+
+        <h2>How Sleep Deprivation Affects Weight</h2>
+        <p>Lack of sleep can sabotage your weight loss efforts in multiple ways.</p>
+        
+        <div class="sleep-effects">
+          <h3>Effects of Poor Sleep</h3>
+          <ul>
+            <li>Increased hunger and appetite</li>
+            <li>Reduced metabolism</li>
+            <li>Poor food choices and cravings</li>
+            <li>Decreased exercise motivation</li>
+            <li>Impaired recovery from workouts</li>
+          </ul>
+        </div>
+
+        <h2>Optimizing Sleep for Weight Loss</h2>
+        <p>Creating a healthy sleep environment and routine can significantly improve your weight loss results.</p>
+        
+        <div class="sleep-tips">
+          <h3>Sleep Optimization Tips</h3>
+          <ul>
+            <li>Maintain a consistent sleep schedule</li>
+            <li>Create a relaxing bedtime routine</li>
+            <li>Optimize your sleep environment</li>
+            <li>Limit screen time before bed</li>
+            <li>Avoid large meals close to bedtime</li>
+          </ul>
+        </div>
+
+        <h2>Vitamin D and Weight Loss</h2>
+        <p>Research suggests that adequate vitamin D levels may support weight loss efforts and prevent weight regain.</p>
+        
+        <div class="vitamin-d-weight-loss">
+          <h3>How Vitamin D Supports Weight Loss</h3>
+          <ul>
+            <li>May reduce fat storage and increase fat breakdown</li>
+            <li>Supports muscle function and strength</li>
+            <li>Improves insulin sensitivity</li>
+            <li>Reduces inflammation in the body</li>
+            <li>Supports overall metabolic health</li>
+          </ul>
+        </div>
+      </div>
+    `,
+    author: "Sleep Specialists",
+    date: "2024-02-05",
+    readTime: "6 min read",
+    category: "Health & Wellness",
+    image: "/BlogImg/bruce-mars-gJtDg6WfMlQ-unsplash.jpg",
+    tags: ["sleep", "weight loss", "hormones", "health", "wellness"],
+    seoDescription: "Learn how sleep affects weight loss and discover strategies to optimize your sleep for better health and weight management."
+  },
+  {
+    id: 6,
+    title: "Plateau Breaking: Advanced Strategies for Continued Weight Loss",
+    excerpt: "When progress stalls, these advanced techniques can help you break through plateaus and continue your weight loss journey.",
+    content: `
+      <div class="article-content">
+        <h2>Understanding Weight Loss Plateaus</h2>
+        <p>Plateaus are a normal part of the weight loss journey, but they can be frustrating. Understanding why they occur helps you overcome them.</p>
+        
+        <div class="info-box">
+          <h3>Why Plateaus Happen</h3>
+          <ul>
+            <li>Metabolic adaptation to reduced calories</li>
+            <li>Loss of muscle mass reducing BMR</li>
+            <li>Decreased NEAT (non-exercise activity)</li>
+            <li>Water retention masking fat loss</li>
+            <li>Hormonal changes affecting metabolism</li>
+          </ul>
+        </div>
+
+        <h2>Advanced Plateau-Breaking Strategies</h2>
+        <p>When traditional methods aren't working, these advanced strategies can help restart your progress.</p>
+        
+        <div class="plateau-strategies">
+          <h3>Effective Plateau Breakers</h3>
+          <ul>
+            <li><strong>Reverse Dieting:</strong> Gradually increase calories to boost metabolism</li>
+            <li><strong>Refeeds:</strong> Strategic higher-calorie days</li>
+            <li><strong>Exercise Variation:</strong> Change your workout routine</li>
+            <li><strong>Macro Cycling:</strong> Vary your macronutrient ratios</li>
+            <li><strong>Stress Management:</strong> Reduce cortisol levels</li>
+          </ul>
+        </div>
+
+        <h2>Tracking Beyond the Scale</h2>
+        <p>Don't rely solely on weight to measure progress. Other metrics can show you're still making gains.</p>
+        
+        <div class="progress-metrics">
+          <h3>Alternative Progress Indicators</h3>
+          <ul>
+            <li>Body measurements and circumference</li>
+            <li>Progress photos</li>
+            <li>Clothing fit and body composition</li>
+            <li>Energy levels and performance</li>
+            <li>Sleep quality and recovery</li>
+          </ul>
+        </div>
+      </div>
+    `,
+    author: "Weight Loss Coaches",
+    date: "2024-02-10",
+    readTime: "9 min read",
+    category: "Advanced Strategies",
+    image: "/BlogImg/lyfefuel-4wtxPhvQZds-unsplash.jpg",
+    tags: ["plateau", "weight loss", "advanced strategies", "progress", "motivation"],
+    seoDescription: "Break through weight loss plateaus with advanced strategies. Learn techniques to restart progress and continue your weight loss journey."
+  },
+  {
+    id: 7,
+    title: "The Science of Weight Loss: Understanding Your Body's Metabolism",
+    excerpt: "Discover how your metabolism works and learn evidence-based strategies to optimize it for sustainable weight loss.",
+    content: `
+      <div class="article-content">
+        <h2>Understanding Your Metabolism</h2>
+        <p>Your metabolism is the complex process by which your body converts food into energy. Understanding how it works is crucial for effective weight loss.</p>
+        
+        <div class="info-box">
+          <h3>Key Metabolic Factors</h3>
+          <ul>
+            <li><strong>Basal Metabolic Rate (BMR):</strong> The calories your body burns at rest</li>
+            <li><strong>Thermic Effect of Food:</strong> Energy used to digest and process food</li>
+            <li><strong>Physical Activity:</strong> Calories burned through movement and exercise</li>
+            <li><strong>Non-Exercise Activity Thermogenesis (NEAT):</strong> Daily activities like walking, fidgeting</li>
+          </ul>
+        </div>
+
+        <h2>How to Boost Your Metabolism</h2>
+        <p>Several factors influence your metabolic rate, and understanding these can help you optimize your weight loss journey.</p>
+        
+        <div class="data-table">
+          <h3>Metabolism-Boosting Strategies</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Strategy</th>
+                <th>Impact</th>
+                <th>Implementation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Strength Training</td>
+                <td>Increases muscle mass and BMR</td>
+                <td>2-3 sessions per week</td>
+              </tr>
+              <tr>
+                <td>High-Intensity Exercise</td>
+                <td>Elevates metabolism for hours</td>
+                <td>20-30 minutes, 3x weekly</td>
+              </tr>
+              <tr>
+                <td>Protein-Rich Diet</td>
+                <td>Higher thermic effect</td>
+                <td>0.8-1.2g per kg body weight</td>
+              </tr>
+              <tr>
+                <td>Adequate Sleep</td>
+                <td>Maintains hormonal balance</td>
+                <td>7-9 hours per night</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Common Metabolism Myths</h2>
+        <p>There are many misconceptions about metabolism that can hinder your weight loss progress.</p>
+        
+        <div class="myth-fact">
+          <div class="myth">
+            <h4>❌ Myth: Eating late causes weight gain</h4>
+            <p>It's not when you eat, but how much you eat that matters for weight loss.</p>
+          </div>
+          <div class="fact">
+            <h4>✅ Fact: Total daily calories matter most</h4>
+            <p>Focus on your overall daily caloric intake rather than meal timing.</p>
+          </div>
+        </div>
+
+        <h2>Practical Tips for Metabolic Health</h2>
+        <ul>
+          <li>Stay hydrated - water is essential for metabolic processes</li>
+          <li>Eat regular meals to maintain stable blood sugar</li>
+          <li>Include fiber-rich foods to support gut health</li>
+          <li>Manage stress levels to prevent cortisol-related weight gain</li>
+          <li>Get regular physical activity throughout the day</li>
+        </ul>
+      </div>
+    `,
+    author: "Weight Loss Experts",
+    date: "2024-02-15",
+    readTime: "8 min read",
+    category: "Science & Research",
+    image: "/BlogImg/bruce-mars-gJtDg6WfMlQ-unsplash.jpg",
+    tags: ["metabolism", "weight loss", "BMR", "exercise", "nutrition"],
+    seoDescription: "Learn the science behind metabolism and weight loss. Discover how to optimize your body's energy systems for sustainable weight management results."
+  },
+  {
+    id: 8,
+    title: "Nutrition Fundamentals for Sustainable Weight Loss",
+    excerpt: "Master the basics of nutrition to create a sustainable eating plan that supports your weight loss goals.",
+    content: `
+      <div class="article-content">
+        <h2>The Foundation of Good Nutrition</h2>
+        <p>Understanding nutrition fundamentals is essential for creating a sustainable weight loss plan that works for your lifestyle.</p>
+        
+        <div class="info-box">
+          <h3>Macronutrients Explained</h3>
+          <ul>
+            <li><strong>Proteins:</strong> Building blocks for muscle, 4 calories per gram</li>
+            <li><strong>Carbohydrates:</strong> Primary energy source, 4 calories per gram</li>
+            <li><strong>Fats:</strong> Essential for hormone production, 9 calories per gram</li>
+          </ul>
+        </div>
+
+        <h2>Optimal Macronutrient Ratios for Weight Loss</h2>
+        <p>Finding the right balance of macronutrients can significantly impact your weight loss success.</p>
+        
+        <div class="macronutrient-ratios">
+          <h3>Recommended Ratios</h3>
+          <ul>
+            <li><strong>Protein:</strong> 25-30% of daily calories</li>
+            <li><strong>Carbohydrates:</strong> 40-45% of daily calories</li>
+            <li><strong>Fats:</strong> 25-30% of daily calories</li>
+          </ul>
+        </div>
+
+        <h2>Meal Planning Strategies</h2>
+        <p>Effective meal planning is key to maintaining a healthy diet and achieving your weight loss goals.</p>
+        
+        <div class="meal-planning-tips">
+          <h3>Weekly Meal Planning Steps</h3>
+          <ol>
+            <li>Plan your meals for the entire week</li>
+            <li>Create a shopping list based on your plan</li>
+            <li>Prep ingredients in advance</li>
+            <li>Cook in batches to save time</li>
+            <li>Store meals in portion-controlled containers</li>
+          </ol>
+        </div>
+
+        <h2>Mindful Eating Practices</h2>
+        <p>Developing mindful eating habits can help you better understand your hunger cues and prevent overeating.</p>
+        
+        <div class="mindful-eating">
+          <h3>Mindful Eating Techniques</h3>
+          <ul>
+            <li>Eat slowly and savor each bite</li>
+            <li>Pay attention to hunger and fullness cues</li>
+            <li>Eliminate distractions during meals</li>
+            <li>Practice gratitude for your food</li>
+            <li>Listen to your body's signals</li>
+          </ul>
+        </div>
+      </div>
+    `,
+    author: "Nutrition Specialists",
+    date: "2024-02-20",
+    readTime: "10 min read",
+    category: "Nutrition",
+    image: "/BlogImg/lyfefuel-4wtxPhvQZds-unsplash.jpg",
+    tags: ["nutrition", "macronutrients", "weight loss", "healthy eating", "meal planning"],
+    seoDescription: "Master the fundamentals of nutrition for sustainable weight loss. Learn about macronutrients, meal timing, and optimal food choices."
+  },
+  {
+    id: 9,
+    title: "Sunlight for Wellness: Vitamin D & Mental Health",
+    excerpt: "Discover the crucial connection between vitamin D, sunlight exposure, and your mental health during weight loss.",
+    content: `
+      <div class="article-content">
+        <h2>The Vitamin D Connection</h2>
+        <p>Vitamin D, often called the "sunshine vitamin," plays a crucial role in both physical and mental health, especially during weight loss journeys.</p>
+        
+        <div class="info-box">
+          <h3>Vitamin D Benefits</h3>
+          <ul>
+            <li><strong>Mood Regulation:</strong> Supports serotonin production</li>
+            <li><strong>Immune Function:</strong> Strengthens immune system</li>
+            <li><strong>Bone Health:</strong> Essential for calcium absorption</li>
+            <li><strong>Weight Management:</strong> May influence fat storage</li>
+          </ul>
+        </div>
+
+        <h2>Sunlight and Mental Health</h2>
+        <p>Regular exposure to natural sunlight has profound effects on mental well-being and can support your weight loss motivation.</p>
+        
+        <div class="sunlight-benefits">
+          <h3>Mental Health Benefits</h3>
+          <ul>
+            <li>Improved mood and reduced depression</li>
+            <li>Better sleep quality and circadian rhythm</li>
+            <li>Reduced stress and anxiety levels</li>
+            <li>Increased energy and motivation</li>
+            <li>Enhanced cognitive function</li>
+          </ul>
+        </div>
+
+        <h2>Optimizing Sunlight Exposure</h2>
+        <p>Getting the right amount of sunlight is crucial for vitamin D production and overall wellness.</p>
+        
+        <div class="sunlight-tips">
+          <h3>Safe Sunlight Practices</h3>
+          <ul>
+            <li>Aim for 10-30 minutes of midday sun exposure</li>
+            <li>Expose arms, legs, and face when possible</li>
+            <li>Consider your skin type and location</li>
+            <li>Use sunscreen after initial exposure</li>
+            <li>Get outside during winter months too</li>
+          </ul>
+        </div>
+
+        <h2>Vitamin D and Weight Loss</h2>
+        <p>Research suggests that adequate vitamin D levels may support weight loss efforts and prevent weight regain.</p>
+        
+        <div class="vitamin-d-weight-loss">
+          <h3>How Vitamin D Supports Weight Loss</h3>
+          <ul>
+            <li>May reduce fat storage and increase fat breakdown</li>
+            <li>Supports muscle function and strength</li>
+            <li>Improves insulin sensitivity</li>
+            <li>Reduces inflammation in the body</li>
+            <li>Supports overall metabolic health</li>
+          </ul>
+        </div>
+      </div>
+    `,
+    author: "Health & Wellness Experts",
+    date: "2024-02-25",
+    readTime: "7 min read",
+    category: "Health & Wellness",
+    image: "/BlogImg/bruce-mars-gJtDg6WfMlQ-unsplash.jpg",
+    tags: ["vitamin d", "sunlight", "mental health", "wellness", "weight loss"],
+    seoDescription: "Learn about the connection between vitamin D, sunlight exposure, and mental health during your weight loss journey."
   }
 ];
 
@@ -459,47 +693,72 @@ const BlogPost = () => {
   const { blogId } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [isSharing, setIsSharing] = useState(false);
 
   useEffect(() => {
     const foundPost = blogPosts.find(p => p.id === parseInt(blogId));
     setPost(foundPost);
-    setLoading(false);
-
-    // SEO: Update document title and meta description
-    if (foundPost) {
-      document.title = `${foundPost.title} - GoooFit Weight Loss Blog`;
-      const metaDescription = document.querySelector('meta[name="description"]');
-      if (metaDescription) {
-        metaDescription.setAttribute('content', foundPost.seoDescription);
-      }
-    }
   }, [blogId]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-      </div>
-    );
-  }
+  const handleShare = async () => {
+    if (isSharing) return; // Prevent multiple share requests
+    
+    setIsSharing(true);
+    
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: post.title,
+          text: post.excerpt,
+          url: window.location.href
+        });
+      } else {
+        // Fallback: copy URL to clipboard
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      }
+    } catch (error) {
+      if (error.name !== 'AbortError') {
+        console.error('Share failed:', error);
+        // Fallback to clipboard copy
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          alert('Link copied to clipboard!');
+        } catch (clipboardError) {
+          alert('Unable to share or copy link. Please copy the URL manually.');
+        }
+      }
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
+  const handleBookmark = () => {
+    if (window.sidebar && window.sidebar.addPanel) {
+      window.sidebar.addPanel(post.title, window.location.href, '');
+    } else {
+      alert('Press ' + (navigator.userAgent.toLowerCase().indexOf('mac') != -1 ? 'Command/Cmd' : 'CTRL') + ' + D to bookmark this page.');
+    }
+  };
 
   if (!post) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-purple-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Blog Post Not Found</h1>
-          <p className="text-gray-600 mb-6">The blog post you're looking for doesn't exist.</p>
-          <Link to="/blog" className="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Blog Post Not Found</h1>
+          <button
+            onClick={() => navigate('/blog')}
+            className="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors"
+          >
             Back to Blog
-          </Link>
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-purple-50">
       {/* Hero Section */}
       <div className="relative h-96 bg-gradient-to-r from-orange-500 to-red-500">
         <div className="absolute inset-0 bg-black bg-opacity-40"></div>
@@ -525,10 +784,10 @@ const BlogPost = () => {
       </div>
 
       {/* Content Section */}
-      <div className="max-w-5xl mx-auto px-6 py-12">
-        <div className="flex flex-col lg:flex-row gap-8">
+      <div className="blog-post-container py-12">
+        <div className="blog-post-content">
           {/* Main Content */}
-          <div className="flex-1">
+          <div className="blog-post-main">
             {/* Article Meta */}
             <div className="flex items-center gap-6 text-gray-600 mb-8 pb-6 border-b">
               <div className="flex items-center gap-2">
@@ -580,40 +839,22 @@ const BlogPost = () => {
           </div>
 
           {/* Sidebar */}
-          <div className="lg:w-80">
-            <div className="sticky top-8">
+          <div className="blog-post-sidebar">
+            <div className="space-y-6">
               {/* Share Buttons */}
-              <div className="bg-gray-50 rounded-lg p-6 mb-6">
+              <div className="bg-gray-50 rounded-lg p-6">
                 <h3 className="text-lg font-semibold mb-4">Share This Article</h3>
                 <div className="flex gap-3">
                   <button 
-                    onClick={() => {
-                      if (navigator.share) {
-                        navigator.share({
-                          title: post.title,
-                          text: post.excerpt,
-                          url: window.location.href
-                        });
-                      } else {
-                        // Fallback: copy URL to clipboard
-                        navigator.clipboard.writeText(window.location.href);
-                        alert('Link copied to clipboard!');
-                      }
-                    }}
-                    className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                    onClick={handleShare}
+                    disabled={isSharing}
+                    className="share-button flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Share2 className="h-4 w-4" />
-                    Share
+                    {isSharing ? 'Sharing...' : 'Share'}
                   </button>
                   <button 
-                    onClick={() => {
-                      // Add to bookmarks functionality
-                      if (window.sidebar && window.sidebar.addPanel) {
-                        window.sidebar.addPanel(post.title, window.location.href, '');
-                      } else {
-                        alert('Press ' + (navigator.userAgent.toLowerCase().indexOf('mac') != -1 ? 'Command/Cmd' : 'CTRL') + ' + D to bookmark this page.');
-                      }
-                    }}
+                    onClick={handleBookmark}
                     className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
                   >
                     <Bookmark className="h-4 w-4" />
@@ -650,7 +891,7 @@ const BlogPost = () => {
       </div>
 
       {/* Back to Blog Button */}
-      <div className="max-w-5xl mx-auto px-6 pb-12">
+      <div className="blog-post-container pb-12">
         <button
           onClick={() => navigate('/blog')}
           className="flex items-center gap-2 text-orange-600 hover:text-orange-700 transition-colors"
