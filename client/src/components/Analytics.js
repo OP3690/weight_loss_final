@@ -42,25 +42,25 @@ const Analytics = () => {
           setAnalytics(analyticsResponse.analytics);
           
           // Set demo user profile
-          setUserProfile({
-            id: 'demo',
-            name: 'Demo User',
-            email: 'demo@example.com',
-            mobile: '+1234567890',
-            gender: 'male',
-            age: 30,
-            height: 170,
+    setUserProfile({
+      id: 'demo',
+      name: 'Demo User',
+      email: 'demo@example.com',
+      mobile: '+1234567890',
+      gender: 'male',
+      age: 30,
+      height: 170,
             currentWeight: analyticsResponse.analytics.currentWeight,
             targetWeight: analyticsResponse.analytics.targetWeight,
-            targetDate: new Date(Date.now() + 83 * 24 * 60 * 60 * 1000),
-            goalStatus: 'active',
-            goalCreatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-            goalId: 'demo-goal-123',
-            pastGoals: [],
-            goals: [],
-            createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-            updatedAt: new Date()
-          });
+      targetDate: new Date(Date.now() + 83 * 24 * 60 * 60 * 1000),
+      goalStatus: 'active',
+      goalCreatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      goalId: 'demo-goal-123',
+      pastGoals: [],
+      goals: [],
+      createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+      updatedAt: new Date()
+    });
         }
       } else {
         // Load user profile for real users
@@ -81,7 +81,7 @@ const Analytics = () => {
       console.error('Error loading analytics:', error);
       // Don't show toast error for data loading
     } finally {
-      setLoading(false);
+    setLoading(false);
     }
   }, [currentUser?.id, selectedPeriod]);
 
@@ -91,7 +91,7 @@ const Analytics = () => {
     // For both demo and real users, load data from backend
     // This ensures consistency in data structure and behavior
     console.log('Loading analytics data from backend for user:', currentUser.id);
-    loadUserProfileAndAnalytics();
+      loadUserProfileAndAnalytics();
   }, [currentUser?.id, selectedPeriod]);
 
   // Reset attempt flag when user changes
@@ -259,7 +259,7 @@ const Analytics = () => {
         transition={{ duration: 0.5 }}
         className="flex items-center justify-between bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20"
       >
-        <div>
+          <div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
             Analytics
           </h1>
@@ -310,106 +310,106 @@ const Analytics = () => {
           <h2 className="text-xl font-bold text-gray-900">Summary Statistics</h2>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-          {/* Total Entries */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
+        {/* Total Entries */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
             whileHover={{ scale: 1.02, y: -2 }}
             className={`backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 ${getTrendBackgroundColor(analytics?.trend)}`}
-          >
-            <div className="flex items-center justify-between">
-              <div>
+        >
+          <div className="flex items-center justify-between">
+            <div>
                 <p className="text-xs font-medium text-gray-600 mb-1">Total Entries</p>
-                <p className="text-2xl font-bold text-gray-900">{analytics?.totalEntries || 0}</p>
-              </div>
+              <p className="text-2xl font-bold text-gray-900">{analytics?.totalEntries || 0}</p>
+            </div>
               <div className={`w-10 h-10 bg-gradient-to-r ${getTrendIconColor(analytics?.trend)} rounded-lg flex items-center justify-center shadow-md`}>
                 <Calendar className="w-5 h-5 text-white" />
-              </div>
             </div>
+          </div>
             <div className="mt-2">
               <p className="text-xs text-gray-600 font-medium">
-                Last {selectedPeriod} days
-              </p>
-            </div>
-          </motion.div>
+              Last {selectedPeriod} days
+            </p>
+          </div>
+        </motion.div>
 
-          {/* Average Weight */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+        {/* Average Weight */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
             whileHover={{ scale: 1.02, y: -2 }}
             className={`backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 ${getTrendBackgroundColor(analytics?.trend)}`}
-          >
-            <div className="flex items-center justify-between">
-              <div>
+        >
+          <div className="flex items-center justify-between">
+            <div>
                 <p className="text-xs font-medium text-gray-600 mb-1">Average Weight</p>
-                <p className="text-2xl font-bold text-gray-900">{analytics?.averageWeight || '0.0'} kg</p>
-              </div>
+              <p className="text-2xl font-bold text-gray-900">{analytics?.averageWeight || '0.0'} kg</p>
+            </div>
               <div className={`w-10 h-10 bg-gradient-to-r ${getTrendIconColor(analytics?.trend)} rounded-lg flex items-center justify-center shadow-md`}>
                 <TrendingUp className="w-5 h-5 text-white" />
-              </div>
             </div>
+          </div>
             <div className="mt-2">
               <p className="text-xs text-gray-600 font-medium">
-                Over {selectedPeriod} days
-              </p>
-            </div>
-          </motion.div>
+              Over {selectedPeriod} days
+            </p>
+          </div>
+        </motion.div>
 
-          {/* Weight Change */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+        {/* Weight Change */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
             whileHover={{ scale: 1.02, y: -2 }}
             className={`backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 ${getTrendBackgroundColor(analytics?.trend)}`}
-          >
-            <div className="flex items-center justify-between">
-              <div>
+        >
+          <div className="flex items-center justify-between">
+            <div>
                 <p className="text-xs font-medium text-gray-600 mb-1">Weight Change</p>
                 <p className={`text-2xl font-bold ${getTrendTextColor(analytics?.trend)}`}>{analytics?.weightChange || '0.0'} kg</p>
-              </div>
-              <div className={`w-10 h-10 bg-gradient-to-r ${getTrendIconColor(analytics?.trend)} rounded-lg flex items-center justify-center shadow-md`}>
-                {getTrendIcon()}
-              </div>
             </div>
+              <div className={`w-10 h-10 bg-gradient-to-r ${getTrendIconColor(analytics?.trend)} rounded-lg flex items-center justify-center shadow-md`}>
+              {getTrendIcon()}
+            </div>
+          </div>
             <div className="mt-2">
               <p className={`text-xs font-medium ${getTrendTextColor(analytics?.trend)}`}>
                 {analytics?.trend || 'Stable'}
               </p>
-            </div>
-          </motion.div>
+          </div>
+        </motion.div>
 
-          {/* Progress to Target */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
+        {/* Progress to Target */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
             whileHover={{ scale: 1.02, y: -2 }}
             className={`backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 ${getTrendBackgroundColor(analytics?.trend)}`}
-          >
-            <div className="flex items-center justify-between">
-              <div>
+        >
+          <div className="flex items-center justify-between">
+            <div>
                 <p className="text-xs font-medium text-gray-600 mb-1">Progress to Target</p>
                 <p className="text-2xl font-bold text-gray-900">{analytics?.progressToTarget?.toFixed(1) || '0.0'}%</p>
-              </div>
+            </div>
               <div className={`w-10 h-10 bg-gradient-to-r ${getTrendIconColor(analytics?.trend)} rounded-lg flex items-center justify-center shadow-md`}>
                 <Target className="w-5 h-5 text-white" />
-              </div>
             </div>
+          </div>
             <div className="mt-2">
               <p className="text-xs text-gray-600 font-medium">
                 Goal Progress
               </p>
-            </div>
-          </motion.div>
+          </div>
+        </motion.div>
 
           {/* Latest Weight - Additional Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
             whileHover={{ scale: 1.02, y: -2 }}
             className={`backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 lg:block hidden ${getTrendBackgroundColor(analytics?.trend)}`}
@@ -442,9 +442,9 @@ const Analytics = () => {
         <div className="flex items-center space-x-3 mb-4">
           <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg">
             <TrendingUp className="w-5 h-5 text-white" />
-          </div>
+              </div>
           <h2 className="text-xl font-bold text-gray-900">Progress Trend Analysis</h2>
-        </div>
+            </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {/* Last 7 Days */}
           <motion.div
@@ -471,7 +471,7 @@ const Analytics = () => {
           >
             <div className={`w-12 h-12 bg-gradient-to-r ${getTrendIconColor(analytics?.trend)} rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md`}>
               <Calendar className="w-6 h-6 text-white" />
-            </div>
+              </div>
             <p className={`text-2xl font-bold mb-1 ${getTrendTextColor(analytics?.trend)}`}>0.0 kg</p>
             <p className="text-xs text-gray-600 font-semibold">Last 30 Days</p>
           </motion.div>
@@ -501,10 +501,10 @@ const Analytics = () => {
           >
             <div className={`w-12 h-12 bg-gradient-to-r ${getTrendIconColor(analytics?.trend)} rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md`}>
               <TrendingUp className="w-6 h-6 text-white" />
-            </div>
+          </div>
             <p className={`text-2xl font-bold mb-1 ${getTrendTextColor(analytics?.trend)}`}>0.0 kg</p>
             <p className="text-xs text-gray-600 font-semibold">Weekly Average</p>
-          </motion.div>
+        </motion.div>
         </div>
       </motion.div>
 
@@ -523,72 +523,72 @@ const Analytics = () => {
                 <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
                   <TrendingUp className="w-6 h-6 text-white" />
                 </div>
-                <div>
+              <div>
                   <h2 className="text-2xl font-bold text-gray-900">Weight & BMI Trend ({selectedPeriod} Days)</h2>
                   <p className="text-gray-600">Track your weight and BMI changes over time</p>
-                </div>
               </div>
+                </div>
               <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                <ResponsiveContainer width="100%" height={450}>
-                  <LineChart 
-                    data={sortedEntries} 
-                    margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                    <XAxis 
-                      dataKey="date" 
-                      tickFormatter={d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                      tick={{ fontSize: 12, fill: '#6b7280' }}
-                      axisLine={{ stroke: '#e5e7eb' }}
-                      tickLine={{ stroke: '#e5e7eb' }}
-                    />
-                    <YAxis 
-                      yAxisId="left" 
+            <ResponsiveContainer width="100%" height={450}>
+              <LineChart 
+                data={sortedEntries} 
+                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis 
+                  dataKey="date" 
+                  tickFormatter={d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  tick={{ fontSize: 12, fill: '#6b7280' }}
+                  axisLine={{ stroke: '#e5e7eb' }}
+                  tickLine={{ stroke: '#e5e7eb' }}
+                />
+                <YAxis 
+                  yAxisId="left" 
                         domain={['dataMin - 2', 'dataMax + 2']}
                         label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280', fontWeight: 'bold' } }}
-                      tick={{ fontSize: 12, fill: '#6b7280' }}
-                      axisLine={{ stroke: '#e5e7eb' }}
-                      tickLine={{ stroke: '#e5e7eb' }}
-                    />
-                    <YAxis 
-                      yAxisId="right" 
-                      orientation="right" 
+                  tick={{ fontSize: 12, fill: '#6b7280' }}
+                  axisLine={{ stroke: '#e5e7eb' }}
+                  tickLine={{ stroke: '#e5e7eb' }}
+                />
+                <YAxis 
+                  yAxisId="right" 
+                  orientation="right" 
                         domain={['dataMin - 1', 'dataMax + 1']}
                         label={{ value: 'BMI', angle: 90, position: 'insideRight', style: { textAnchor: 'middle', fill: '#6b7280', fontWeight: 'bold' } }}
-                      tick={{ fontSize: 12, fill: '#6b7280' }}
-                      axisLine={{ stroke: '#e5e7eb' }}
-                      tickLine={{ stroke: '#e5e7eb' }}
-                    />
-                    <Tooltip 
-                      contentStyle={{
+                  tick={{ fontSize: 12, fill: '#6b7280' }}
+                  axisLine={{ stroke: '#e5e7eb' }}
+                  tickLine={{ stroke: '#e5e7eb' }}
+                />
+                <Tooltip 
+                  contentStyle={{
                           backgroundColor: 'white', 
-                        border: '1px solid #e5e7eb',
+                    border: '1px solid #e5e7eb',
                           borderRadius: '12px',
                           boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
                           padding: '12px'
                         }}
                         labelFormatter={(value) => new Date(value).toLocaleDateString()}
-                      formatter={(value, name) => [
+                  formatter={(value, name) => [
                           name === 'weight' ? `${value} kg` : value.toFixed(1),
                           name === 'weight' ? 'Weight' : 'BMI'
                         ]}
                       />
-                    <Line 
-                      yAxisId="left"
-                      type="monotone" 
-                      dataKey="weight" 
-                      stroke="#3b82f6" 
+                <Line 
+                  yAxisId="left"
+                  type="monotone" 
+                  dataKey="weight" 
+                  stroke="#3b82f6" 
                         strokeWidth={4}
                         dot={{ fill: '#3b82f6', strokeWidth: 3, r: 6, stroke: '#ffffff' }}
                         activeDot={{ r: 8, stroke: '#3b82f6', strokeWidth: 3, fill: '#ffffff' }}
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                    />
-                    <Line 
-                      yAxisId="right"
-                      type="monotone" 
-                      dataKey="bmi" 
-                      stroke="#10b981" 
+                />
+                <Line 
+                  yAxisId="right"
+                  type="monotone" 
+                  dataKey="bmi" 
+                  stroke="#10b981" 
                         strokeWidth={4}
                         dot={{ fill: '#10b981', strokeWidth: 3, r: 6, stroke: '#ffffff' }}
                         activeDot={{ r: 8, stroke: '#10b981', strokeWidth: 3, fill: '#ffffff' }}
@@ -611,9 +611,9 @@ const Analytics = () => {
                         strokeDasharray="3 3" 
                         strokeOpacity={0.7}
                         label={{ value: 'Overweight Threshold', position: 'top', fill: '#f59e0b', fontSize: 10 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+                />
+              </LineChart>
+            </ResponsiveContainer>
               </div>
             </div>
           </motion.div>
@@ -639,38 +639,38 @@ const Analytics = () => {
                 </div>
                 <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                   <ResponsiveContainer width="100%" height={350}>
-                    <BarChart 
+              <BarChart 
                       data={sortedEntries} 
-                      margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                      <XAxis 
-                        dataKey="date" 
-                        tickFormatter={d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                        tick={{ fontSize: 10, fill: '#6b7280' }}
-                        axisLine={{ stroke: '#e5e7eb' }}
-                        tickLine={{ stroke: '#e5e7eb' }}
-                      />
-                      <YAxis 
+                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis 
+                  dataKey="date" 
+                  tickFormatter={d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  tick={{ fontSize: 10, fill: '#6b7280' }}
+                  axisLine={{ stroke: '#e5e7eb' }}
+                  tickLine={{ stroke: '#e5e7eb' }}
+                />
+                <YAxis 
                         domain={['dataMin - 1', 'dataMax + 1']}
                         label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280', fontWeight: 'bold' } }}
                         tick={{ fontSize: 10, fill: '#6b7280' }}
-                        axisLine={{ stroke: '#e5e7eb' }}
-                        tickLine={{ stroke: '#e5e7eb' }}
-                      />
-                      <Tooltip 
-                        contentStyle={{
+                  axisLine={{ stroke: '#e5e7eb' }}
+                  tickLine={{ stroke: '#e5e7eb' }}
+                />
+                <Tooltip 
+                  contentStyle={{
                           backgroundColor: 'white', 
-                          border: '1px solid #e5e7eb',
+                    border: '1px solid #e5e7eb',
                           borderRadius: '12px',
                           boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
                           padding: '12px'
                         }}
                         labelFormatter={(value) => new Date(value).toLocaleDateString()}
-                        formatter={(value) => [`${value} kg`, 'Weight']}
-                      />
-                      <Bar
-                        dataKey="weight"
+                  formatter={(value) => [`${value} kg`, 'Weight']}
+                />
+                <Bar 
+                  dataKey="weight" 
                         fill="url(#weightGradient)"
                         radius={[6, 6, 0, 0]}
                         stroke="#3b82f6"
@@ -689,17 +689,17 @@ const Analytics = () => {
                         strokeWidth={2}
                         label={{ value: 'Median Weight', position: 'top', fill: '#ef4444', fontSize: 10, fontWeight: 'bold' }}
                       />
-                    </BarChart>
-                  </ResponsiveContainer>
+              </BarChart>
+            </ResponsiveContainer>
                 </div>
               </div>
-            </motion.div>
+          </motion.div>
 
             {/* BMI Trends */}
-            <motion.div
+          <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
+            transition={{ delay: 0.7 }}
               className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden"
             >
               <div className="p-6">
@@ -714,40 +714,40 @@ const Analytics = () => {
                 </div>
                 <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                   <ResponsiveContainer width="100%" height={350}>
-                    <LineChart 
+              <LineChart 
                       data={sortedEntries} 
-                      margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                      <XAxis 
-                        dataKey="date" 
-                        tickFormatter={d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                        tick={{ fontSize: 10, fill: '#6b7280' }}
-                        axisLine={{ stroke: '#e5e7eb' }}
-                        tickLine={{ stroke: '#e5e7eb' }}
-                      />
-                      <YAxis 
+                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis 
+                  dataKey="date" 
+                  tickFormatter={d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  tick={{ fontSize: 10, fill: '#6b7280' }}
+                  axisLine={{ stroke: '#e5e7eb' }}
+                  tickLine={{ stroke: '#e5e7eb' }}
+                />
+                <YAxis 
                         domain={['dataMin - 0.5', 'dataMax + 0.5']}
                         label={{ value: 'BMI', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280', fontWeight: 'bold' } }}
                         tick={{ fontSize: 10, fill: '#6b7280' }}
-                        axisLine={{ stroke: '#e5e7eb' }}
-                        tickLine={{ stroke: '#e5e7eb' }}
-                      />
-                      <Tooltip 
-                        contentStyle={{
+                  axisLine={{ stroke: '#e5e7eb' }}
+                  tickLine={{ stroke: '#e5e7eb' }}
+                />
+                <Tooltip 
+                  contentStyle={{
                           backgroundColor: 'white', 
-                          border: '1px solid #e5e7eb',
+                    border: '1px solid #e5e7eb',
                           borderRadius: '12px',
                           boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
                           padding: '12px'
                         }}
                         labelFormatter={(value) => new Date(value).toLocaleDateString()}
                         formatter={(value) => [value.toFixed(1), 'BMI']}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="bmi"
-                        stroke="#10b981"
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="bmi" 
+                  stroke="#10b981" 
                         strokeWidth={4}
                         dot={{ fill: '#10b981', strokeWidth: 3, r: 5, stroke: '#ffffff' }}
                         activeDot={{ r: 7, stroke: '#10b981', strokeWidth: 3, fill: '#ffffff' }}
@@ -758,7 +758,7 @@ const Analytics = () => {
                         y={25}
                         stroke="#f59e0b"
                         strokeDasharray="3 3"
-                        strokeWidth={2}
+                  strokeWidth={2} 
                         label={{ value: 'Overweight Threshold', position: 'top', fill: '#f59e0b', fontSize: 10, fontWeight: 'bold' }}
                       />
                       <ReferenceLine
@@ -769,11 +769,11 @@ const Analytics = () => {
                         strokeOpacity={0.7}
                         label={{ value: 'Normal Weight', position: 'bottom', fill: '#3b82f6', fontSize: 10, fontWeight: 'bold' }}
                       />
-                    </LineChart>
-                  </ResponsiveContainer>
+              </LineChart>
+            </ResponsiveContainer>
                 </div>
               </div>
-            </motion.div>
+          </motion.div>
           </div>
         </div>
       ) : (
