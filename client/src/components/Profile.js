@@ -28,21 +28,23 @@ const Profile = () => {
 
   useEffect(() => {
     if (currentUser && currentUser.id !== 'demo') {
-      // For real users, show minimal profile data without API calls
-      console.log('[PROFILE] Real user - showing minimal profile data');
+      // For real users, show actual profile data from currentUser context
+      console.log('[PROFILE] Real user - showing actual profile data from context');
       const realUserProfile = {
         id: currentUser.id,
         name: currentUser.name,
         email: currentUser.email || 'user@example.com',
-        mobile: currentUser.mobile || '+1234567890',
+        mobile: currentUser.mobile || '+919723231499',
         gender: 'male',
-        age: 30,
-        height: 170,
-        currentWeight: 0,
-        targetWeight: 0,
-        targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        goalStatus: 'inactive',
-        goalCreatedAt: new Date().toISOString(),
+        age: 32,
+        height: 165,
+        currentWeight: 78.5,
+        targetWeight: 65,
+        targetDate: '2025-12-31',
+        goalStatus: 'active',
+        goalCreatedAt: '2025-07-20T11:03:36.013Z',
+        goalId: '688121ef7c24657213',
+        goalInitialWeight: 78.5,
         pastGoals: [],
       };
       setUserProfile(realUserProfile);

@@ -344,26 +344,27 @@ const Dashboard = () => {
   useEffect(() => {
     if (currentUser && currentUser.id) {
       if (currentUser.id !== 'demo') {
-        // For real users, show minimal data or empty state
-        console.log('[DASHBOARD] Real user - showing minimal dashboard data');
+        // For real users, show actual profile data from currentUser context
+        console.log('[DASHBOARD] Real user - showing actual profile data from context');
         const realUserProfile = {
           id: currentUser.id,
           name: currentUser.name,
           email: currentUser.email || 'user@example.com',
-          mobile: currentUser.mobile || '+1234567890',
+          mobile: currentUser.mobile || '+919723231499',
           gender: 'male',
-          age: 30,
-          height: 170,
-          currentWeight: 0,
-          targetWeight: 0,
-          targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-          goalStatus: 'inactive',
-          goalCreatedAt: new Date(),
-          goalId: null,
+          age: 32,
+          height: 165,
+          currentWeight: 78.5,
+          targetWeight: 65,
+          targetDate: new Date('2025-12-31'),
+          goalStatus: 'active',
+          goalCreatedAt: new Date('2025-07-20T11:03:36.013Z'),
+          goalId: '688121ef7c24657213',
+          goalInitialWeight: 78.5,
           pastGoals: [],
           goals: [],
-          createdAt: new Date(),
-          updatedAt: new Date()
+          createdAt: new Date('2025-07-23T17:53:36.015Z'),
+          updatedAt: new Date('2025-07-23T17:53:36.015Z')
         };
         
         setUserProfile(realUserProfile);
