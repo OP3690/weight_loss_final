@@ -110,6 +110,17 @@ const Navigation = ({ currentUser, onLogout }) => {
                   )}
                 </Link>
               ))}
+              
+              {/* Blog Link - Opens in new tab */}
+              <a
+                href="/blog/index.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+              >
+                <DocumentTextIcon className="h-5 w-5 mr-2 transition-all duration-300 text-gray-500 group-hover:text-gray-700" />
+                Blog
+              </a>
             </div>
 
             {/* User Info */}

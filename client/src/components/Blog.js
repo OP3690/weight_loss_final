@@ -6,7 +6,7 @@ const Blog = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect to the appropriate blog HTML file
+    // Map blog IDs to their HTML file paths
     const blogUrls = {
       'weight-loss-transform-life': '/blog/weight-loss-transform-life.html',
       'weight-loss-health-benefits': '/blog/weight-loss-health-benefits.html',
@@ -17,13 +17,19 @@ const Blog = () => {
     };
 
     if (blogId && blogUrls[blogId]) {
-      window.location.href = blogUrls[blogId];
+      // Open the blog post in a new tab
+      window.open(blogUrls[blogId], '_blank');
+      // Navigate back to dashboard after opening
+      navigate('/');
     } else if (!blogId) {
-      // Redirect to blog index
-      window.location.href = '/blog/index.html';
+      // Open blog index in a new tab
+      window.open('/blog/index.html', '_blank');
+      // Navigate back to dashboard after opening
+      navigate('/');
     } else {
-      // Invalid blog ID, redirect to blog index
-      window.location.href = '/blog/index.html';
+      // Invalid blog ID, open blog index
+      window.open('/blog/index.html', '_blank');
+      navigate('/');
     }
   }, [blogId, navigate]);
 
@@ -31,7 +37,8 @@ const Blog = () => {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-purple-50 flex items-center justify-center">
       <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-        <p className="text-gray-600">Loading blog...</p>
+        <p className="text-gray-600">Opening blog in new tab...</p>
+        <p className="text-sm text-gray-500 mt-2">You'll be redirected back to the dashboard</p>
       </div>
     </div>
   );
