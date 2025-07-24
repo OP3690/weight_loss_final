@@ -60,6 +60,7 @@ const Analytics = () => {
       }
     } catch (error) {
       console.error('Error loading analytics:', error);
+      // Set default analytics data to prevent infinite loading
       setAnalytics({
         totalEntries: 0,
         averageWeight: 0,
@@ -70,6 +71,14 @@ const Analytics = () => {
         targetWeight: 0,
         progressToTarget: 0,
         initialWeight: 0
+      });
+      // Set a basic user profile to prevent loading issues
+      setUserProfile({
+        id: currentUser.id,
+        name: currentUser.name,
+        currentWeight: 0,
+        targetWeight: 0,
+        goalStatus: 'inactive'
       });
     } finally {
       setLoading(false);

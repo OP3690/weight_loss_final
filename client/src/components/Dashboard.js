@@ -403,14 +403,21 @@ const Dashboard = () => {
         createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
         updatedAt: new Date()
       };
-      // Generate 30 days of demo entries
+      // Generate 30 days of demo entries with deterministic data
       const demoEntries = [];
       const today = new Date();
+      const seed = 12345; // Fixed seed for consistent results
+      
       for (let i = 29; i >= 0; i--) {
         const date = new Date(today);
         date.setDate(today.getDate() - i);
         const baseWeight = 76 - i * 0.1;
-        const fluctuation = (Math.random() - 0.5) * 0.3;
+        
+        // Deterministic fluctuation based on day and seed
+        const deterministicRandom = ((seed + i) * 9301 + 49297) % 233280;
+        const normalizedRandom = deterministicRandom / 233280;
+        const fluctuation = (normalizedRandom - 0.5) * 0.2; // Reduced fluctuation range
+        
         const weight = Math.round((baseWeight + fluctuation) * 10) / 10;
         demoEntries.push({
           id: `demo-entry-${i}`,
