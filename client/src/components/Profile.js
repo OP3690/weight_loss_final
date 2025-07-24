@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { User, Save, Edit, Target, Scale } from 'lucide-react';
@@ -79,7 +79,7 @@ const Profile = () => {
       setWeightEntries(entries);
       setIsCreatingGoal(false);
     }
-  }, [currentUser, userProfile?.createdAt]);
+  }, [currentUser, userProfile?.createdAt, loadUserProfile]);
 
   // ENABLED: Goal expiration check
   useEffect(() => {
@@ -98,10 +98,10 @@ const Profile = () => {
         }
       })();
     }
-  }, [userProfile]);
+  }, [userProfile, loadUserProfile]);
 
   // ENABLED: For goal management functions
-  const loadUserProfile = async () => {
+  const loadUserProfile = useCallback(async () => {
     // Prevent multiple simultaneous calls
     if (loading) {
       console.log('Profile loading already in progress, skipping...');
@@ -140,7 +140,7 @@ const Profile = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentUser?.id, loading]);
 
   const calculateBMIAnalytics = (profile) => {
     if (!profile) return;
