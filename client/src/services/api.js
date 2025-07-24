@@ -1,7 +1,7 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
 
 // Debug: Log the API URL being used
 console.log('🔍 API_BASE_URL:', API_BASE_URL);
