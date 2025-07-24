@@ -24,9 +24,9 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 8000, // 8 second timeout for faster failure
-  retry: 1, // Only retry once to avoid spam
-  retryDelay: 1000, // Wait 1 second between retries
+  timeout: 15000, // 15 second timeout to handle slow backend
+  retry: 0, // No retries to prevent cascading timeouts
+  retryDelay: 0, // No delay
 });
 
 // Utility function to validate MongoDB ObjectId
@@ -66,41 +66,14 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor with retry logic
+// Response interceptor - simplified error handling
 api.interceptors.response.use(
   (response) => {
     return response;
   },
-  async (error) => {
-    const { config } = error;
-    
-    // Initialize retry count if not set
-    config.retryCount = config.retryCount || 0;
-    
-    // Don't retry if we've already retried or if it's not a network error
-    if (config.retryCount >= config.retry || error.code !== 'ERR_NETWORK') {
-      const message = error.response?.data?.message || error.message || 'Something went wrong';
-      
-      // Only show toast for final failures, not for retries
-      if (config.retryCount >= config.retry) {
-        console.error('API Error after retries:', error);
-        // Don't show toast for every error to avoid spam
-        // Let components handle their own error display
-      }
-      
-      return Promise.reject(error);
-    }
-    
-    // Increment retry count
-    config.retryCount += 1;
-    
-    console.log(`Retrying request (${config.retryCount}/${config.retry}):`, config.url);
-    
-    // Wait before retrying
-    await new Promise(resolve => setTimeout(resolve, config.retryDelay || 1000));
-    
-    // Retry the request
-    return api(config);
+  (error) => {
+    console.error('API Error:', error);
+    return Promise.reject(error);
   }
 );
 

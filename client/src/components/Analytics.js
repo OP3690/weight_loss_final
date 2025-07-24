@@ -27,6 +27,20 @@ const Analytics = () => {
     try {
       setLoading(true);
       
+      // For demo users, use demo data immediately
+      if (currentUser.id === 'demo') {
+        generateSampleAnalytics();
+        setLoading(false);
+        return;
+      }
+      
+      // For demo users, use demo data immediately
+      if (currentUser.id === 'demo') {
+        generateSampleAnalytics();
+        setLoading(false);
+        return;
+      }
+      
       // Load profile and analytics in parallel for better performance
       const [profile, response] = await Promise.all([
         userAPI.getUser(currentUser.id),
@@ -53,17 +67,23 @@ const Analytics = () => {
       }
     } catch (error) {
       console.error('Error loading analytics:', error);
-      setAnalytics({
-        totalEntries: 0,
-        averageWeight: 0,
-        weightChange: 0,
-        trend: 'stable',
-        entries: [],
-        currentWeight: 0,
-        targetWeight: 0,
-        progressToTarget: 0,
-        initialWeight: 0
-      });
+      
+      // Fallback to demo data for any user if API fails
+      if (currentUser.id === 'demo') {
+        generateSampleAnalytics();
+      } else {
+        setAnalytics({
+          totalEntries: 0,
+          averageWeight: 0,
+          weightChange: 0,
+          trend: 'stable',
+          entries: [],
+          currentWeight: 0,
+          targetWeight: 0,
+          progressToTarget: 0,
+          initialWeight: 0
+        });
+      }
     } finally {
       setLoading(false);
     }
