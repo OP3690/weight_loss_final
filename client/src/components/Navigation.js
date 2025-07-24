@@ -90,37 +90,41 @@ const Navigation = ({ currentUser, onLogout }) => {
             {/* Desktop Navigation Links */}
             <div className="hidden md:flex md:items-center md:space-x-1">
               {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`group relative inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                    isActive(item.href)
-                      ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/25'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
-                >
-                  <item.icon className={`h-5 w-5 mr-2 transition-all duration-300 ${
-                    isActive(item.href) ? 'text-white' : 'text-gray-500 group-hover:text-gray-700'
-                  }`} />
-                  {item.name}
-                  
-                  {/* Active indicator */}
-                  {isActive(item.href) && (
-                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>
-                  )}
-                </Link>
+                item.name === 'Blog' ? (
+                  <a
+                    key={item.name}
+                    href="/blog/index.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  >
+                    <item.icon className="h-5 w-5 mr-2 transition-all duration-300 text-gray-500 group-hover:text-gray-700" />
+                    {item.name}
+                  </a>
+                ) : (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={`group relative inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                      isActive(item.href)
+                        ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/25'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`}
+                  >
+                    <item.icon className={`h-5 w-5 mr-2 transition-all duration-300 ${
+                      isActive(item.href) ? 'text-white' : 'text-gray-500 group-hover:text-gray-700'
+                    }`} />
+                    {item.name}
+                    
+                    {/* Active indicator */}
+                    {isActive(item.href) && (
+                      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>
+                    )}
+                  </Link>
+                )
               ))}
               
-              {/* Blog Link - Opens in new tab */}
-              <a
-                href="/blog/index.html"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-              >
-                <DocumentTextIcon className="h-5 w-5 mr-2 transition-all duration-300 text-gray-500 group-hover:text-gray-700" />
-                Blog
-              </a>
+
             </div>
 
             {/* User Info */}
@@ -160,23 +164,39 @@ const Navigation = ({ currentUser, onLogout }) => {
         <div className="md:hidden">
           <div className="pt-2 pb-3 space-y-1 bg-white/95 backdrop-blur-sm border-t border-gray-100 shadow-lg">
             {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`block mx-3 rounded-lg px-4 py-3 text-base font-medium transition-all duration-300 ${
-                  isActive(item.href)
-                    ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/25'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                }`}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <div className="flex items-center">
-                  <item.icon className={`h-5 w-5 mr-3 transition-all duration-300 ${
-                    isActive(item.href) ? 'text-white' : 'text-gray-500'
-                  }`} />
-                  {item.name}
-                </div>
-              </Link>
+              item.name === 'Blog' ? (
+                <a
+                  key={item.name}
+                  href="/blog/index.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block mx-3 rounded-lg px-4 py-3 text-base font-medium transition-all duration-300 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <div className="flex items-center">
+                    <item.icon className="h-5 w-5 mr-3 transition-all duration-300 text-gray-500" />
+                    {item.name}
+                  </div>
+                </a>
+              ) : (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`block mx-3 rounded-lg px-4 py-3 text-base font-medium transition-all duration-300 ${
+                    isActive(item.href)
+                      ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/25'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <div className="flex items-center">
+                    <item.icon className={`h-5 w-5 mr-3 transition-all duration-300 ${
+                      isActive(item.href) ? 'text-white' : 'text-gray-500'
+                    }`} />
+                    {item.name}
+                  </div>
+                </Link>
+              )
             ))}
             
             {/* Mobile User Info and Logout */}
