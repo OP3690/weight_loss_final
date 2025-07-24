@@ -26,28 +26,22 @@ const Analytics = () => {
   const loadUserProfileAndAnalytics = useCallback(async () => {
     try {
       setLoading(true);
-      
-      // For demo users, use demo data immediately
-      if (currentUser.id === 'demo') {
-        generateSampleAnalytics();
-        setLoading(false);
-        return;
-      }
-      
-      // For demo users, use demo data immediately
-      if (currentUser.id === 'demo') {
-        generateSampleAnalytics();
-        setLoading(false);
-        return;
-      }
-      
-      // Load profile first, then analytics to reduce server load
       const profile = await userAPI.getUser(currentUser.id);
       setUserProfile(profile);
       
-      // Load analytics with a shorter timeout
-      const response = await weightEntryAPI.getAnalytics(currentUser.id, { period: selectedPeriod });
+      // Get active goalId from userProfile
+      const activeGoalId = profile && profile.goalId && (profile.goalId === 'demo' || isValidObjectId(profile.goalId)) ? profile.goalId : null;
       
+      // Pass goalCreatedAt as startDate if present, and goalId for goal-level analytics
+      const params = { period: selectedPeriod };
+      if (profile.goalCreatedAt) {
+        params.startDate = profile.goalCreatedAt;
+      }
+      if (activeGoalId) {
+        params.goalId = activeGoalId;
+      }
+      
+      const response = await weightEntryAPI.getAnalytics(currentUser.id, params);
       if (response.analytics) {
         setAnalytics(response.analytics);
       } else {
@@ -66,23 +60,17 @@ const Analytics = () => {
       }
     } catch (error) {
       console.error('Error loading analytics:', error);
-      
-      // Fallback to demo data for any user if API fails
-      if (currentUser.id === 'demo') {
-        generateSampleAnalytics();
-      } else {
-        setAnalytics({
-          totalEntries: 0,
-          averageWeight: 0,
-          weightChange: 0,
-          trend: 'stable',
-          entries: [],
-          currentWeight: 0,
-          targetWeight: 0,
-          progressToTarget: 0,
-          initialWeight: 0
-        });
-      }
+      setAnalytics({
+        totalEntries: 0,
+        averageWeight: 0,
+        weightChange: 0,
+        trend: 'stable',
+        entries: [],
+        currentWeight: 0,
+        targetWeight: 0,
+        progressToTarget: 0,
+        initialWeight: 0
+      });
     } finally {
       setLoading(false);
     }
@@ -146,42 +134,12 @@ const Analytics = () => {
     setLoading(false);
   }, [selectedPeriod]);
 
-  const handleManualRefresh = () => {
-    // Reset failure count and try again
-    localStorage.setItem('analyticsApiFailures', '0');
-    setLoading(true);
-    loadUserProfileAndAnalytics().catch(() => {
-      generateSampleAnalytics();
-    });
-  };
-
   useEffect(() => {
-    if (currentUser && currentUser.id) {
-      // For demo users or if we've had recent API failures, use demo data
-      const recentFailures = localStorage.getItem('analyticsApiFailures') || '0';
-      const failureCount = parseInt(recentFailures);
-      
-      if (currentUser.id === 'demo' || failureCount > 2) {
-        console.log('Using demo data for analytics');
-        generateSampleAnalytics();
-        return;
-      }
-      
-      // Try to load real data with a timeout
-      const loadWithTimeout = async () => {
-        try {
-          await loadUserProfileAndAnalytics();
-          // Reset failure count on success
-          localStorage.setItem('analyticsApiFailures', '0');
-        } catch (error) {
-          console.error('Analytics API failed, falling back to demo data');
-          // Increment failure count
-          localStorage.setItem('analyticsApiFailures', (failureCount + 1).toString());
-          generateSampleAnalytics();
-        }
-      };
-      
-      loadWithTimeout();
+    if (currentUser && currentUser.id !== 'demo') {
+      loadUserProfileAndAnalytics();
+    } else if (currentUser && currentUser.id === 'demo') {
+      // Demo user - generate sample analytics data
+      generateSampleAnalytics();
     }
   }, [currentUser, loadUserProfileAndAnalytics, generateSampleAnalytics]);
 
@@ -204,11 +162,7 @@ const Analytics = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-96">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading analytics...</p>
-          <p className="text-sm text-gray-500 mt-2">This may take a few moments</p>
-        </div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
       </div>
     );
   }
@@ -324,7 +278,7 @@ const Analytics = () => {
             <option value="90" selected>90 days</option>
           </select>
           <button
-            onClick={handleManualRefresh}
+            onClick={loadUserProfileAndAnalytics}
             className="ml-2 px-3 py-1 rounded bg-blue-500 text-white text-sm font-semibold hover:bg-blue-600 transition"
             title="Refresh Analytics"
           >

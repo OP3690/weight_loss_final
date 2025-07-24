@@ -1,32 +1,17 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://weight-loss-final.onrender.com/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
 // Debug: Log the API URL being used
 console.log('🔍 API_BASE_URL:', API_BASE_URL);
 console.log('🔍 REACT_APP_API_URL env var:', process.env.REACT_APP_API_URL);
-
-// Health check function
-export const checkBackendHealth = async () => {
-  try {
-    const response = await api.get('/health');
-    console.log('✅ Backend health check passed:', response.data);
-    return true;
-  } catch (error) {
-    console.error('❌ Backend health check failed:', error);
-    return false;
-  }
-};
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 15000, // 15 second timeout to handle slow backend
-  retry: 0, // No retries to prevent cascading timeouts
-  retryDelay: 0, // No delay
 });
 
 // Utility function to validate MongoDB ObjectId
@@ -66,13 +51,14 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor - simplified error handling
+// Response interceptor
 api.interceptors.response.use(
   (response) => {
     return response;
   },
   (error) => {
-    console.error('API Error:', error);
+    const message = error.response?.data?.message || error.message || 'Something went wrong';
+    toast.error(message);
     return Promise.reject(error);
   }
 );

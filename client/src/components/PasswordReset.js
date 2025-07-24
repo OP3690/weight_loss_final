@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { EyeIcon, EyeSlashIcon, ArrowLeftIcon, CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
-import api from '../services/api';
+import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const PasswordReset = ({ onBackToLogin }) => {
@@ -32,7 +32,7 @@ const PasswordReset = ({ onBackToLogin }) => {
 
     setLoading(true);
     try {
-      const response = await api.post('/users/forgot-password', { email });
+      const response = await axios.post('/api/users/forgot-password', { email });
       toast.success('OTP sent successfully! Check your email.');
       setOtpSent(true);
       setStep(2);
@@ -53,7 +53,7 @@ const PasswordReset = ({ onBackToLogin }) => {
 
     setLoading(true);
     try {
-      await api.post('/users/verify-otp', { email, otp });
+      await axios.post('/api/users/verify-otp', { email, otp });
       toast.success('OTP verified successfully!');
       setStep(3);
     } catch (error) {
@@ -77,7 +77,7 @@ const PasswordReset = ({ onBackToLogin }) => {
 
     setLoading(true);
     try {
-      await api.post('/users/reset-password', {
+      await axios.post('/api/users/reset-password', {
         email,
         otp,
         newPassword,
@@ -98,7 +98,7 @@ const PasswordReset = ({ onBackToLogin }) => {
     
     setLoading(true);
     try {
-      await api.post('/users/forgot-password', { email });
+      await axios.post('/api/users/forgot-password', { email });
       toast.success('OTP resent successfully!');
       setCountdown(60);
     } catch (error) {
