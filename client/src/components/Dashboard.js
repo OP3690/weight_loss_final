@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { 
   TrendingUp, 
@@ -294,85 +294,13 @@ const Dashboard = () => {
   // Filter entries for the current goalId
   const goalEntriesFiltered = goalEntries.filter(entry => !activeGoalId || entry.goalId === activeGoalId);
 
-  // Define loadUserProfile function
-  const loadUserProfile = async () => {
-    if (!currentUser || !currentUser.id) return;
-    
-    // Skip API call for demo users
-    if (currentUser.id === 'demo') {
-      return;
-    }
-    
-    try {
-      const profile = await userAPI.getUser(currentUser.id);
-      setUserProfile(profile);
-    } catch (error) {
-      console.error('Error loading user profile:', error);
-    }
-  };
+  // Removed loadUserProfile and loadGoalEntries functions - now handled in single useEffect
 
-  // Define loadGoalEntries function
-  const loadGoalEntries = async () => {
-    if (!currentUser || !currentUser.id) return;
-    
-    // Skip API call for demo users
-    if (currentUser.id === 'demo') {
-      return;
-    }
-    
-    try {
-      // Pass the active goalId to the analytics API
-      const response = await weightEntryAPI.getAnalytics(currentUser.id, { 
-        all: true,
-        goalId: activeGoalId 
-      });
-      if (response.analytics) {
-        setGoalEntries((response.analytics.entries || []).map(entry => ({
-          id: entry.id || entry._id,
-          date: entry.date,
-          weight: entry.weight,
-          notes: entry.notes || '',
-          goalId: entry.goalId
-        })));
-      }
-    } catch (error) {
-      console.error('Error loading goal entries:', error);
-    }
-  };
-
-  // Always reload profile and entries on mount and when currentUser changes
+  // Single useEffect to handle all data loading
   useEffect(() => {
-    if (currentUser && currentUser.id) {
-      if (currentUser.id !== 'demo') {
-        // For real users, show actual profile data from currentUser context
-        console.log('[DASHBOARD] Real user - showing actual profile data from context');
-        const realUserProfile = {
-          id: currentUser.id,
-          name: currentUser.name,
-          email: currentUser.email || 'user@example.com',
-          mobile: currentUser.mobile || '+919723231499',
-          gender: 'male',
-          age: 32,
-          height: 165,
-          currentWeight: 78.5,
-          targetWeight: 65,
-          targetDate: new Date('2025-12-31'),
-          goalStatus: 'active',
-          goalCreatedAt: new Date('2025-07-20T11:03:36.013Z'),
-          goalId: '688121ef7c24657213',
-          goalInitialWeight: 78.5,
-          pastGoals: [],
-          goals: [],
-          createdAt: new Date('2025-07-23T17:53:36.015Z'),
-          updatedAt: new Date('2025-07-23T17:53:36.015Z')
-        };
-        
-        setUserProfile(realUserProfile);
-        // Load actual weight entries for real users
-        loadGoalEntries();
-        setIsLoading(false);
-      }
-      
+    if (!currentUser || !currentUser.id) return;
+
+    if (currentUser.id === 'demo') {
       // Demo user - use demo data
       console.log('[DASHBOARD] Demo user - using demo data');
       const demoProfile = {
@@ -422,29 +350,75 @@ const Dashboard = () => {
       setUserProfile(demoProfile);
       setGoalEntries(demoEntries);
       setIsLoading(false);
+    } else {
+      // Real user - load data from backend
+      console.log('[DASHBOARD] Real user - loading actual data from backend');
+      
+      const loadData = async () => {
+        try {
+          setIsLoading(true);
+          
+          // Load user profile first
+          console.log('[DASHBOARD] Loading user profile for user:', currentUser.id);
+          const profile = await userAPI.getUser(currentUser.id);
+          console.log('[DASHBOARD] User profile response:', profile);
+          setUserProfile(profile);
+          
+          // Then load goal entries if we have a goalId
+          if (profile && profile.goalId) {
+            console.log('[DASHBOARD] User profile loaded, now loading goal entries');
+            console.log('[DASHBOARD] UserProfile goalId:', profile.goalId);
+            
+            const response = await weightEntryAPI.getAnalytics(currentUser.id, { 
+              all: true,
+              goalId: profile.goalId 
+            });
+            
+            console.log('[DASHBOARD] Goal entries response:', response);
+            if (response.analytics) {
+              const entries = (response.analytics.entries || []).map(entry => ({
+                id: entry.id || entry._id,
+                date: entry.date,
+                weight: entry.weight,
+                notes: entry.notes || '',
+                goalId: entry.goalId
+              }));
+              console.log('[DASHBOARD] Setting goal entries:', entries);
+              setGoalEntries(entries);
+              console.log('[DASHBOARD] Goal entries state set successfully');
+            }
+          }
+        } catch (error) {
+          console.error('Error loading data:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+      loadData();
     }
-  }, [currentUser]);
+  }, [currentUser?.id]);
 
-  // Also reload when goal entries change to ensure stats are updated
+  // Debug logging for goal entries changes
   useEffect(() => {
     if (userProfile && goalEntries.length > 0) {
       console.log('[DASHBOARD] Goal entries updated, recalculating stats');
     }
-  }, [goalEntries, userProfile]);
+  }, [goalEntries.length]);
 
   // Force refresh data when component becomes visible (for cases where data might be stale)
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (!document.hidden && currentUser && currentUser.id) {
+      if (!document.hidden && currentUser && currentUser.id && (!userProfile || goalEntries.length === 0)) {
         console.log('[DASHBOARD] Page became visible, refreshing data...');
-        loadUserProfile();
-        loadGoalEntries();
+        // This will trigger the main useEffect above
+        window.location.reload();
       }
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [currentUser]);
+  }, [currentUser?.id, userProfile, goalEntries.length]);
 
   useEffect(() => {
     function updateBarWidth() {
@@ -508,67 +482,29 @@ const Dashboard = () => {
     }
   }, [currentUser]);
 
-  useEffect(() => {
-    if (currentUser && currentUser.id === 'demo') {
-      setIsLoading(false);
-    }
-  }, [currentUser]);
-
-  useEffect(() => {
-    if (!currentUser || !userProfile) return;
-    const today = new Date();
-    const startDate = new Date(today);
-    startDate.setDate(today.getDate() - 29);
-    // Fetch analytics for the active goal
-    weightEntryAPI.getAnalytics(currentUser.id, {
-      period: 30,
-      startDate: startDate.toISOString().slice(0, 10),
-      goalId: activeGoalId
-    })
-      .then(response => {
-        console.log('[ANALYTICS API RESPONSE]', response);
-        if (response.analytics) {
-          setGoalEntries((response.analytics.entries || []).map(entry => ({
-              id: entry.id || entry._id,
-              date: entry.date,
-              weight: entry.weight,
-              notes: entry.notes || '',
-              goalId: entry.goalId,
-              createdAt: entry.createdAt
-            })));
-        } else {
-          setGoalEntries([]);
-        }
-        setIsLoading(false);
-      })
-      .catch(error => {
-        console.error('[ANALYTICS API ERROR]', error);
-        setGoalEntries([]);
-        setIsLoading(false);
-      });
-  }, [currentUser, userProfile, userProfile?.activeGoalId]);
+  // Removed duplicate useEffect hooks that were causing infinite loops
 
   const handleEntryAdded = () => {
     console.log('[DASHBOARD] Entry added, reloading fresh data...');
     if (currentUser && currentUser.id) {
-      loadUserProfile();
-      loadGoalEntries();
+      // Trigger a page reload to get fresh data
+      window.location.reload();
     }
   };
 
   const handleEntryUpdated = () => {
     console.log('[DASHBOARD] Entry updated, reloading fresh data...');
     if (currentUser && currentUser.id) {
-      loadUserProfile();
-      loadGoalEntries();
-              }
+      // Trigger a page reload to get fresh data
+      window.location.reload();
+    }
   };
 
   const refreshData = () => {
     console.log('[DASHBOARD] Manual refresh requested...');
     if (currentUser && currentUser.id) {
-      loadUserProfile();
-      loadGoalEntries();
+      // Trigger a page reload to get fresh data
+      window.location.reload();
     }
   };
 

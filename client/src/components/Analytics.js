@@ -25,7 +25,9 @@ const Analytics = () => {
   const [hasAttemptedLoad, setHasAttemptedLoad] = useState(false);
 
   // ENABLED: For real user data loading
-  const loadUserProfileAndAnalytics = useCallback(async (retryCount = 0) => {
+  const loadUserProfileAndAnalytics = useCallback(async () => {
+    if (!currentUser?.id) return;
+    
     try {
       setLoading(true);
       
@@ -48,7 +50,7 @@ const Analytics = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentUser, selectedPeriod, loading]);
+  }, [currentUser?.id, selectedPeriod]);
 
   const generateSampleAnalytics = useCallback(() => {
     const days = parseInt(selectedPeriod);
@@ -119,16 +121,17 @@ const Analytics = () => {
   }, [selectedPeriod]);
 
   useEffect(() => {
-    if (currentUser && currentUser.id !== 'demo') {
-                      // For real users, load actual data from backend
-        console.log('Real user - loading actual data from backend');
-        loadUserProfileAndAnalytics();
-      return;
-    } else if (currentUser && currentUser.id === 'demo') {
+    if (!currentUser?.id) return;
+    
+    if (currentUser.id === 'demo') {
       // Demo user - generate sample analytics data
       generateSampleAnalytics();
+    } else {
+      // For real users, load actual data from backend
+      console.log('Real user - loading actual data from backend');
+      loadUserProfileAndAnalytics();
     }
-  }, [currentUser, generateSampleAnalytics]);
+  }, [currentUser?.id, selectedPeriod]);
 
   // Reset attempt flag when user changes
   useEffect(() => {

@@ -123,6 +123,12 @@ const Profile = () => {
 
   // ENABLED: For goal management functions
   const loadUserProfile = async () => {
+    // Prevent multiple simultaneous calls
+    if (loading) {
+      console.log('Profile loading already in progress, skipping...');
+      return;
+    }
+    
     try {
       setLoading(true);
       const profile = await userAPI.getUser(currentUser.id);

@@ -18,15 +18,16 @@ const corsOptions = {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
-    const allowedOrigins = [
-      'https://gooofit.com',
-      'https://www.gooofit.com',
-      'https://weight-loss-lac.vercel.app',
-      'https://client-9jm305kpo-omprakash-utahas-projects.vercel.app',
-      'https://weight-management-frontend.vercel.app',
-      'https://weight-management-client.vercel.app',
-      'http://localhost:3000'
-    ];
+            const allowedOrigins = [
+          'https://gooofit.com',
+          'https://www.gooofit.com',
+          'https://weight-loss-lac.vercel.app',
+          'https://client-9jm305kpo-omprakash-utahas-projects.vercel.app',
+          'https://weight-management-frontend.vercel.app',
+          'https://weight-management-client.vercel.app',
+          'http://localhost:3000',
+          'http://localhost:3002'
+        ];
     
     console.log('CORS request from origin:', origin);
     console.log('Allowed origins:', allowedOrigins);
