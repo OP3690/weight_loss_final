@@ -28,30 +28,9 @@ const Profile = () => {
 
   useEffect(() => {
     if (currentUser && currentUser.id !== 'demo') {
-      // For real users, show actual profile data from currentUser context
-      console.log('[PROFILE] Real user - showing actual profile data from context');
-      const realUserProfile = {
-        id: currentUser.id,
-        name: currentUser.name,
-        email: currentUser.email || 'user@example.com',
-        mobile: currentUser.mobile || '+919723231499',
-        gender: 'male',
-        age: 32,
-        height: 165,
-        currentWeight: 78.5,
-        targetWeight: 65,
-        targetDate: '2025-12-31',
-        goalStatus: 'active',
-        goalCreatedAt: '2025-07-20T11:03:36.013Z',
-        goalId: '688121ef7c24657213',
-        goalInitialWeight: 78.5,
-        pastGoals: [],
-      };
-      setUserProfile(realUserProfile);
-      calculateBMIAnalytics(realUserProfile);
-      setWeightEntries([]);
-      setIsCreatingGoal(false);
-      setLoading(false);
+      // For real users, load actual profile data from backend
+      console.log('[PROFILE] Real user - loading actual profile data from backend');
+      loadUserProfile();
     } else if (currentUser && currentUser.id === 'demo') {
       const demoProfile = {
         id: 'demo',
@@ -134,6 +113,27 @@ const Profile = () => {
       const profile = await userAPI.getUser(currentUser.id);
       setUserProfile(profile);
       calculateBMIAnalytics(profile);
+      
+      // Load weight entries for the current goal
+      if (profile && profile.goalId) {
+        try {
+          console.log('[PROFILE] Loading weight entries for goalId:', profile.goalId);
+          const entriesResponse = await weightEntryAPI.getUserEntries(currentUser.id, {
+            goalId: profile.goalId
+          });
+          console.log('[PROFILE] Weight entries response:', entriesResponse);
+          if (entriesResponse && entriesResponse.entries) {
+            setWeightEntries(entriesResponse.entries);
+            console.log('[PROFILE] Set weight entries:', entriesResponse.entries.length, 'entries');
+          } else {
+            console.log('[PROFILE] No entries found in response');
+            setWeightEntries([]);
+          }
+        } catch (entriesError) {
+          console.error('Error loading weight entries:', entriesError);
+          setWeightEntries([]);
+        }
+      }
     } catch (error) {
       console.error('Error loading profile:', error);
       // Don't show toast error for data loading
@@ -233,20 +233,24 @@ const Profile = () => {
 
   const handleDiscardGoal = async () => {
     try {
+      console.log('[PROFILE] Discarding goal for user:', userProfile.id);
       await userAPI.discardGoal(userProfile.id);
       toast.success('Goal discarded');
       await loadUserProfile();
     } catch (err) {
+      console.error('[PROFILE] Error discarding goal:', err);
       toast.error('Failed to discard goal');
     }
   };
 
   const handleAchieveGoal = async () => {
     try {
+      console.log('[PROFILE] Achieving goal for user:', userProfile.id);
       await userAPI.achieveGoal(userProfile.id);
       toast.success('Goal marked as achieved!');
       await loadUserProfile();
     } catch (err) {
+      console.error('[PROFILE] Error achieving goal:', err);
       toast.error('Failed to mark goal as achieved');
     }
   };
