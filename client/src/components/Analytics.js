@@ -154,6 +154,45 @@ const Analytics = () => {
     return 'text-gray-600';
   };
 
+  // Function to get trend-based background color
+  const getTrendBackgroundColor = (trend) => {
+    switch (trend?.toLowerCase()) {
+      case 'decreasing':
+        return 'bg-green-50 border-green-200';
+      case 'increasing':
+        return 'bg-red-50 border-red-200';
+      case 'stable':
+      default:
+        return 'bg-gray-50 border-gray-200';
+    }
+  };
+
+  // Function to get trend-based text color
+  const getTrendTextColor = (trend) => {
+    switch (trend?.toLowerCase()) {
+      case 'decreasing':
+        return 'text-green-700';
+      case 'increasing':
+        return 'text-red-700';
+      case 'stable':
+      default:
+        return 'text-gray-700';
+    }
+  };
+
+  // Function to get trend-based icon color
+  const getTrendIconColor = (trend) => {
+    switch (trend?.toLowerCase()) {
+      case 'decreasing':
+        return 'from-green-500 to-emerald-500';
+      case 'increasing':
+        return 'from-red-500 to-pink-500';
+      case 'stable':
+      default:
+        return 'from-gray-500 to-slate-500';
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-96">
@@ -316,14 +355,14 @@ const Analytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300"
+            className={`backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 ${getTrendBackgroundColor(analytics?.trend)}`}
           >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium text-gray-600 mb-1">Total Entries</p>
                 <p className="text-2xl font-bold text-gray-900">{analytics?.totalEntries || 0}</p>
               </div>
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center shadow-md">
+              <div className={`w-10 h-10 bg-gradient-to-r ${getTrendIconColor(analytics?.trend)} rounded-lg flex items-center justify-center shadow-md`}>
                 <Calendar className="w-5 h-5 text-white" />
               </div>
             </div>
@@ -340,14 +379,14 @@ const Analytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300"
+            className={`backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 ${getTrendBackgroundColor(analytics?.trend)}`}
           >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium text-gray-600 mb-1">Average Weight</p>
                 <p className="text-2xl font-bold text-gray-900">{analytics?.averageWeight || '0.0'} kg</p>
               </div>
-              <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center shadow-md">
+              <div className={`w-10 h-10 bg-gradient-to-r ${getTrendIconColor(analytics?.trend)} rounded-lg flex items-center justify-center shadow-md`}>
                 <TrendingUp className="w-5 h-5 text-white" />
               </div>
             </div>
@@ -364,19 +403,19 @@ const Analytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300"
+            className={`backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 ${getTrendBackgroundColor(analytics?.trend)}`}
           >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium text-gray-600 mb-1">Weight Change</p>
-                <p className="text-2xl font-bold text-gray-900">{analytics?.weightChange || '0.0'} kg</p>
+                <p className={`text-2xl font-bold ${getTrendTextColor(analytics?.trend)}`}>{analytics?.weightChange || '0.0'} kg</p>
               </div>
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center shadow-md">
+              <div className={`w-10 h-10 bg-gradient-to-r ${getTrendIconColor(analytics?.trend)} rounded-lg flex items-center justify-center shadow-md`}>
                 {getTrendIcon()}
               </div>
             </div>
             <div className="mt-2">
-              <p className="text-xs text-gray-600 font-medium">
+              <p className={`text-xs font-medium ${getTrendTextColor(analytics?.trend)}`}>
                 {analytics?.trend || 'Stable'}
               </p>
             </div>
@@ -388,14 +427,14 @@ const Analytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300"
+            className={`backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 ${getTrendBackgroundColor(analytics?.trend)}`}
           >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium text-gray-600 mb-1">Progress to Target</p>
                 <p className="text-2xl font-bold text-gray-900">{analytics?.progressToTarget?.toFixed(1) || '0.0'}%</p>
               </div>
-              <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center shadow-md">
+              <div className={`w-10 h-10 bg-gradient-to-r ${getTrendIconColor(analytics?.trend)} rounded-lg flex items-center justify-center shadow-md`}>
                 <Target className="w-5 h-5 text-white" />
               </div>
             </div>
@@ -412,14 +451,14 @@ const Analytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300 lg:block hidden"
+            className={`backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 lg:block hidden ${getTrendBackgroundColor(analytics?.trend)}`}
           >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium text-gray-600 mb-1">Latest Weight</p>
                 <p className="text-2xl font-bold text-gray-900">{analytics?.currentWeight || '0.0'} kg</p>
               </div>
-              <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center shadow-md">
+              <div className={`w-10 h-10 bg-gradient-to-r ${getTrendIconColor(analytics?.trend)} rounded-lg flex items-center justify-center shadow-md`}>
                 <TrendingUp className="w-5 h-5 text-white" />
               </div>
             </div>
@@ -452,12 +491,12 @@ const Analytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300 text-center"
+            className={`backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 text-center ${getTrendBackgroundColor(analytics?.trend)}`}
           >
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
+            <div className={`w-12 h-12 bg-gradient-to-r ${getTrendIconColor(analytics?.trend)} rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md`}>
               <ArrowUp className="w-6 h-6 text-white" />
             </div>
-            <p className="text-2xl font-bold text-gray-900 mb-1">0.0 kg</p>
+            <p className={`text-2xl font-bold mb-1 ${getTrendTextColor(analytics?.trend)}`}>0.0 kg</p>
             <p className="text-xs text-gray-600 font-semibold">Last 7 Days</p>
           </motion.div>
 
@@ -467,12 +506,12 @@ const Analytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300 text-center"
+            className={`backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 text-center ${getTrendBackgroundColor(analytics?.trend)}`}
           >
-            <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
+            <div className={`w-12 h-12 bg-gradient-to-r ${getTrendIconColor(analytics?.trend)} rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md`}>
               <Calendar className="w-6 h-6 text-white" />
             </div>
-            <p className="text-2xl font-bold text-gray-900 mb-1">0.0 kg</p>
+            <p className={`text-2xl font-bold mb-1 ${getTrendTextColor(analytics?.trend)}`}>0.0 kg</p>
             <p className="text-xs text-gray-600 font-semibold">Last 30 Days</p>
           </motion.div>
 
@@ -482,12 +521,12 @@ const Analytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300 text-center"
+            className={`backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 text-center ${getTrendBackgroundColor(analytics?.trend)}`}
           >
-            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
+            <div className={`w-12 h-12 bg-gradient-to-r ${getTrendIconColor(analytics?.trend)} rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md`}>
               <Target className="w-6 h-6 text-white" />
             </div>
-            <p className="text-2xl font-bold text-gray-900 mb-1">0.0 kg</p>
+            <p className={`text-2xl font-bold mb-1 ${getTrendTextColor(analytics?.trend)}`}>0.0 kg</p>
             <p className="text-xs text-gray-600 font-semibold">Total Change</p>
           </motion.div>
 
@@ -497,12 +536,12 @@ const Analytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300 text-center"
+            className={`backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 text-center ${getTrendBackgroundColor(analytics?.trend)}`}
           >
-            <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
+            <div className={`w-12 h-12 bg-gradient-to-r ${getTrendIconColor(analytics?.trend)} rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md`}>
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
-            <p className="text-2xl font-bold text-gray-900 mb-1">0.0 kg</p>
+            <p className={`text-2xl font-bold mb-1 ${getTrendTextColor(analytics?.trend)}`}>0.0 kg</p>
             <p className="text-xs text-gray-600 font-semibold">Weekly Average</p>
           </motion.div>
         </div>
