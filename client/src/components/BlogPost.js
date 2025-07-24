@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 const blogPosts = [
   {
     id: 1,
+    slug: "science-weight-loss-metabolism",
     title: "The Science of Weight Loss: Understanding Your Body's Metabolism",
     excerpt: "Discover how your metabolism works and learn evidence-based strategies to optimize it for sustainable weight loss.",
     content: `
@@ -104,6 +105,7 @@ const blogPosts = [
   },
   {
     id: 2,
+    slug: "nutrition-fundamentals-sustainable-weight-loss",
     title: "Nutrition Fundamentals for Sustainable Weight Loss",
     excerpt: "Master the basics of nutrition to create a sustainable eating plan that supports your weight loss goals.",
     content: `
@@ -171,6 +173,7 @@ const blogPosts = [
   },
   {
     id: 3,
+    slug: "exercise-strategies-maximum-fat-burning",
     title: "Exercise Strategies for Maximum Fat Burning",
     excerpt: "Discover the most effective exercise techniques to maximize fat burning and accelerate your weight loss journey.",
     content: `
@@ -276,6 +279,7 @@ const blogPosts = [
   },
   {
     id: 4,
+    slug: "mindset-motivation-psychology-weight-loss",
     title: "Mindset and Motivation: The Psychology of Weight Loss",
     excerpt: "Learn how to develop the right mindset and maintain motivation throughout your weight loss journey.",
     content: `
@@ -336,6 +340,7 @@ const blogPosts = [
   },
   {
     id: 5,
+    slug: "sleep-weight-loss-hidden-connection",
     title: "Sleep and Weight Loss: The Hidden Connection",
     excerpt: "Discover how sleep quality and duration significantly impact your weight loss efforts and overall health.",
     content: `
@@ -406,6 +411,7 @@ const blogPosts = [
   },
   {
     id: 6,
+    slug: "plateau-breaking-advanced-strategies-weight-loss",
     title: "Plateau Breaking: Advanced Strategies for Continued Weight Loss",
     excerpt: "When progress stalls, these advanced techniques can help you break through plateaus and continue your weight loss journey.",
     content: `
@@ -463,6 +469,7 @@ const blogPosts = [
   },
   {
     id: 7,
+    slug: "metabolism-weight-loss-science-explained",
     title: "The Science of Weight Loss: Understanding Your Body's Metabolism",
     excerpt: "Discover how your metabolism works and learn evidence-based strategies to optimize it for sustainable weight loss.",
     content: `
@@ -552,6 +559,7 @@ const blogPosts = [
   },
   {
     id: 8,
+    slug: "nutrition-basics-weight-loss-guide",
     title: "Nutrition Fundamentals for Sustainable Weight Loss",
     excerpt: "Master the basics of nutrition to create a sustainable eating plan that supports your weight loss goals.",
     content: `
@@ -619,6 +627,7 @@ const blogPosts = [
   },
   {
     id: 9,
+    slug: "sunlight-wellness-vitamin-d-mental-health",
     title: "Sunlight for Wellness: Vitamin D & Mental Health",
     excerpt: "Discover the crucial connection between vitamin D, sunlight exposure, and your mental health during weight loss.",
     content: `
@@ -686,19 +695,267 @@ const blogPosts = [
     image: "/BlogImg/bruce-mars-gJtDg6WfMlQ-unsplash.jpg",
     tags: ["vitamin d", "sunlight", "mental health", "wellness", "weight loss"],
     seoDescription: "Learn about the connection between vitamin D, sunlight exposure, and mental health during your weight loss journey."
+  },
+  {
+    id: 10,
+    slug: "intermittent-fasting-weight-loss-complete-guide",
+    title: "Intermittent Fasting: A Complete Guide to Weight Loss Success",
+    excerpt: "Master the art of intermittent fasting with proven strategies for sustainable weight loss and improved health.",
+    content: `
+      <div class="article-content">
+        <h2>Understanding Intermittent Fasting</h2>
+        <p>Intermittent fasting (IF) is an eating pattern that cycles between periods of fasting and eating. It's not about what you eat, but when you eat.</p>
+        
+        <div class="info-box">
+          <h3>Popular IF Methods</h3>
+          <ul>
+            <li><strong>16:8 Method:</strong> 16 hours fasting, 8 hours eating window</li>
+            <li><strong>5:2 Method:</strong> 5 days normal eating, 2 days restricted calories</li>
+            <li><strong>Eat-Stop-Eat:</strong> 24-hour fast once or twice per week</li>
+            <li><strong>Alternate Day Fasting:</strong> Fasting every other day</li>
+          </ul>
+        </div>
+
+        <h2>How Intermittent Fasting Promotes Weight Loss</h2>
+        <p>IF works through several mechanisms that support fat burning and weight loss.</p>
+        
+        <div class="data-table">
+          <h3>Weight Loss Benefits of IF</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Benefit</th>
+                <th>Mechanism</th>
+                <th>Impact</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Reduced Calorie Intake</td>
+                <td>Shorter eating window</td>
+                <td>Natural calorie deficit</td>
+              </tr>
+              <tr>
+                <td>Increased Fat Burning</td>
+                <td>Lower insulin levels</td>
+                <td>Enhanced fat oxidation</td>
+              </tr>
+              <tr>
+                <td>Improved Metabolism</td>
+                <td>Hormonal changes</td>
+                <td>Better energy utilization</td>
+              </tr>
+              <tr>
+                <td>Reduced Inflammation</td>
+                <td>Cellular repair processes</td>
+                <td>Better overall health</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Getting Started with Intermittent Fasting</h2>
+        <p>Begin with a simple approach and gradually increase the fasting duration.</p>
+        
+        <div class="if-guide">
+          <h3>Step-by-Step IF Guide</h3>
+          <ol>
+            <li><strong>Start Slow:</strong> Begin with 12:12 (12 hours fasting)</li>
+            <li><strong>Gradually Increase:</strong> Move to 14:10, then 16:8</li>
+            <li><strong>Stay Hydrated:</strong> Drink plenty of water during fasts</li>
+            <li><strong>Listen to Your Body:</strong> Adjust based on how you feel</li>
+            <li><strong>Be Consistent:</strong> Stick to your chosen schedule</li>
+          </ol>
+        </div>
+
+        <h2>What to Eat During Your Eating Window</h2>
+        <p>Focus on nutrient-dense foods to maximize the benefits of IF.</p>
+        
+        <div class="meal-suggestions">
+          <h3>Optimal Food Choices</h3>
+          <ul>
+            <li><strong>Proteins:</strong> Lean meats, fish, eggs, legumes</li>
+            <li><strong>Healthy Fats:</strong> Avocados, nuts, olive oil</li>
+            <li><strong>Complex Carbs:</strong> Whole grains, vegetables</li>
+            <li><strong>Fiber:</strong> Fruits, vegetables, seeds</li>
+          </ul>
+        </div>
+      </div>
+    `,
+    author: "Nutrition & Fasting Experts",
+    date: "2024-03-01",
+    readTime: "11 min read",
+    category: "Fasting & Nutrition",
+    image: "/BlogImg/bruce-mars-gJtDg6WfMlQ-unsplash.jpg",
+    tags: ["intermittent fasting", "weight loss", "nutrition", "health", "metabolism"],
+    seoDescription: "Master intermittent fasting for weight loss success. Learn proven strategies, methods, and tips for sustainable results."
+  },
+  {
+    id: 11,
+    slug: "stress-management-weight-loss-connection",
+    title: "Stress Management: The Missing Link in Your Weight Loss Journey",
+    excerpt: "Discover how stress affects your weight loss efforts and learn effective strategies to manage it for better results.",
+    content: `
+      <div class="article-content">
+        <h2>The Stress-Weight Connection</h2>
+        <p>Chronic stress can sabotage your weight loss efforts through hormonal changes and behavioral patterns.</p>
+        
+        <div class="info-box">
+          <h3>How Stress Affects Weight Loss</h3>
+          <ul>
+            <li><strong>Cortisol Production:</strong> Increases fat storage, especially around the abdomen</li>
+            <li><strong>Appetite Changes:</strong> Can lead to emotional eating and cravings</li>
+            <li><strong>Sleep Disruption:</strong> Affects metabolism and recovery</li>
+            <li><strong>Reduced Motivation:</strong> Makes it harder to stick to healthy habits</li>
+          </ul>
+        </div>
+
+        <h2>Stress Hormones and Weight Gain</h2>
+        <p>Understanding the hormonal response to stress helps explain why weight loss becomes difficult.</p>
+        
+        <div class="stress-hormones">
+          <h3>Key Stress Hormones</h3>
+          <ul>
+            <li><strong>Cortisol:</strong> Primary stress hormone that promotes fat storage</li>
+            <li><strong>Adrenaline:</strong> Increases heart rate and energy expenditure</li>
+            <li><strong>Insulin:</strong> Can become less effective under chronic stress</li>
+            <li><strong>Leptin:</strong> Hunger hormone that can be disrupted by stress</li>
+          </ul>
+        </div>
+
+        <h2>Effective Stress Management Techniques</h2>
+        <p>Implementing stress management strategies can significantly improve your weight loss results.</p>
+        
+        <div class="stress-techniques">
+          <h3>Proven Stress Reduction Methods</h3>
+          <ul>
+            <li><strong>Mindfulness Meditation:</strong> 10-20 minutes daily practice</li>
+            <li><strong>Deep Breathing:</strong> 4-7-8 breathing technique</li>
+            <li><strong>Regular Exercise:</strong> Natural stress reliever</li>
+            <li><strong>Quality Sleep:</strong> 7-9 hours per night</li>
+            <li><strong>Social Connection:</strong> Spend time with loved ones</li>
+          </ul>
+        </div>
+
+        <h2>Creating a Stress-Free Environment</h2>
+        <p>Your environment plays a crucial role in managing stress levels.</p>
+        
+        <div class="environment-tips">
+          <h3>Environment Optimization</h3>
+          <ul>
+            <li>Create a calming home environment</li>
+            <li>Limit exposure to negative news and social media</li>
+            <li>Establish regular routines and schedules</li>
+            <li>Practice time management to reduce overwhelm</li>
+            <li>Incorporate nature and outdoor activities</li>
+          </ul>
+        </div>
+      </div>
+    `,
+    author: "Mental Health & Wellness Experts",
+    date: "2024-03-05",
+    readTime: "9 min read",
+    category: "Mental Health & Wellness",
+    image: "/BlogImg/lyfefuel-4wtxPhvQZds-unsplash.jpg",
+    tags: ["stress management", "weight loss", "mental health", "cortisol", "wellness"],
+    seoDescription: "Learn how stress affects weight loss and discover effective stress management techniques for better weight loss results."
+  },
+  {
+    id: 12,
+    slug: "gut-health-weight-loss-microbiome",
+    title: "Gut Health and Weight Loss: The Microbiome Connection",
+    excerpt: "Explore the fascinating connection between your gut microbiome and weight loss success.",
+    content: `
+      <div class="article-content">
+        <h2>The Gut Microbiome and Weight Loss</h2>
+        <p>Your gut contains trillions of bacteria that play a crucial role in metabolism, appetite regulation, and weight management.</p>
+        
+        <div class="info-box">
+          <h3>How the Microbiome Affects Weight</h3>
+          <ul>
+            <li><strong>Metabolism Regulation:</strong> Influences how you process food</li>
+            <li><strong>Appetite Control:</strong> Affects hunger and satiety signals</li>
+            <li><strong>Energy Extraction:</strong> Determines how many calories you absorb</li>
+            <li><strong>Inflammation:</strong> Can cause weight gain through chronic inflammation</li>
+          </ul>
+        </div>
+
+        <h2>Gut Bacteria and Weight Management</h2>
+        <p>Different types of bacteria in your gut can either support or hinder weight loss efforts.</p>
+        
+        <div class="bacteria-types">
+          <h3>Beneficial vs. Harmful Bacteria</h3>
+          <div class="bacteria-comparison">
+            <div class="beneficial">
+              <h4>Weight-Loss Friendly Bacteria</h4>
+              <ul>
+                <li>Bifidobacterium</li>
+                <li>Lactobacillus</li>
+                <li>Akkermansia muciniphila</li>
+                <li>Faecalibacterium prausnitzii</li>
+              </ul>
+            </div>
+            <div class="harmful">
+              <h4>Weight-Gain Associated Bacteria</h4>
+              <ul>
+                <li>Firmicutes (in excess)</li>
+                <li>Enterobacter</li>
+                <li>Escherichia coli (certain strains)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <h2>Improving Gut Health for Weight Loss</h2>
+        <p>Several strategies can help optimize your gut microbiome for better weight management.</p>
+        
+        <div class="gut-health-strategies">
+          <h3>Gut Health Optimization</h3>
+          <ul>
+            <li><strong>Eat More Fiber:</strong> 25-30 grams daily from whole foods</li>
+            <li><strong>Include Probiotics:</strong> Yogurt, kefir, sauerkraut, kimchi</li>
+            <li><strong>Prebiotic Foods:</strong> Garlic, onions, bananas, asparagus</li>
+            <li><strong>Diverse Diet:</strong> Eat a wide variety of plant foods</li>
+            <li><strong>Limit Processed Foods:</strong> Reduce artificial additives</li>
+          </ul>
+        </div>
+
+        <h2>Signs of Poor Gut Health</h2>
+        <p>Recognizing the symptoms of an unhealthy gut can help you take action.</p>
+        
+        <div class="gut-symptoms">
+          <h3>Common Gut Health Issues</h3>
+          <ul>
+            <li>Digestive problems (bloating, gas, constipation)</li>
+            <li>Food intolerances and sensitivities</li>
+            <li>Unexplained weight gain or difficulty losing weight</li>
+            <li>Fatigue and low energy levels</li>
+            <li>Skin problems and inflammation</li>
+            <li>Mood changes and brain fog</li>
+          </ul>
+        </div>
+      </div>
+    `,
+    author: "Gut Health & Nutrition Specialists",
+    date: "2024-03-10",
+    readTime: "10 min read",
+    category: "Gut Health & Nutrition",
+    image: "/BlogImg/bruce-mars-tj27cwu86Wk-unsplash.jpg",
+    tags: ["gut health", "microbiome", "weight loss", "probiotics", "nutrition"],
+    seoDescription: "Discover the connection between gut health and weight loss. Learn how to optimize your microbiome for better weight management."
   }
 ];
 
 const BlogPost = () => {
-  const { blogId } = useParams();
+  const { blogSlug } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [isSharing, setIsSharing] = useState(false);
 
   useEffect(() => {
-    const foundPost = blogPosts.find(p => p.id === parseInt(blogId));
+    const foundPost = blogPosts.find(p => p.slug === blogSlug);
     setPost(foundPost);
-  }, [blogId]);
+  }, [blogSlug]);
 
   const handleShare = async () => {
     if (isSharing) return; // Prevent multiple share requests

@@ -89,7 +89,7 @@ function App() {
         <Routes>
           {/* Blog Routes - Accessible to everyone */}
           <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:blogId" element={<BlogPost />} />
+                            <Route path="/blog/:blogSlug" element={<BlogPost />} />
           
           {/* Home Page - Only show when not logged in */}
           {!currentUser && (
