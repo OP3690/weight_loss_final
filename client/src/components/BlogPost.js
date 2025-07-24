@@ -13,7 +13,7 @@ import {
   Activity
 } from 'lucide-react';
 
-// Blog data with SEO-optimized content
+// Blog data with SEO-optimized content using local BlogImg images
 const blogPosts = [
   {
     id: 1,
@@ -129,7 +129,7 @@ const blogPosts = [
     date: "2024-01-15",
     readTime: "8 min read",
     category: "Science & Research",
-    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    image: "/BlogImg/bruce-mars-gJtDg6WfMlQ-unsplash.jpg",
     tags: ["metabolism", "weight loss", "BMR", "exercise", "nutrition"],
     seoDescription: "Learn the science behind metabolism and weight loss. Discover how to optimize your body's energy systems for sustainable weight management results.",
     seoKeywords: "metabolism, weight loss, BMR, basal metabolic rate, weight management, fat burning"
@@ -287,7 +287,7 @@ const blogPosts = [
     date: "2024-01-18",
     readTime: "10 min read",
     category: "Nutrition",
-    image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    image: "/BlogImg/lyfefuel-4wtxPhvQZds-unsplash.jpg",
     tags: ["nutrition", "macronutrients", "weight loss", "healthy eating", "meal planning"],
     seoDescription: "Master the fundamentals of nutrition for sustainable weight loss. Learn about macronutrients, meal timing, and optimal food choices.",
     seoKeywords: "nutrition, weight loss, macronutrients, healthy eating, meal planning, calorie density"
@@ -448,7 +448,7 @@ const blogPosts = [
     date: "2024-01-20",
     readTime: "12 min read",
     category: "Fitness & Exercise",
-    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    image: "/BlogImg/bruce-mars-tj27cwu86Wk-unsplash.jpg",
     tags: ["exercise", "workout", "HIIT", "strength training", "fat burning", "fitness"],
     seoDescription: "Discover the most effective exercise strategies for maximum fat burning. Learn about HIIT, strength training, and optimal workout planning.",
     seoKeywords: "exercise, workout, HIIT, strength training, fat burning, fitness, weight loss"
@@ -504,7 +504,7 @@ const BlogPost = () => {
       <div className="relative h-96 bg-gradient-to-r from-orange-500 to-red-500">
         <div className="absolute inset-0 bg-black bg-opacity-40"></div>
         <div className="relative h-full flex items-center justify-center">
-          <div className="text-center text-white max-w-5xl mx-auto px-6">
+          <div className="text-center text-white w-full px-6">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -525,7 +525,7 @@ const BlogPost = () => {
       </div>
 
       {/* Content Section */}
-      <div className="max-w-5xl mx-auto px-6 py-12">
+      <div className="w-full px-6 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Content */}
           <div className="flex-1">
@@ -625,7 +625,7 @@ const BlogPost = () => {
       </div>
 
       {/* Back to Blog Button */}
-      <div className="max-w-5xl mx-auto px-6 pb-12">
+      <div className="w-full px-6 pb-12">
         <button
           onClick={() => navigate('/blog')}
           className="flex items-center gap-2 text-orange-600 hover:text-orange-700 transition-colors"

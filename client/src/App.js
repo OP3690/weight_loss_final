@@ -86,15 +86,12 @@ function App() {
     <UserProvider value={{ currentUser, setCurrentUser: handleUserLogin, logout: handleUserLogout }}>
       <GoogleAnalytics />
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-purple-50 flex flex-col">
-        {/* Navigation - Always show for blog pages */}
-        <Navigation currentUser={currentUser} onLogout={handleUserLogout} />
-        
-        {/* Blog Routes - Accessible to everyone */}
         <Routes>
+          {/* Blog Routes - Accessible to everyone */}
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:blogId" element={<BlogPost />} />
           
-          {/* Home Page - Only show when not logged in and not on blog */}
+          {/* Home Page - Only show when not logged in */}
           {!currentUser && (
             <Route path="/" element={
               <HomePage
@@ -108,13 +105,25 @@ function App() {
           {/* Main App Content - Only show when logged in */}
           {currentUser && (
             <>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/analytics" element={<Analytics />} />
-              <Route path="/bmi-calculator" element={<BMICalculator />} />
+              {/* Navigation for logged-in users */}
+              <Route path="/*" element={
+                <>
+                  <Navigation currentUser={currentUser} onLogout={handleUserLogout} />
+                  <main className="flex-1 px-4 sm:px-6 lg:px-8 py-8">
+                    <Routes>
+                      <Route path="/" element={<Dashboard />} />
+                      <Route path="/profile" element={<Profile />} />
+                      <Route path="/analytics" element={<Analytics />} />
+                      <Route path="/bmi-calculator" element={<BMICalculator />} />
+                      <Route path="*" element={<Navigate to="/" />} />
+                    </Routes>
+                  </main>
+                </>
+              } />
             </>
           )}
           
+          {/* Default redirect */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
 
