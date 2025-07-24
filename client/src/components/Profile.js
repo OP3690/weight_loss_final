@@ -11,6 +11,7 @@ const Profile = () => {
   const { currentUser, setCurrentUser } = useUser();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const [bmiAnalytics, setBmiAnalytics] = useState(null);
   const [weightEntries, setWeightEntries] = useState([]);
@@ -28,6 +29,7 @@ const Profile = () => {
 
   // ENABLED: For goal management functions
   const loadUserProfile = useCallback(async () => {
+    console.log('[PROFILE] loadUserProfile called, current loading state:', loading);
     // Prevent multiple simultaneous calls
     if (loading) {
       console.log('Profile loading already in progress, skipping...');
@@ -35,6 +37,7 @@ const Profile = () => {
     }
     
     try {
+      console.log('[PROFILE] Setting loading to true');
       setLoading(true);
       const profile = await userAPI.getUser(currentUser.id);
       setUserProfile(profile);
@@ -64,9 +67,10 @@ const Profile = () => {
       console.error('Error loading profile:', error);
       // Don't show toast error for data loading
     } finally {
+      console.log('[PROFILE] Setting loading to false');
       setLoading(false);
     }
-  }, [currentUser?.id, loading]);
+  }, [currentUser?.id]);
 
   useEffect(() => {
     if (currentUser && currentUser.id !== 'demo') {
@@ -268,7 +272,7 @@ const Profile = () => {
   const onSubmitGoal = async (data) => {
     try {
       console.log('[PROFILE] Starting goal creation with data:', data);
-      setLoading(true);
+      setModalLoading(true);
       
       // First, set the goal status to active
       console.log('[PROFILE] Setting goal status to active...');
@@ -296,8 +300,8 @@ const Profile = () => {
       console.error('Goal creation error:', error);
       toast.error('Failed to create goal');
     } finally {
-      console.log('[PROFILE] Goal creation completed, setting loading to false');
-      setLoading(false);
+      console.log('[PROFILE] Goal creation completed, setting modal loading to false');
+      setModalLoading(false);
     }
   };
 
@@ -319,7 +323,7 @@ const Profile = () => {
 
   const onSubmitEditGoal = async (data) => {
     try {
-      setLoading(true);
+      setModalLoading(true);
       
       // First, ensure the goal status is active
       await userAPI.updateUser(currentUser.id, { goalStatus: 'active' });
@@ -343,7 +347,7 @@ const Profile = () => {
       console.error('Goal update error:', error);
       toast.error('Failed to update goal');
     } finally {
-      setLoading(false);
+      setModalLoading(false);
     }
   };
 
@@ -751,7 +755,7 @@ const Profile = () => {
             </div>
             <div className="flex items-center justify-end space-x-4 pt-4">
               <button type="button" onClick={() => setIsCreatingGoal(false)} className="btn-secondary">Cancel</button>
-              <button type="submit" disabled={loading} className="btn-primary">{loading ? 'Saving...' : 'Create Goal'}</button>
+              <button type="submit" disabled={modalLoading} className="btn-primary">{modalLoading ? 'Saving...' : 'Create Goal'}</button>
             </div>
           </form>
         </div>
@@ -801,7 +805,7 @@ const Profile = () => {
             </div>
             <div className="flex items-center justify-end space-x-4 pt-4">
               <button type="button" onClick={() => setIsEditingGoal(false)} className="btn-secondary">Cancel</button>
-              <button type="submit" disabled={loading} className="btn-primary">{loading ? 'Saving...' : 'Update Goal'}</button>
+              <button type="submit" disabled={modalLoading} className="btn-primary">{modalLoading ? 'Saving...' : 'Update Goal'}</button>
             </div>
           </form>
         </div>
