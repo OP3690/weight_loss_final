@@ -1381,3 +1381,91 @@ code {
     margin: 1.5rem 0;
   }
 } 
+
+/* Enhanced fitness and joy sections */
+.joyful-movement, .mind-body-benefits, .joyful-routine, .movement-self-care, .movement-barriers {
+  background: #ecfdf5;
+  border: 1px solid #10b981;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.joyful-movement h3, .mind-body-benefits h3, .joyful-routine h3, .movement-self-care h3, .movement-barriers h3 {
+  color: #065f46;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.joyful-movement ul, .mind-body-benefits ul, .joyful-routine ul, .movement-self-care ul, .movement-barriers ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.joyful-movement li, .mind-body-benefits li, .joyful-routine li, .movement-self-care li, .movement-barriers li {
+  color: #047857;
+  margin-bottom: 0.75rem;
+}
+
+/* Enhanced nutrition and happiness sections */
+.diet-hacks, .mood-boosting-foods, .meal-timing, .joyful-eating, .sustainable-eating {
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.diet-hacks h3, .mood-boosting-foods h3, .meal-timing h3, .joyful-eating h3, .sustainable-eating h3 {
+  color: #92400e;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.diet-hacks ul, .mood-boosting-foods ul, .meal-timing ul, .joyful-eating ul, .sustainable-eating ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.diet-hacks li, .mood-boosting-foods li, .meal-timing li, .joyful-eating li, .sustainable-eating li {
+  color: #78350f;
+  margin-bottom: 0.75rem;
+}
+
+/* Enhanced meditation and wellness sections */
+.meditation-basics, .meditation-techniques, .stress-relief-meditation, .meditation-routine, .meditation-health, .meditation-challenges {
+  background: #f0f9ff;
+  border: 1px solid #0ea5e9;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.meditation-basics h3, .meditation-techniques h3, .stress-relief-meditation h3, .meditation-routine h3, .meditation-health h3, .meditation-challenges h3 {
+  color: #0c4a6e;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.meditation-basics ul, .meditation-techniques ul, .stress-relief-meditation ul, .meditation-routine ul, .meditation-health ul, .meditation-challenges ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.meditation-basics li, .meditation-techniques li, .stress-relief-meditation li, .meditation-routine li, .meditation-health li, .meditation-challenges li {
+  color: #0c4a6e;
+  margin-bottom: 0.75rem;
+}
+
+/* Enhanced responsive design for new sections */
+@media (max-width: 768px) {
+  .joyful-movement, .mind-body-benefits, .joyful-routine, .movement-self-care, .movement-barriers,
+  .diet-hacks, .mood-boosting-foods, .meal-timing, .joyful-eating, .sustainable-eating,
+  .meditation-basics, .meditation-techniques, .stress-relief-meditation, .meditation-routine, .meditation-health, .meditation-challenges {
+    padding: 1rem;
+    margin: 1.5rem 0;
+  }
+} 
