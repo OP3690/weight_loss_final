@@ -176,22 +176,12 @@ const blogPosts = [
         </div>
 
         <h3>Optimal Macronutrient Ratios for Weight Loss</h3>
-        <div class="chart-container">
-          <div class="pie-chart">
-            <div class="chart-label">Recommended Distribution</div>
-            <div class="chart-segments">
-              <div class="segment protein" style="--percentage: 30%">
-                <span>Protein 30%</span>
-              </div>
-              <div class="segment carbs" style="--percentage: 40%">
-                <span>Carbs 40%</span>
-              </div>
-              <div class="segment fats" style="--percentage: 30%">
-                <span>Fats 30%</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <p>For effective weight loss, aim for this balanced distribution:</p>
+        <ul>
+          <li><strong>Protein:</strong> 25-30% of total calories</li>
+          <li><strong>Carbohydrates:</strong> 35-45% of total calories</li>
+          <li><strong>Fats:</strong> 25-35% of total calories</li>
+        </ul>
 
         <h3>Calorie Density and Weight Loss</h3>
         <p>Understanding calorie density helps you make better food choices:</p>
@@ -329,32 +319,28 @@ const blogPosts = [
         </div>
 
         <h3>Exercise Intensity and Fat Burning</h3>
-        <div class="intensity-chart">
-          <div class="chart-header">
-            <h4>Fat Burning Zones</h4>
-            <p>Percentage of maximum heart rate vs. fuel source</p>
+        <p>Understanding your heart rate zones helps optimize fat burning:</p>
+        
+        <div class="intensity-zones">
+          <div class="zone-item">
+            <h4>Zone 1 (50-60% max heart rate)</h4>
+            <p>Recovery and fat burning zone - great for active recovery days</p>
           </div>
-          <div class="zone-bars">
-            <div class="zone low">
-              <span class="zone-label">Zone 1 (50-60%)</span>
-              <span class="zone-desc">Fat burning, recovery</span>
-            </div>
-            <div class="zone moderate">
-              <span class="zone-label">Zone 2 (60-70%)</span>
-              <span class="zone-desc">Aerobic base, fat burning</span>
-            </div>
-            <div class="zone high">
-              <span class="zone-label">Zone 3 (70-80%)</span>
-              <span class="zone-desc">Aerobic threshold</span>
-            </div>
-            <div class="zone very-high">
-              <span class="zone-label">Zone 4 (80-90%)</span>
-              <span class="zone-desc">Lactate threshold</span>
-            </div>
-            <div class="zone max">
-              <span class="zone-label">Zone 5 (90-100%)</span>
-              <span class="zone-desc">Maximum effort</span>
-            </div>
+          <div class="zone-item">
+            <h4>Zone 2 (60-70% max heart rate)</h4>
+            <p>Aerobic base building - optimal for fat burning during longer sessions</p>
+          </div>
+          <div class="zone-item">
+            <h4>Zone 3 (70-80% max heart rate)</h4>
+            <p>Aerobic threshold - improves cardiovascular fitness</p>
+          </div>
+          <div class="zone-item">
+            <h4>Zone 4 (80-90% max heart rate)</h4>
+            <p>Lactate threshold - high-intensity training for maximum calorie burn</p>
+          </div>
+          <div class="zone-item">
+            <h4>Zone 5 (90-100% max heart rate)</h4>
+            <p>Maximum effort - short bursts for power and speed</p>
           </div>
         </div>
 
@@ -362,58 +348,25 @@ const blogPosts = [
         
         <h4>1. High-Intensity Interval Training (HIIT)</h4>
         <div class="exercise-detail">
-          <div class="exercise-stats">
-            <div class="stat">
-              <span class="stat-number">15-30</span>
-              <span class="stat-label">Minutes</span>
-            </div>
-            <div class="stat">
-              <span class="stat-number">400-600</span>
-              <span class="stat-label">Calories/Hour</span>
-            </div>
-            <div class="stat">
-              <span class="stat-number">24-48</span>
-              <span class="stat-label">Hours EPOC</span>
-            </div>
-          </div>
+          <p><strong>Duration:</strong> 15-30 minutes</p>
+          <p><strong>Calories Burned:</strong> 400-600 per hour</p>
+          <p><strong>Afterburn Effect:</strong> 24-48 hours</p>
           <p>HIIT alternates between high-intensity bursts and recovery periods, creating an "afterburn effect" that continues burning calories for hours after your workout.</p>
         </div>
 
         <h4>2. Strength Training</h4>
         <div class="exercise-detail">
-          <div class="exercise-stats">
-            <div class="stat">
-              <span class="stat-number">45-60</span>
-              <span class="stat-label">Minutes</span>
-            </div>
-            <div class="stat">
-              <span class="stat-number">300-500</span>
-              <span class="stat-label">Calories/Hour</span>
-            </div>
-            <div class="stat">
-              <span class="stat-number">5-10%</span>
-              <span class="stat-label">BMR Increase</span>
-            </div>
-          </div>
+          <p><strong>Duration:</strong> 45-60 minutes</p>
+          <p><strong>Calories Burned:</strong> 300-500 per hour</p>
+          <p><strong>BMR Increase:</strong> 5-10%</p>
           <p>Building muscle mass increases your basal metabolic rate, meaning you burn more calories even at rest.</p>
         </div>
 
         <h4>3. Steady-State Cardio</h4>
         <div class="exercise-detail">
-          <div class="exercise-stats">
-            <div class="stat">
-              <span class="stat-number">30-60</span>
-              <span class="stat-label">Minutes</span>
-            </div>
-            <div class="stat">
-              <span class="stat-number">400-600</span>
-              <span class="stat-label">Calories/Hour</span>
-            </div>
-            <div class="stat">
-              <span class="stat-number">High</span>
-              <span class="stat-label">Fat Oxidation</span>
-            </div>
-          </div>
+          <p><strong>Duration:</strong> 30-60 minutes</p>
+          <p><strong>Calories Burned:</strong> 400-600 per hour</p>
+          <p><strong>Fat Oxidation:</strong> High during workout</p>
           <p>Longer, moderate-intensity sessions are excellent for building endurance and burning fat during the workout.</p>
         </div>
 
@@ -520,7 +473,7 @@ const Blog = () => {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-purple-50">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white py-20">
-        <div className="max-w-6xl mx-auto px-6 text-center">
+        <div className="max-w-7xl mx-auto px-6 text-center">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -532,7 +485,7 @@ const Blog = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto"
+            className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto"
           >
             Evidence-based insights, expert tips, and proven strategies to help you achieve your weight loss goals
           </motion.p>
@@ -559,7 +512,7 @@ const Blog = () => {
       </div>
 
       {/* Blog Posts Grid */}
-      <div className="max-w-6xl mx-auto px-6 py-16">
+      <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {currentPosts.map((post, index) => (
             <motion.article
@@ -619,7 +572,7 @@ const Blog = () => {
                   {post.tags.slice(0, 3).map((tag, tagIndex) => (
                     <span
                       key={tagIndex}
-                      className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs hover:bg-orange-100 hover:text-orange-800 transition-colors"
+                      className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs hover:bg-orange-100 hover:text-orange-800 transition-colors cursor-pointer"
                     >
                       #{tag}
                     </span>
@@ -683,7 +636,7 @@ const Blog = () => {
 
       {/* SEO Footer */}
       <div className="bg-gray-900 text-white py-12">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <h3 className="text-xl font-bold mb-4">Weight Loss Resources</h3>
