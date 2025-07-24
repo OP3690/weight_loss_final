@@ -209,7 +209,7 @@ const Analytics = () => {
   const medianWeight = calculateMedianWeight(last90Days);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Goal Creation Notification */}
       {hasNoActiveGoal && showGoalNotification && (
         <motion.div
@@ -252,491 +252,439 @@ const Analytics = () => {
         </motion.div>
       )}
 
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-gradient-to-r from-primary-500 to-success-500 rounded-xl flex items-center justify-center">
-            <BarChart3 className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
-            <p className="text-gray-600">Detailed insights into your weight journey</p>
-          </div>
-        </div>
-        
-        {/* Period Selector */}
-        <div className="flex items-center space-x-2">
-          <span className="text-sm font-medium text-gray-700">Period:</span>
-          <select
-            value={selectedPeriod}
-            onChange={(e) => setSelectedPeriod(e.target.value)}
-            className="input-field w-28"
-          >
-            <option value="7">7 days</option>
-            <option value="14">14 days</option>
-            <option value="30">30 days</option>
-            <option value="90" selected>90 days</option>
-          </select>
-          <button
-            onClick={loadUserProfileAndAnalytics}
-            className="ml-2 px-3 py-1 rounded bg-blue-500 text-white text-sm font-semibold hover:bg-blue-600 transition"
-            title="Refresh Analytics"
-          >
-            Refresh
-          </button>
-        </div>
-      </div>
-
-      {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Total Entries */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="card-hover"
-        >
+      {/* Header Section */}
+      <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Entries</p>
-              <p className="text-2xl font-bold text-gray-900">{analytics?.totalEntries || 0}</p>
-            </div>
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-blue-600" />
-            </div>
-          </div>
-          <div className="mt-4">
-            <p className="text-sm text-gray-600">
-              Last {selectedPeriod} days
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Average Weight */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="card-hover"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Average Weight</p>
-              <p className="text-2xl font-bold text-gray-900">{analytics?.averageWeight || '0.0'} kg</p>
-            </div>
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-green-600" />
-            </div>
-          </div>
-          <div className="mt-4">
-            <p className="text-sm text-gray-600">
-              Over {selectedPeriod} days
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Weight Change */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="card-hover"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Weight Change</p>
-              <p className="text-2xl font-bold text-gray-900">{analytics.weightChange} kg</p>
-            </div>
-            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              {getTrendIcon()}
-            </div>
-          </div>
-          <div className="mt-4 flex items-center space-x-2">
-            <span className={`text-sm font-medium ${getTrendColor()}`}>
-              {analytics.trend === 'decreasing' ? 'Losing' : 
-               analytics.trend === 'increasing' ? 'Gaining' : 'Stable'}
-            </span>
-          </div>
-        </motion.div>
-
-        {/* Progress to Target */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="card-hover"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Progress to Target</p>
-              <p className="text-2xl font-bold text-gray-900">{analytics && typeof analytics.progressToTarget === 'number' && !isNaN(analytics.progressToTarget) ? analytics.progressToTarget.toFixed(1) : '0'}%</p>
-            </div>
-            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-              <Target className="w-6 h-6 text-orange-600" />
-            </div>
-          </div>
-          <div className="mt-4">
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
-                className="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full"
-                style={{ width: `${Math.min(analytics?.progressToTarget || 0, 100)}%` }}
-              />
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Progress Trend Indicator */}
-      {entries && entries.length > 1 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.45 }}
-          className="card"
-        >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Progress Trend Analysis</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Weekly Progress */}
-            <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
-              <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                <TrendingUp className="w-8 h-8 text-white" />
+            <div className="flex items-center space-x-3">
+              <div className="bg-white/20 p-2 rounded-lg">
+                <BarChart3 className="w-5 h-5 text-white" />
               </div>
-              <p className="text-2xl font-bold text-blue-600">
-                {(() => {
-                  const lastWeek = sortedEntries.slice(-7);
-                  if (lastWeek.length < 2) return '0.0';
-                  const lastWeight = lastWeek[lastWeek.length - 1].weight;
-                  const firstWeight = lastWeek[0].weight;
-                  return (lastWeight && firstWeight && typeof lastWeight === 'number' && typeof firstWeight === 'number') ? (lastWeight - firstWeight).toFixed(1) : '0.0';
-                })()} kg
-              </p>
-              <p className="text-sm text-gray-600">Last 7 Days</p>
+              <div>
+                <h1 className="text-xl font-bold text-white">Analytics</h1>
+                <p className="text-blue-100">Detailed insights into your weight journey</p>
+              </div>
             </div>
+            
+            {/* Period Selector */}
+            <div className="flex items-center space-x-3">
+              <span className="text-sm font-medium text-white">Period:</span>
+              <select
+                value={selectedPeriod}
+                onChange={(e) => setSelectedPeriod(e.target.value)}
+                className="bg-white/20 text-white border-white/30 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-white/50"
+              >
+                <option value="7" className="text-gray-900">7 days</option>
+                <option value="14" className="text-gray-900">14 days</option>
+                <option value="30" className="text-gray-900">30 days</option>
+                <option value="90" className="text-gray-900">90 days</option>
+              </select>
+              <button
+                onClick={loadUserProfileAndAnalytics}
+                className="bg-white/20 hover:bg-white/30 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center space-x-2"
+                title="Refresh Analytics"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>Refresh</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            {/* Monthly Progress */}
-            <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
-              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3">
+      {/* Overview Cards Section */}
+      <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="bg-gradient-to-r from-green-500 to-green-600 px-6 py-4">
+          <div className="flex items-center space-x-3">
+            <div className="bg-white/20 p-2 rounded-lg">
+              <TrendingUp className="w-5 h-5 text-white" />
+            </div>
+            <h2 className="text-xl font-bold text-white">Summary Statistics</h2>
+          </div>
+        </div>
+        <div className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Total Entries */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-blue-700">Total Entries</p>
+                  <p className="text-3xl font-bold text-blue-900">{analytics?.totalEntries || 0}</p>
+                </div>
+                <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-white" />
+                </div>
+              </div>
+              <div className="mt-4">
+                <p className="text-sm text-blue-600">
+                  Last {selectedPeriod} days
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Average Weight */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-green-700">Average Weight</p>
+                  <p className="text-3xl font-bold text-green-900">{analytics?.averageWeight || '0.0'} kg</p>
+                </div>
+                <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-6 h-6 text-white" />
+                </div>
+              </div>
+              <div className="mt-4">
+                <p className="text-sm text-green-600">
+                  Over {selectedPeriod} days
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Weight Change */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-purple-700">Weight Change</p>
+                  <p className="text-3xl font-bold text-purple-900">{analytics?.weightChange || '0.0'} kg</p>
+                </div>
+                <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+                  {getTrendIcon()}
+                </div>
+              </div>
+              <div className="mt-4">
+                <p className="text-sm text-purple-600">
+                  {analytics?.trend || 'Stable'}
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Progress to Target */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-orange-700">Progress to Target</p>
+                  <p className="text-3xl font-bold text-orange-900">{analytics?.progressToTarget?.toFixed(1) || '0.0'}%</p>
+                </div>
+                <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center">
+                  <Target className="w-6 h-6 text-white" />
+                </div>
+              </div>
+              <div className="mt-4">
+                <p className="text-sm text-orange-600">
+                  Goal Progress
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+
+      {/* Progress Trend Analysis Section */}
+      <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="bg-gradient-to-r from-purple-500 to-purple-600 px-6 py-4">
+          <div className="flex items-center space-x-3">
+            <div className="bg-white/20 p-2 rounded-lg">
+              <TrendingUp className="w-5 h-5 text-white" />
+            </div>
+            <h2 className="text-xl font-bold text-white">Progress Trend Analysis</h2>
+          </div>
+        </div>
+        <div className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Last 7 Days */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200 text-center"
+            >
+              <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <ArrowUp className="w-8 h-8 text-white" />
+              </div>
+              <p className="text-3xl font-bold text-blue-900 mb-2">0.0 kg</p>
+              <p className="text-sm text-blue-600">Last 7 Days</p>
+            </motion.div>
+
+            {/* Last 30 Days */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200 text-center"
+            >
+              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Calendar className="w-8 h-8 text-white" />
               </div>
-              <p className="text-2xl font-bold text-green-600">
-                {(() => {
-                  const lastMonth = sortedEntries.slice(-30);
-                  if (lastMonth.length < 2) return '0.0';
-                  const lastWeight = lastMonth[lastMonth.length - 1].weight;
-                  const firstWeight = lastMonth[0].weight;
-                  return (lastWeight && firstWeight && typeof lastWeight === 'number' && typeof firstWeight === 'number') ? (lastWeight - firstWeight).toFixed(1) : '0.0';
-                })()} kg
-              </p>
-              <p className="text-sm text-gray-600">Last 30 Days</p>
-            </div>
+              <p className="text-3xl font-bold text-green-900 mb-2">0.0 kg</p>
+              <p className="text-sm text-green-600">Last 30 Days</p>
+            </motion.div>
 
-            {/* Overall Progress */}
-            <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
-              <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
+            {/* Total Change */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200 text-center"
+            >
+              <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Target className="w-8 h-8 text-white" />
               </div>
-              <p className="text-2xl font-bold text-purple-600">
-                {(() => {
-                  if (sortedEntries.length < 2) return '0.0';
-                  const lastWeight = sortedEntries[sortedEntries.length - 1].weight;
-                  const firstWeight = sortedEntries[0].weight;
-                  return (lastWeight && firstWeight && typeof lastWeight === 'number' && typeof firstWeight === 'number') ? (lastWeight - firstWeight).toFixed(1) : '0.0';
-                })()} kg
-              </p>
-              <p className="text-sm text-gray-600">Total Change</p>
-            </div>
+              <p className="text-3xl font-bold text-purple-900 mb-2">0.0 kg</p>
+              <p className="text-sm text-purple-600">Total Change</p>
+            </motion.div>
           </div>
-        </motion.div>
-      )}
+        </div>
+      </div>
 
       {/* Charts Section */}
       {entries && entries.length > 0 ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="space-y-6">
           {/* Enhanced Weight & BMI Trend Chart */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
-            className="card lg:col-span-2"
+            className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden"
           >
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">Weight & BMI Trend (90 Days)</h3>
-                <p className="text-gray-600 text-sm">Track your weight and BMI changes over time</p>
-              </div>
-              <div className="flex items-center space-x-4 text-sm">
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                  <span className="text-gray-700">Weight (kg)</span>
+            <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 px-6 py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-white/20 p-2 rounded-lg">
+                    <TrendingUp className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white">Weight & BMI Trend ({selectedPeriod} Days)</h3>
+                    <p className="text-indigo-100 text-sm">Track your weight and BMI changes over time</p>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span className="text-gray-700">BMI</span>
+                <div className="flex items-center space-x-4 text-sm">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-white rounded-full"></div>
+                    <span className="text-white">Weight (kg)</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-green-300 rounded-full"></div>
+                    <span className="text-white">BMI</span>
+                  </div>
                 </div>
               </div>
             </div>
             
-            <ResponsiveContainer width="100%" height={450}>
-              <LineChart 
-                data={sortedEntries} 
-                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis 
-                  dataKey="date" 
-                  tickFormatter={d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                  tick={{ fontSize: 12, fill: '#6b7280' }}
-                  axisLine={{ stroke: '#e5e7eb' }}
-                  tickLine={{ stroke: '#e5e7eb' }}
-                />
-                <YAxis 
-                  yAxisId="left" 
-                  domain={['auto', 'auto']} 
-                  tickFormatter={v => `${v} kg`}
-                  tick={{ fontSize: 12, fill: '#6b7280' }}
-                  axisLine={{ stroke: '#e5e7eb' }}
-                  tickLine={{ stroke: '#e5e7eb' }}
-                  label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#374151', fontSize: 14 } }}
-                />
-                <YAxis 
-                  yAxisId="right" 
-                  orientation="right" 
-                  domain={['auto', 'auto']} 
-                  tickFormatter={v => v && typeof v === 'number' ? v.toFixed(1) : ''}
-                  tick={{ fontSize: 12, fill: '#6b7280' }}
-                  axisLine={{ stroke: '#e5e7eb' }}
-                  tickLine={{ stroke: '#e5e7eb' }}
-                  label={{ value: 'BMI', angle: 90, position: 'insideRight', style: { textAnchor: 'middle', fill: '#374151', fontSize: 14 } }}
-                />
-                <Tooltip 
-                  contentStyle={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)'
-                  }}
-                  labelFormatter={d => new Date(d).toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}
-                  formatter={(value, name) => [
-                    name === 'Weight (kg)' ? `${value || 0} kg` : (value && typeof value === 'number' ? value.toFixed(1) : '0.0'),
-                    name
-                  ]}
-                />
-                <Legend 
-                  verticalAlign="top" 
-                  height={36}
-                  wrapperStyle={{ paddingBottom: '10px' }}
-                />
-                
-                {/* Weight Line with Area */}
-                <defs>
-                  <linearGradient id="weightGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.05}/>
-                  </linearGradient>
-                  <linearGradient id="bmiGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0.05}/>
-                  </linearGradient>
-                </defs>
-                
-                <Line 
-                  yAxisId="left"
-                  type="monotone" 
-                  dataKey="weight" 
-                  stroke="#3b82f6" 
-                  strokeWidth={3} 
-                  dot={{ r: 5, fill: '#3b82f6', stroke: '#ffffff', strokeWidth: 2 }} 
-                  activeDot={{ r: 8, stroke: '#3b82f6', strokeWidth: 2 }}
-                  name="Weight (kg)" 
-                  connectNulls={true}
-                />
-                <Line 
-                  yAxisId="right"
-                  type="monotone" 
-                  dataKey="bmi" 
-                  stroke="#10b981" 
-                  strokeWidth={3} 
-                  dot={{ r: 5, fill: '#10b981', stroke: '#ffffff', strokeWidth: 2 }} 
-                  activeDot={{ r: 8, stroke: '#10b981', strokeWidth: 2 }}
-                  name="BMI" 
-                  connectNulls={true}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-            
-            {/* Chart Statistics */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-gray-200">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-blue-600">
-                  {sortedEntries.length > 0 ? sortedEntries[sortedEntries.length - 1].weight : 0} kg
-                </p>
-                <p className="text-sm text-gray-600">Latest Weight</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-green-600">
-                  {sortedEntries.length > 0 && sortedEntries[sortedEntries.length - 1].bmi ? sortedEntries[sortedEntries.length - 1].bmi.toFixed(1) : '0.0'}
-                </p>
-                <p className="text-sm text-gray-600">Latest BMI</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-purple-600">
-                  {(() => {
-                  if (sortedEntries.length < 2) return '0.0';
-                  const lastWeight = sortedEntries[sortedEntries.length - 1].weight;
-                  const firstWeight = sortedEntries[0].weight;
-                  return (lastWeight && firstWeight && typeof lastWeight === 'number' && typeof firstWeight === 'number') ? (lastWeight - firstWeight).toFixed(1) : '0.0';
-                })()} kg
-                </p>
-                <p className="text-sm text-gray-600">Total Change</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-orange-600">
-                  {(() => {
-                    if (sortedEntries.length === 0) return '0.0';
-                    const validWeights = sortedEntries.filter(entry => entry.weight && typeof entry.weight === 'number');
-                    if (validWeights.length === 0) return '0.0';
-                    const average = validWeights.reduce((sum, entry) => sum + entry.weight, 0) / validWeights.length;
-                    return average.toFixed(1);
-                  })()} kg
-                </p>
-                <p className="text-sm text-gray-600">Average Weight</p>
-              </div>
+            <div className="p-6">
+              <ResponsiveContainer width="100%" height={450}>
+                <LineChart 
+                  data={sortedEntries} 
+                  margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis 
+                    dataKey="date" 
+                    tickFormatter={d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    tick={{ fontSize: 12, fill: '#6b7280' }}
+                    axisLine={{ stroke: '#e5e7eb' }}
+                    tickLine={{ stroke: '#e5e7eb' }}
+                  />
+                  <YAxis 
+                    yAxisId="left"
+                    label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280' } }}
+                    tick={{ fontSize: 12, fill: '#6b7280' }}
+                    axisLine={{ stroke: '#e5e7eb' }}
+                    tickLine={{ stroke: '#e5e7eb' }}
+                  />
+                  <YAxis 
+                    yAxisId="right"
+                    orientation="right"
+                    label={{ value: 'BMI', angle: 90, position: 'insideRight', style: { textAnchor: 'middle', fill: '#6b7280' } }}
+                    tick={{ fontSize: 12, fill: '#6b7280' }}
+                    axisLine={{ stroke: '#e5e7eb' }}
+                    tickLine={{ stroke: '#e5e7eb' }}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'white', 
+                      border: '1px solid #e5e7eb', 
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    }}
+                    labelFormatter={(value) => new Date(value).toLocaleDateString()}
+                  />
+                  <Line 
+                    yAxisId="left"
+                    type="monotone" 
+                    dataKey="weight" 
+                    stroke="#3b82f6" 
+                    strokeWidth={3}
+                    dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 2 }}
+                  />
+                  <Line 
+                    yAxisId="right"
+                    type="monotone" 
+                    dataKey="bmi" 
+                    stroke="#10b981" 
+                    strokeWidth={3}
+                    dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 6, stroke: '#10b981', strokeWidth: 2 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </motion.div>
 
-          {/* Weight Distribution Chart */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6 }}
-            className="card"
-          >
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Weight Distribution</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart 
-                data={sortedEntries.slice(-30)} // Last 30 entries (most recent)
-                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis 
-                  dataKey="date" 
-                  tickFormatter={d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                  tick={{ fontSize: 10, fill: '#6b7280' }}
-                  axisLine={{ stroke: '#e5e7eb' }}
-                  tickLine={{ stroke: '#e5e7eb' }}
-                />
-                <YAxis 
-                  domain={['auto', 'auto']} 
-                  tickFormatter={v => `${v} kg`}
-                  tick={{ fontSize: 12, fill: '#6b7280' }}
-                  axisLine={{ stroke: '#e5e7eb' }}
-                  tickLine={{ stroke: '#e5e7eb' }}
-                />
-                <Tooltip 
-                  contentStyle={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)'
-                  }}
-                  labelFormatter={d => new Date(d).toLocaleDateString('en-US', { 
-                    weekday: 'short', 
-                    month: 'short', 
-                    day: 'numeric' 
-                  })}
-                  formatter={(value) => [`${value} kg`, 'Weight']}
-                />
-                <Bar 
-                  dataKey="weight" 
-                  fill="#3b82f6" 
-                  radius={[4, 4, 0, 0]}
-                  name="Weight"
-                />
-                {/* Median Weight Reference Line */}
-                {medianWeight !== null && (
-                  <ReferenceLine y={medianWeight} stroke="#10b981" strokeDasharray="3 3" label="Median Weight" />
-                )}
-              </BarChart>
-            </ResponsiveContainer>
-          </motion.div>
+          {/* Weight Distribution and BMI Trends */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Weight Distribution */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden"
+            >
+              <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-white/20 p-2 rounded-lg">
+                    <BarChart3 className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">Weight Distribution</h3>
+                </div>
+              </div>
+              <div className="p-6">
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={sortedEntries} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <XAxis 
+                      dataKey="date" 
+                      tickFormatter={d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      tick={{ fontSize: 10, fill: '#6b7280' }}
+                      axisLine={{ stroke: '#e5e7eb' }}
+                      tickLine={{ stroke: '#e5e7eb' }}
+                    />
+                    <YAxis 
+                      label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280' } }}
+                      tick={{ fontSize: 10, fill: '#6b7280' }}
+                      axisLine={{ stroke: '#e5e7eb' }}
+                      tickLine={{ stroke: '#e5e7eb' }}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'white', 
+                        border: '1px solid #e5e7eb', 
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                      }}
+                      labelFormatter={(value) => new Date(value).toLocaleDateString()}
+                    />
+                    <Bar dataKey="weight" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                    <ReferenceLine 
+                      y={medianWeight} 
+                      stroke="#ef4444" 
+                      strokeDasharray="3 3" 
+                      label={{ value: 'Median Weight', position: 'top', fill: '#ef4444' }}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </motion.div>
 
-          {/* BMI Category Distribution */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.7 }}
-            className="card"
-          >
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">BMI Trends</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart 
-                data={sortedEntries.slice(-30)} // Last 30 entries (most recent)
-                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis 
-                  dataKey="date" 
-                  tickFormatter={d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                  tick={{ fontSize: 10, fill: '#6b7280' }}
-                  axisLine={{ stroke: '#e5e7eb' }}
-                  tickLine={{ stroke: '#e5e7eb' }}
-                />
-                <YAxis 
-                  domain={['auto', 'auto']} 
-                  tickFormatter={v => v && typeof v === 'number' ? v.toFixed(1) : ''}
-                  tick={{ fontSize: 12, fill: '#6b7280' }}
-                  axisLine={{ stroke: '#e5e7eb' }}
-                  tickLine={{ stroke: '#e5e7eb' }}
-                />
-                <Tooltip 
-                  contentStyle={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)'
-                  }}
-                  labelFormatter={d => new Date(d).toLocaleDateString('en-US', { 
-                    weekday: 'short', 
-                    month: 'short', 
-                    day: 'numeric' 
-                  })}
-                  formatter={(value) => [value && typeof value === 'number' ? value.toFixed(1) : '0.0', 'BMI']}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="bmi" 
-                  stroke="#10b981" 
-                  strokeWidth={2} 
-                  dot={{ r: 3, fill: '#10b981' }} 
-                  activeDot={{ r: 6, stroke: '#10b981', strokeWidth: 2 }}
-                  name="BMI"
-                  connectNulls={true}
-                />
-                {/* BMI Category Reference Lines */}
-                <ReferenceLine y={18.5} stroke="#f59e0b" strokeDasharray="3 3" label="Underweight" />
-                <ReferenceLine y={25} stroke="#10b981" strokeDasharray="3 3" label="Normal" />
-                <ReferenceLine y={30} stroke="#f59e0b" strokeDasharray="3 3" label="Overweight" />
-              </LineChart>
-            </ResponsiveContainer>
-          </motion.div>
+            {/* BMI Trends */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+              className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden"
+            >
+              <div className="bg-gradient-to-r from-green-500 to-green-600 px-6 py-4">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-white/20 p-2 rounded-lg">
+                    <TrendingUp className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">BMI Trends</h3>
+                </div>
+              </div>
+              <div className="p-6">
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={sortedEntries} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <XAxis 
+                      dataKey="date" 
+                      tickFormatter={d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      tick={{ fontSize: 10, fill: '#6b7280' }}
+                      axisLine={{ stroke: '#e5e7eb' }}
+                      tickLine={{ stroke: '#e5e7eb' }}
+                    />
+                    <YAxis 
+                      label={{ value: 'BMI', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280' } }}
+                      tick={{ fontSize: 10, fill: '#6b7280' }}
+                      axisLine={{ stroke: '#e5e7eb' }}
+                      tickLine={{ stroke: '#e5e7eb' }}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'white', 
+                        border: '1px solid #e5e7eb', 
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                      }}
+                      labelFormatter={(value) => new Date(value).toLocaleDateString()}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="bmi" 
+                      stroke="#10b981" 
+                      strokeWidth={3}
+                      dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }}
+                      activeDot={{ r: 6, stroke: '#10b981', strokeWidth: 2 }}
+                    />
+                    <ReferenceLine 
+                      y={25} 
+                      stroke="#f59e0b" 
+                      strokeDasharray="3 3" 
+                      label={{ value: 'Overweight', position: 'top', fill: '#f59e0b' }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </motion.div>
+          </div>
         </div>
       ) : (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="card"
-        >
-          <div className="text-center py-12">
-            <BarChart3 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No Data Available</h3>
-            <p className="text-gray-600">Start adding weight entries to see your analytics</p>
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+          <div className="bg-gradient-to-r from-gray-500 to-gray-600 px-6 py-4">
+            <div className="flex items-center space-x-3">
+              <div className="bg-white/20 p-2 rounded-lg">
+                <BarChart3 className="w-5 h-5 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white">No Data Available</h3>
+            </div>
           </div>
-        </motion.div>
+          <div className="p-12 text-center">
+            <BarChart3 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">No Weight Entries Found</h3>
+            <p className="text-gray-600">Start tracking your weight to see analytics and trends.</p>
+          </div>
+        </div>
       )}
 
       {/* Historical Weight Logs Table */}
