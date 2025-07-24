@@ -10,7 +10,7 @@ import {
   Minus,
   FlagIcon,
   X,
-  ArrowPathIcon,
+  RefreshCw,
   ChartBarIcon,
   ScaleIcon,
   ArrowTrendingUpIcon,
@@ -280,7 +280,7 @@ const Analytics = () => {
                 onClick={loadUserProfileAndAnalytics}
                 className="bg-white/20 hover:bg-white/30 text-white p-2 rounded-lg border border-white/30 transition-colors"
               >
-                <ArrowPathIcon className="w-5 h-5" />
+                <RefreshCw className="w-5 h-5" />
               </button>
             </div>
           </div>
