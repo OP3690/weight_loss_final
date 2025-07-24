@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Clock, User, Eye, Heart } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Clock, User } from 'lucide-react';
 
 const Blog = () => {
   const [currentPage, setCurrentPage] = useState(1);
