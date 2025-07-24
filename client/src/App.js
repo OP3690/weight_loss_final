@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import './NoSpinner.css';
@@ -38,8 +38,18 @@ function App() {
         localStorage.removeItem('currentUser');
       }
     }
+    
+    // Check for register parameter in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('register') === 'true' && !currentUser) {
+      setShowOnboarding(true);
+      setOnboardingMode('register');
+      // Clean up the URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    
     setLoading(false);
-  }, []);
+  }, [currentUser]);
 
   const handleUserLogin = (user) => {
     setCurrentUser(user);
