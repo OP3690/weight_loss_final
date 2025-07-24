@@ -538,88 +538,119 @@ const Blog = () => {
     {
       id: 9,
       title: "Sunlight for Wellness: Vitamin D & Mental Health",
-      excerpt: "Discover how reducing screen time can dramatically improve your mental health, focus, and overall well-being. Learn practical strategies to break free from digital addiction.",
+      excerpt: "Discover the powerful connection between sunlight, vitamin D, and mental health. Learn how natural light exposure can boost your mood, energy, and overall well-being.",
       content: `
         <div class="blog-content">
-          <h2>The Digital Dilemma: How Screens Affect Our Health</h2>
-          <p>In today's hyperconnected world, we spend an average of 7-10 hours daily staring at screens. While technology has revolutionized our lives, excessive screen time is taking a toll on our physical and mental health.</p>
+          <h2>The Sunshine Vitamin: Vitamin D and Your Health</h2>
+          <p>Sunlight is nature's most powerful health booster. Beyond just providing warmth and light, exposure to natural sunlight triggers the production of vitamin D, a crucial nutrient that affects nearly every system in your body.</p>
           
-          <h3>Physical Health Impacts</h3>
-          <ul>
-            <li><strong>Eye Strain:</strong> Digital eye strain affects 50-90% of computer users</li>
-            <li><strong>Poor Posture:</strong> Leads to neck and back pain</li>
-            <li><strong>Sleep Disruption:</strong> Blue light suppresses melatonin production</li>
-            <li><strong>Sedentary Lifestyle:</strong> Reduces physical activity levels</li>
-          </ul>
-
-          <h3>Mental Health Consequences</h3>
-          <p>Excessive screen time has been linked to:</p>
-          <ul>
-            <li>Increased anxiety and depression</li>
-            <li>Reduced attention span and focus</li>
-            <li>Poor sleep quality</li>
-            <li>Social isolation and loneliness</li>
-          </ul>
-
-          <h3>Practical Strategies to Reduce Screen Time</h3>
+          <h3>What is Vitamin D?</h3>
+          <p>Vitamin D is a fat-soluble vitamin that acts more like a hormone in your body. It's unique because your body can produce it when your skin is exposed to sunlight, specifically UVB rays.</p>
           
-          <h4>1. Set Digital Boundaries</h4>
-          <p>Establish specific times when you'll avoid screens:</p>
+          <h3>The Mental Health Connection</h3>
+          <p>Research has shown a strong link between vitamin D levels and mental health:</p>
           <ul>
-            <li>No screens 1 hour before bedtime</li>
-            <li>Screen-free meals</li>
-            <li>Weekend digital detox periods</li>
+            <li><strong>Mood Regulation:</strong> Vitamin D helps regulate serotonin, the "feel-good" hormone</li>
+            <li><strong>Seasonal Affective Disorder (SAD):</strong> Low vitamin D is linked to winter depression</li>
+            <li><strong>Anxiety Reduction:</strong> Adequate levels may reduce anxiety symptoms</li>
+            <li><strong>Cognitive Function:</strong> Supports brain health and memory</li>
           </ul>
 
-          <h4>2. Use Technology Mindfully</h4>
-          <p>Leverage apps and settings to manage screen time:</p>
+          <h3>Physical Health Benefits</h3>
           <ul>
-            <li>Enable screen time tracking on your devices</li>
-            <li>Set app limits and downtime</li>
-            <li>Use grayscale mode to reduce visual appeal</li>
-            <li>Turn off non-essential notifications</li>
+            <li><strong>Bone Health:</strong> Essential for calcium absorption and bone strength</li>
+            <li><strong>Immune System:</strong> Supports immune function and reduces inflammation</li>
+            <li><strong>Heart Health:</strong> May help regulate blood pressure</li>
+            <li><strong>Muscle Function:</strong> Important for muscle strength and coordination</li>
           </ul>
 
-          <h4>3. Replace Screen Time with Healthy Alternatives</h4>
-          <p>Fill your time with activities that promote well-being:</p>
+          <h3>How to Get More Vitamin D</h3>
+          
+          <h4>1. Safe Sun Exposure</h4>
+          <p>The best way to get vitamin D is through sunlight:</p>
           <ul>
-            <li>Reading physical books</li>
-            <li>Outdoor activities and exercise</li>
-            <li>Creative hobbies (drawing, writing, cooking)</li>
-            <li>Face-to-face social interactions</li>
-            <li>Mindfulness and meditation</li>
+            <li>Spend 10-30 minutes in the sun daily (depending on skin type)</li>
+            <li>Expose arms, legs, and face to sunlight</li>
+            <li>Avoid peak hours (10 AM - 4 PM) to prevent sunburn</li>
+            <li>Don't use sunscreen for the first 10-15 minutes</li>
           </ul>
 
-          <h3>The Benefits You'll Experience</h3>
-          <p>By reducing screen time, you can expect:</p>
+          <h4>2. Dietary Sources</h4>
+          <p>Include these vitamin D-rich foods in your diet:</p>
           <ul>
-            <li><strong>Better Sleep:</strong> Improved sleep quality and duration</li>
-            <li><strong>Enhanced Focus:</strong> Increased attention span and productivity</li>
-            <li><strong>Improved Mood:</strong> Reduced anxiety and better emotional regulation</li>
-            <li><strong>Stronger Relationships:</strong> More meaningful social connections</li>
-            <li><strong>Physical Health:</strong> Better posture, eye health, and activity levels</li>
+            <li>Fatty fish (salmon, tuna, mackerel)</li>
+            <li>Egg yolks</li>
+            <li>Fortified dairy products</li>
+            <li>Mushrooms (especially those exposed to UV light)</li>
+            <li>Fortified cereals and orange juice</li>
           </ul>
 
-          <h3>Getting Started: A 7-Day Challenge</h3>
-          <p>Try this gradual approach to reduce screen time:</p>
-          <ol>
-            <li><strong>Day 1-2:</strong> Track your current screen time usage</li>
-            <li><strong>Day 3-4:</strong> Reduce by 30 minutes daily</li>
-            <li><strong>Day 5-6:</strong> Implement one new screen-free activity</li>
-            <li><strong>Day 7:</strong> Reflect on changes and plan next steps</li>
-          </ol>
+          <h4>3. Supplements</h4>
+          <p>Consider vitamin D supplements if you:</p>
+          <ul>
+            <li>Live in areas with limited sunlight</li>
+            <li>Have darker skin (which produces less vitamin D)</li>
+            <li>Spend most of your time indoors</li>
+            <li>Are over 65 years old</li>
+          </ul>
+
+          <h3>Signs of Vitamin D Deficiency</h3>
+          <p>Watch for these symptoms:</p>
+          <ul>
+            <li>Fatigue and tiredness</li>
+            <li>Bone pain and muscle weakness</li>
+            <li>Mood changes and depression</li>
+            <li>Frequent infections</li>
+            <li>Slow wound healing</li>
+          </ul>
+
+          <h3>Optimizing Your Sunlight Exposure</h3>
+          
+          <h4>1. Morning Sunlight</h4>
+          <p>Start your day with natural light:</p>
+          <ul>
+            <li>Open curtains immediately upon waking</li>
+            <li>Take a morning walk or sit outside</li>
+            <li>Have breakfast near a sunny window</li>
+          </ul>
+
+          <h4>2. Outdoor Activities</h4>
+          <p>Combine exercise with sunlight exposure:</p>
+          <ul>
+            <li>Walk or run outdoors</li>
+            <li>Practice yoga in the garden</li>
+            <li>Have outdoor meetings or coffee breaks</li>
+            <li>Garden or do outdoor hobbies</li>
+          </ul>
+
+          <h4>3. Indoor Light Optimization</h4>
+          <ul>
+            <li>Use full-spectrum light bulbs</li>
+            <li>Position your workspace near windows</li>
+            <li>Take regular breaks to step outside</li>
+            <li>Consider a light therapy lamp for winter months</li>
+          </ul>
+
+          <h3>Seasonal Considerations</h3>
+          <p>Adjust your approach based on the season:</p>
+          <ul>
+            <li><strong>Summer:</strong> Early morning or late afternoon sun exposure</li>
+            <li><strong>Winter:</strong> Maximize midday sun exposure when possible</li>
+            <li><strong>Cloudy Days:</strong> UVB rays can still penetrate clouds</li>
+            <li><strong>Indoor Living:</strong> Consider supplements during extended indoor periods</li>
+          </ul>
 
           <h3>Conclusion</h3>
-          <p>Reducing screen time isn't about eliminating technology from your life—it's about creating a healthier relationship with it. By setting boundaries and finding balance, you can enjoy the benefits of technology while protecting your physical and mental well-being.</p>
+          <p>Sunlight and vitamin D are essential for both physical and mental health. By making conscious efforts to get adequate sun exposure and maintain healthy vitamin D levels, you can significantly improve your mood, energy, and overall well-being.</p>
           
-          <p>Start small, be consistent, and remember: every minute spent away from screens is an investment in your health and happiness.</p>
+          <p>Remember: Balance is key. Enjoy the sun safely while reaping its many health benefits. Your body and mind will thank you for it.</p>
         </div>
       `,
-      author: "Dr. Sarah Chen",
-      date: "2024-01-15",
-      readTime: "8 min read",
-      category: "Mental Health",
-      image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      author: "Dr. Emily Watson",
+      date: "2024-01-23",
+      readTime: "12 min read",
+      category: "Health & Wellness",
+      image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     },
     {
       id: 2,

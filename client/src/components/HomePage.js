@@ -525,7 +525,7 @@ const HomePage = ({ onStartDemo, onRegister, onLogin }) => {
               <h3 className="text-lg font-semibold mb-4">Company</h3>
               <ul className="space-y-2">
                 <li><a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">About</a></li>
-                <li><a href="/blog/index.html" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-orange-500 transition-colors">Blog</a></li>
+                <li><a href="/blog" className="text-gray-400 hover:text-orange-500 transition-colors">Blog</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">Careers</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">Contact</a></li>
               </ul>
