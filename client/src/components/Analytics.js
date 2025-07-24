@@ -23,11 +23,27 @@ const Analytics = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [showGoalNotification, setShowGoalNotification] = useState(true);
 
-  const loadUserProfileAndAnalytics = useCallback(async () => {
+  const loadUserProfileAndAnalytics = useCallback(async (retryCount = 0) => {
     try {
       setLoading(true);
-      const profile = await userAPI.getUser(currentUser.id);
-      setUserProfile(profile);
+      
+      // Try to get user profile with retry logic
+      let profile;
+      try {
+        profile = await userAPI.getUser(currentUser.id);
+        setUserProfile(profile);
+      } catch (profileError) {
+        console.error('Error loading user profile:', profileError);
+        // If profile fails, create a basic profile and continue
+        profile = {
+          id: currentUser.id,
+          name: currentUser.name,
+          currentWeight: 0,
+          targetWeight: 0,
+          goalStatus: 'inactive'
+        };
+        setUserProfile(profile);
+      }
       
       // Get active goalId from userProfile
       const activeGoalId = profile && profile.goalId && (profile.goalId === 'demo' || isValidObjectId(profile.goalId)) ? profile.goalId : null;
@@ -41,11 +57,35 @@ const Analytics = () => {
         params.goalId = activeGoalId;
       }
       
-      const response = await weightEntryAPI.getAnalytics(currentUser.id, params);
-      if (response.analytics) {
-        setAnalytics(response.analytics);
-      } else {
-        // No data available, show empty state
+      try {
+        const response = await weightEntryAPI.getAnalytics(currentUser.id, params);
+        if (response.analytics) {
+          setAnalytics(response.analytics);
+        } else {
+          // No data available, show empty state
+          setAnalytics({
+            totalEntries: 0,
+            averageWeight: 0,
+            weightChange: 0,
+            trend: 'stable',
+            entries: [],
+            currentWeight: profile.currentWeight || 0,
+            targetWeight: profile.targetWeight || 0,
+            progressToTarget: 0,
+            initialWeight: profile.currentWeight || 0
+          });
+        }
+      } catch (analyticsError) {
+        console.error('Error loading analytics:', analyticsError);
+        
+        // If this is the first retry and it's a network error, try once more
+        if (retryCount < 1 && (analyticsError.code === 'ERR_NETWORK' || analyticsError.message.includes('Network Error'))) {
+          console.log('Retrying analytics load...');
+          setTimeout(() => loadUserProfileAndAnalytics(retryCount + 1), 2000);
+          return;
+        }
+        
+        // Set default analytics data to prevent infinite loading
         setAnalytics({
           totalEntries: 0,
           averageWeight: 0,
@@ -155,12 +195,22 @@ const Analytics = () => {
 
   useEffect(() => {
     if (currentUser && currentUser.id !== 'demo') {
+      // Add a timeout to prevent infinite loading
+      const timeoutId = setTimeout(() => {
+        if (loading) {
+          console.log('Analytics loading timeout - falling back to demo data');
+          generateSampleAnalytics();
+        }
+      }, 15000); // 15 second timeout
+      
       loadUserProfileAndAnalytics();
+      
+      return () => clearTimeout(timeoutId);
     } else if (currentUser && currentUser.id === 'demo') {
       // Demo user - generate sample analytics data
       generateSampleAnalytics();
     }
-  }, [currentUser, loadUserProfileAndAnalytics, generateSampleAnalytics]);
+  }, [currentUser, loadUserProfileAndAnalytics, generateSampleAnalytics, loading]);
 
   const getTrendIcon = () => {
     if (!analytics || !analytics.trend) return <Minus className="w-4 h-4 text-gray-600" />;
@@ -181,7 +231,11 @@ const Analytics = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your analytics...</p>
+          <p className="text-sm text-gray-500 mt-2">This may take a moment</p>
+        </div>
       </div>
     );
   }
@@ -192,6 +246,7 @@ const Analytics = () => {
       <div className="text-center py-12">
         <BarChart3 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
         <p className="text-gray-600">No analytics data available</p>
+        <p className="text-sm text-gray-500 mt-2">Try refreshing the page or check your connection</p>
       </div>
     );
   }
