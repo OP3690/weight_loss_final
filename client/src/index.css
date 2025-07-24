@@ -1645,3 +1645,91 @@ code {
     margin: 1.5rem 0;
   }
 } 
+
+/* Enhanced strength training and mental health sections */
+.strength-training-mind, .emotional-well-being, .mindful-weightlifting, .mental-health-goals, .sustainable-mental-health {
+  background: #fef2f2;
+  border: 1px solid #ef4444;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.strength-training-mind h3, .emotional-well-being h3, .mindful-weightlifting h3, .mental-health-goals h3, .sustainable-mental-health h3 {
+  color: #991b1b;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.strength-training-mind ul, .emotional-well-being ul, .mindful-weightlifting ul, .mental-health-goals ul, .sustainable-mental-health ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.strength-training-mind li, .emotional-well-being li, .mindful-weightlifting li, .mental-health-goals li, .sustainable-mental-health li {
+  color: #dc2626;
+  margin-bottom: 0.75rem;
+}
+
+/* Enhanced clean eating and wellness sections */
+.clean-eating-principles, .brain-boosting-foods, .focus-concentration, .cognitive-function, .clean-eating-implementation {
+  background: #f0fdf4;
+  border: 1px solid #22c55e;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.clean-eating-principles h3, .brain-boosting-foods h3, .focus-concentration h3, .cognitive-function h3, .clean-eating-implementation h3 {
+  color: #166534;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.clean-eating-principles ul, .brain-boosting-foods ul, .focus-concentration ul, .cognitive-function ul, .clean-eating-implementation ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.clean-eating-principles li, .brain-boosting-foods li, .focus-concentration li, .cognitive-function li, .clean-eating-implementation li {
+  color: #16a34a;
+  margin-bottom: 0.75rem;
+}
+
+/* Enhanced health harmony sections */
+.active-body-creation, .restful-mind-cultivation, .activity-rest-harmony, .life-stages-harmony, .sustainable-harmony {
+  background: #fef7cd;
+  border: 1px solid #eab308;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.active-body-creation h3, .restful-mind-cultivation h3, .activity-rest-harmony h3, .life-stages-harmony h3, .sustainable-harmony h3 {
+  color: #92400e;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.active-body-creation ul, .restful-mind-cultivation ul, .activity-rest-harmony ul, .life-stages-harmony ul, .sustainable-harmony ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.active-body-creation li, .restful-mind-cultivation li, .activity-rest-harmony li, .life-stages-harmony li, .sustainable-harmony li {
+  color: #a16207;
+  margin-bottom: 0.75rem;
+}
+
+/* Enhanced responsive design for all new sections */
+@media (max-width: 768px) {
+  .strength-training-mind, .emotional-well-being, .mindful-weightlifting, .mental-health-goals, .sustainable-mental-health,
+  .clean-eating-principles, .brain-boosting-foods, .focus-concentration, .cognitive-function, .clean-eating-implementation,
+  .active-body-creation, .restful-mind-cultivation, .activity-rest-harmony, .life-stages-harmony, .sustainable-harmony {
+    padding: 1rem;
+    margin: 1.5rem 0;
+  }
+} 

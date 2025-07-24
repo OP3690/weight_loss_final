@@ -343,7 +343,7 @@ const blogPosts = [
     date: "2024-05-15",
     readTime: "10 min read",
     category: "Nutrition & Happiness",
-    image: "/BlogImg/charles-deluvio-1-nx1QR5dTE-unsplash.jpg",
+    image: "/BlogImg/lyfefuel-4wtxPhvQZds-unsplash.jpg",
     tags: ["healthy eating", "happiness", "strength", "nutrition", "wellness", "food relationship"],
     seoDescription: "Learn how healthy eating creates lasting happiness and builds inner strength. Transform your relationship with food.",
     cardTag: "New"
@@ -357,7 +357,7 @@ const blogPosts = [
     date: "2024-05-20",
     readTime: "8 min read",
     category: "Fitness & Mental Health",
-    image: "/BlogImg/andres-ayrton-P2c80pCjeI0-unsplash.jpg",
+    image: "/BlogImg/dane-wetton-t1NEMSm1rgI-unsplash.jpg",
     tags: ["daily movement", "fitness", "mental wellness", "exercise", "well-being", "mental health"],
     seoDescription: "Learn how daily movement and fitness activities improve mental wellness and overall well-being.",
     cardTag: "Trending"
@@ -371,10 +371,52 @@ const blogPosts = [
     date: "2024-05-25",
     readTime: "11 min read",
     category: "Smart Nutrition",
-    image: "/BlogImg/edgar-castrejon-1SPu0KT-Ejg-unsplash.jpg",
+    image: "/BlogImg/bruno-nascimento-PHIgYUGQPvU-unsplash.jpg",
     tags: ["smart diet", "mind fuel", "well-being", "nutrition", "brain health", "life quality"],
     seoDescription: "Master smart eating to fuel your mind and enhance well-being. Learn nutrition strategies for better life quality.",
     cardTag: "Popular"
+  },
+  {
+    id: 28,
+    slug: "lift-weights-lift-mood-fitness-mind",
+    title: "Lift Weights, Lift Mood: Fitness for Mind",
+    excerpt: "Discover how strength training and weightlifting can dramatically improve your mental health and emotional well-being.",
+    author: "Gooofit Research Team",
+    date: "2024-05-30",
+    readTime: "9 min read",
+    category: "Strength Training & Mental Health",
+    image: "/BlogImg/sergio-kian-F2vHthxp2dE-unsplash.jpg",
+    tags: ["weightlifting", "strength training", "mental health", "mood", "fitness", "emotional well-being"],
+    seoDescription: "Learn how weightlifting and strength training can lift your mood and improve mental health. Discover the mind-body connection.",
+    cardTag: "Featured"
+  },
+  {
+    id: 29,
+    slug: "eat-clean-think-clear-diet-wellness",
+    title: "Eat Clean, Think Clear: Diet for Wellness",
+    excerpt: "Learn how clean eating habits can enhance mental clarity, focus, and overall cognitive function for better wellness.",
+    author: "Gooofit Research Team",
+    date: "2024-06-05",
+    readTime: "10 min read",
+    category: "Clean Eating & Wellness",
+    image: "/BlogImg/helena-lopes-PGnqT0rXWLs-unsplash.jpg",
+    tags: ["clean eating", "mental clarity", "wellness", "cognitive function", "nutrition", "focus"],
+    seoDescription: "Discover how clean eating habits enhance mental clarity and cognitive function for better overall wellness.",
+    cardTag: "New"
+  },
+  {
+    id: 30,
+    slug: "active-body-restful-mind-health-harmony",
+    title: "Active Body, Restful Mind: Health Harmony",
+    excerpt: "Achieve perfect harmony between physical activity and mental rest for optimal health and well-being.",
+    author: "Gooofit Research Team",
+    date: "2024-06-10",
+    readTime: "8 min read",
+    category: "Health Harmony",
+    image: "/BlogImg/patrick-malleret-L5o5ainVP_I-unsplash.jpg",
+    tags: ["physical activity", "mental rest", "health harmony", "well-being", "balance", "mind-body"],
+    seoDescription: "Learn to achieve harmony between active body and restful mind for optimal health and well-being.",
+    cardTag: "Trending"
   }
 ];
 
