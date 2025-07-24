@@ -209,32 +209,35 @@ const Analytics = () => {
   const medianWeight = calculateMedianWeight(last90Days);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
       {/* Goal Creation Notification */}
       {hasNoActiveGoal && showGoalNotification && (
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-2xl p-6 shadow-xl border border-indigo-400/20 relative"
+          initial={{ opacity: 0, y: -20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
+          className="bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 rounded-2xl p-6 shadow-2xl border border-indigo-400/20 relative overflow-hidden"
         >
+          {/* Animated background pattern */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent transform -skew-x-12 -translate-x-1/2"></div>
+          
           {/* Close button */}
           <button
             onClick={() => setShowGoalNotification(false)}
-            className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors duration-200"
+            className="absolute top-4 right-4 text-white/80 hover:text-white transition-all duration-200 hover:scale-110 z-10"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
           
-          <div className="flex items-center justify-between pr-8">
+          <div className="flex items-center justify-between pr-8 relative z-10">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
                 <BarChart3 className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white mb-1">No Active Goal Found</h3>
+                <h3 className="text-xl font-bold text-white mb-1 drop-shadow-sm">No Active Goal Found</h3>
                 <p className="text-indigo-100 text-lg">
                   Create a weight loss goal to unlock detailed analytics and progress insights!
                 </p>
@@ -244,7 +247,7 @@ const Analytics = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => window.location.href = '/profile'}
-              className="bg-white text-indigo-600 px-6 py-3 rounded-xl font-semibold hover:bg-indigo-50 transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="bg-white text-indigo-600 px-6 py-3 rounded-xl font-semibold hover:bg-indigo-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
               Create Goal
             </motion.button>
@@ -253,77 +256,98 @@ const Analytics = () => {
       )}
 
       {/* Header Section */}
-      <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-white/20 p-2 rounded-lg">
-                <BarChart3 className="w-5 h-5 text-white" />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden backdrop-blur-sm"
+      >
+        <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 px-6 py-6 relative overflow-hidden">
+          {/* Animated background elements */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+          
+          <div className="flex items-center justify-between relative z-10">
+            <div className="flex items-center space-x-4">
+              <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm border border-white/30">
+                <BarChart3 className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-white">Analytics</h1>
-                <p className="text-blue-100">Detailed insights into your weight journey</p>
+                <h1 className="text-2xl font-bold text-white drop-shadow-sm">Analytics</h1>
+                <p className="text-blue-100 text-lg">Detailed insights into your weight journey</p>
               </div>
             </div>
             
             {/* Period Selector */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-4">
               <span className="text-sm font-medium text-white">Period:</span>
               <select
                 value={selectedPeriod}
                 onChange={(e) => setSelectedPeriod(e.target.value)}
-                className="bg-white/20 text-white border-white/30 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-white/50"
+                className="bg-white/20 text-white border-white/30 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/50 backdrop-blur-sm transition-all duration-200 hover:bg-white/30"
               >
                 <option value="7" className="text-gray-900">7 days</option>
                 <option value="14" className="text-gray-900">14 days</option>
                 <option value="30" className="text-gray-900">30 days</option>
                 <option value="90" className="text-gray-900">90 days</option>
               </select>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={loadUserProfileAndAnalytics}
-                className="bg-white/20 hover:bg-white/30 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center space-x-2"
+                className="bg-white/20 hover:bg-white/30 text-white font-semibold py-3 px-5 rounded-xl transition-all duration-200 flex items-center space-x-2 backdrop-blur-sm border border-white/30"
                 title="Refresh Analytics"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
                 <span>Refresh</span>
-              </button>
+              </motion.button>
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Overview Cards Section */}
-      <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-green-500 to-green-600 px-6 py-4">
-          <div className="flex items-center space-x-3">
-            <div className="bg-white/20 p-2 rounded-lg">
-              <TrendingUp className="w-5 h-5 text-white" />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden backdrop-blur-sm"
+      >
+        <div className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 px-6 py-6 relative overflow-hidden">
+          {/* Animated background elements */}
+          <div className="absolute top-0 right-0 w-28 h-28 bg-white/5 rounded-full -translate-y-14 translate-x-14"></div>
+          <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/5 rounded-full translate-y-10 -translate-x-10"></div>
+          
+          <div className="flex items-center space-x-3 relative z-10">
+            <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm border border-white/30">
+              <TrendingUp className="w-6 h-6 text-white" />
             </div>
-            <h2 className="text-xl font-bold text-white">Summary Statistics</h2>
+            <h2 className="text-2xl font-bold text-white drop-shadow-sm">Summary Statistics</h2>
           </div>
         </div>
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Total Entries */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200"
+              whileHover={{ scale: 1.02, y: -5 }}
+              className="bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 rounded-2xl p-6 border border-blue-300 shadow-lg hover:shadow-xl transition-all duration-300 group"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-blue-700">Total Entries</p>
-                  <p className="text-3xl font-bold text-blue-900">{analytics?.totalEntries || 0}</p>
+                  <p className="text-sm font-semibold text-blue-700 mb-2">Total Entries</p>
+                  <p className="text-4xl font-bold text-blue-900 group-hover:text-blue-800 transition-colors">{analytics?.totalEntries || 0}</p>
                 </div>
-                <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-white" />
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+                  <Calendar className="w-7 h-7 text-white" />
                 </div>
               </div>
-              <div className="mt-4">
-                <p className="text-sm text-blue-600">
+              <div className="mt-6">
+                <p className="text-sm text-blue-600 font-medium">
                   Last {selectedPeriod} days
                 </p>
               </div>
@@ -334,19 +358,20 @@ const Analytics = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200"
+              whileHover={{ scale: 1.02, y: -5 }}
+              className="bg-gradient-to-br from-green-50 via-green-100 to-green-200 rounded-2xl p-6 border border-green-300 shadow-lg hover:shadow-xl transition-all duration-300 group"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-green-700">Average Weight</p>
-                  <p className="text-3xl font-bold text-green-900">{analytics?.averageWeight || '0.0'} kg</p>
+                  <p className="text-sm font-semibold text-green-700 mb-2">Average Weight</p>
+                  <p className="text-4xl font-bold text-green-900 group-hover:text-green-800 transition-colors">{analytics?.averageWeight || '0.0'} kg</p>
                 </div>
-                <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-white" />
+                <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+                  <TrendingUp className="w-7 h-7 text-white" />
                 </div>
               </div>
-              <div className="mt-4">
-                <p className="text-sm text-green-600">
+              <div className="mt-6">
+                <p className="text-sm text-green-600 font-medium">
                   Over {selectedPeriod} days
                 </p>
               </div>
@@ -357,19 +382,20 @@ const Analytics = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200"
+              whileHover={{ scale: 1.02, y: -5 }}
+              className="bg-gradient-to-br from-purple-50 via-purple-100 to-purple-200 rounded-2xl p-6 border border-purple-300 shadow-lg hover:shadow-xl transition-all duration-300 group"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-purple-700">Weight Change</p>
-                  <p className="text-3xl font-bold text-purple-900">{analytics?.weightChange || '0.0'} kg</p>
+                  <p className="text-sm font-semibold text-purple-700 mb-2">Weight Change</p>
+                  <p className="text-4xl font-bold text-purple-900 group-hover:text-purple-800 transition-colors">{analytics?.weightChange || '0.0'} kg</p>
                 </div>
-                <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
                   {getTrendIcon()}
                 </div>
               </div>
-              <div className="mt-4">
-                <p className="text-sm text-purple-600">
+              <div className="mt-6">
+                <p className="text-sm text-purple-600 font-medium">
                   {analytics?.trend || 'Stable'}
                 </p>
               </div>
@@ -380,51 +406,62 @@ const Analytics = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200"
+              whileHover={{ scale: 1.02, y: -5 }}
+              className="bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200 rounded-2xl p-6 border border-orange-300 shadow-lg hover:shadow-xl transition-all duration-300 group"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-orange-700">Progress to Target</p>
-                  <p className="text-3xl font-bold text-orange-900">{analytics?.progressToTarget?.toFixed(1) || '0.0'}%</p>
+                  <p className="text-sm font-semibold text-orange-700 mb-2">Progress to Target</p>
+                  <p className="text-4xl font-bold text-orange-900 group-hover:text-orange-800 transition-colors">{analytics?.progressToTarget?.toFixed(1) || '0.0'}%</p>
                 </div>
-                <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center">
-                  <Target className="w-6 h-6 text-white" />
+                <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+                  <Target className="w-7 h-7 text-white" />
                 </div>
               </div>
-              <div className="mt-4">
-                <p className="text-sm text-orange-600">
+              <div className="mt-6">
+                <p className="text-sm text-orange-600 font-medium">
                   Goal Progress
                 </p>
               </div>
             </motion.div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Progress Trend Analysis Section */}
-      <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-purple-500 to-purple-600 px-6 py-4">
-          <div className="flex items-center space-x-3">
-            <div className="bg-white/20 p-2 rounded-lg">
-              <TrendingUp className="w-5 h-5 text-white" />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden backdrop-blur-sm"
+      >
+        <div className="bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 px-6 py-6 relative overflow-hidden">
+          {/* Animated background elements */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+          
+          <div className="flex items-center space-x-3 relative z-10">
+            <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm border border-white/30">
+              <TrendingUp className="w-6 h-6 text-white" />
             </div>
-            <h2 className="text-xl font-bold text-white">Progress Trend Analysis</h2>
+            <h2 className="text-2xl font-bold text-white drop-shadow-sm">Progress Trend Analysis</h2>
           </div>
         </div>
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="p-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Last 7 Days */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200 text-center"
+              whileHover={{ scale: 1.05, y: -8 }}
+              className="bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 rounded-2xl p-8 border border-blue-300 shadow-lg hover:shadow-2xl transition-all duration-300 text-center group"
             >
-              <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <ArrowUp className="w-8 h-8 text-white" />
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300">
+                <ArrowUp className="w-10 h-10 text-white" />
               </div>
-              <p className="text-3xl font-bold text-blue-900 mb-2">0.0 kg</p>
-              <p className="text-sm text-blue-600">Last 7 Days</p>
+              <p className="text-4xl font-bold text-blue-900 mb-3 group-hover:text-blue-800 transition-colors">0.0 kg</p>
+              <p className="text-sm text-blue-600 font-semibold">Last 7 Days</p>
             </motion.div>
 
             {/* Last 30 Days */}
@@ -432,13 +469,14 @@ const Analytics = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200 text-center"
+              whileHover={{ scale: 1.05, y: -8 }}
+              className="bg-gradient-to-br from-green-50 via-green-100 to-green-200 rounded-2xl p-8 border border-green-300 shadow-lg hover:shadow-2xl transition-all duration-300 text-center group"
             >
-              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Calendar className="w-8 h-8 text-white" />
+              <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300">
+                <Calendar className="w-10 h-10 text-white" />
               </div>
-              <p className="text-3xl font-bold text-green-900 mb-2">0.0 kg</p>
-              <p className="text-sm text-green-600">Last 30 Days</p>
+              <p className="text-4xl font-bold text-green-900 mb-3 group-hover:text-green-800 transition-colors">0.0 kg</p>
+              <p className="text-sm text-green-600 font-semibold">Last 30 Days</p>
             </motion.div>
 
             {/* Total Change */}
@@ -446,53 +484,58 @@ const Analytics = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200 text-center"
+              whileHover={{ scale: 1.05, y: -8 }}
+              className="bg-gradient-to-br from-purple-50 via-purple-100 to-purple-200 rounded-2xl p-8 border border-purple-300 shadow-lg hover:shadow-2xl transition-all duration-300 text-center group"
             >
-              <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Target className="w-8 h-8 text-white" />
+              <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300">
+                <Target className="w-10 h-10 text-white" />
               </div>
-              <p className="text-3xl font-bold text-purple-900 mb-2">0.0 kg</p>
-              <p className="text-sm text-purple-600">Total Change</p>
+              <p className="text-4xl font-bold text-purple-900 mb-3 group-hover:text-purple-800 transition-colors">0.0 kg</p>
+              <p className="text-sm text-purple-600 font-semibold">Total Change</p>
             </motion.div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Charts Section */}
       {entries && entries.length > 0 ? (
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* Enhanced Weight & BMI Trend Chart */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
-            className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden"
+            className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden backdrop-blur-sm"
           >
-            <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 px-6 py-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-white/20 p-2 rounded-lg">
-                    <TrendingUp className="w-5 h-5 text-white" />
+            <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 px-6 py-6 relative overflow-hidden">
+              {/* Animated background elements */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+              
+              <div className="flex items-center justify-between relative z-10">
+                <div className="flex items-center space-x-4">
+                  <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm border border-white/30">
+                    <TrendingUp className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white">Weight & BMI Trend ({selectedPeriod} Days)</h3>
-                    <p className="text-indigo-100 text-sm">Track your weight and BMI changes over time</p>
+                    <h3 className="text-2xl font-bold text-white drop-shadow-sm">Weight & BMI Trend ({selectedPeriod} Days)</h3>
+                    <p className="text-indigo-100 text-lg">Track your weight and BMI changes over time</p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-4 text-sm">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-white rounded-full"></div>
-                    <span className="text-white">Weight (kg)</span>
+                <div className="flex items-center space-x-6 text-sm">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-4 h-4 bg-white rounded-full shadow-sm"></div>
+                    <span className="text-white font-medium">Weight (kg)</span>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-green-300 rounded-full"></div>
-                    <span className="text-white">BMI</span>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-4 h-4 bg-green-300 rounded-full shadow-sm"></div>
+                    <span className="text-white font-medium">BMI</span>
                   </div>
                 </div>
               </div>
             </div>
             
-            <div className="p-6">
+            <div className="p-8">
               <ResponsiveContainer width="100%" height={450}>
                 <LineChart 
                   data={sortedEntries} 
@@ -525,8 +568,9 @@ const Analytics = () => {
                     contentStyle={{ 
                       backgroundColor: 'white', 
                       border: '1px solid #e5e7eb', 
-                      borderRadius: '8px',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                      borderRadius: '12px',
+                      boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+                      padding: '12px'
                     }}
                     labelFormatter={(value) => new Date(value).toLocaleDateString()}
                   />
@@ -554,23 +598,27 @@ const Analytics = () => {
           </motion.div>
 
           {/* Weight Distribution and BMI Trends */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Weight Distribution */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden"
+              className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden backdrop-blur-sm"
             >
-              <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-white/20 p-2 rounded-lg">
-                    <BarChart3 className="w-5 h-5 text-white" />
+              <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 px-6 py-6 relative overflow-hidden">
+                {/* Animated background elements */}
+                <div className="absolute top-0 right-0 w-28 h-28 bg-white/5 rounded-full -translate-y-14 translate-x-14"></div>
+                <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/5 rounded-full translate-y-10 -translate-x-10"></div>
+                
+                <div className="flex items-center space-x-3 relative z-10">
+                  <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm border border-white/30">
+                    <BarChart3 className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-white">Weight Distribution</h3>
+                  <h3 className="text-2xl font-bold text-white drop-shadow-sm">Weight Distribution</h3>
                 </div>
               </div>
-              <div className="p-6">
+              <div className="p-8">
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={sortedEntries} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -591,8 +639,9 @@ const Analytics = () => {
                       contentStyle={{ 
                         backgroundColor: 'white', 
                         border: '1px solid #e5e7eb', 
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                        borderRadius: '12px',
+                        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+                        padding: '12px'
                       }}
                       labelFormatter={(value) => new Date(value).toLocaleDateString()}
                     />
@@ -613,17 +662,21 @@ const Analytics = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7 }}
-              className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden"
+              className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden backdrop-blur-sm"
             >
-              <div className="bg-gradient-to-r from-green-500 to-green-600 px-6 py-4">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-white/20 p-2 rounded-lg">
-                    <TrendingUp className="w-5 h-5 text-white" />
+              <div className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 px-6 py-6 relative overflow-hidden">
+                {/* Animated background elements */}
+                <div className="absolute top-0 right-0 w-28 h-28 bg-white/5 rounded-full -translate-y-14 translate-x-14"></div>
+                <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/5 rounded-full translate-y-10 -translate-x-10"></div>
+                
+                <div className="flex items-center space-x-3 relative z-10">
+                  <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm border border-white/30">
+                    <TrendingUp className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-white">BMI Trends</h3>
+                  <h3 className="text-2xl font-bold text-white drop-shadow-sm">BMI Trends</h3>
                 </div>
               </div>
-              <div className="p-6">
+              <div className="p-8">
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={sortedEntries} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -644,8 +697,9 @@ const Analytics = () => {
                       contentStyle={{ 
                         backgroundColor: 'white', 
                         border: '1px solid #e5e7eb', 
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                        borderRadius: '12px',
+                        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+                        padding: '12px'
                       }}
                       labelFormatter={(value) => new Date(value).toLocaleDateString()}
                     />
@@ -670,21 +724,32 @@ const Analytics = () => {
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-          <div className="bg-gradient-to-r from-gray-500 to-gray-600 px-6 py-4">
-            <div className="flex items-center space-x-3">
-              <div className="bg-white/20 p-2 rounded-lg">
-                <BarChart3 className="w-5 h-5 text-white" />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden backdrop-blur-sm"
+        >
+          <div className="bg-gradient-to-r from-gray-600 via-gray-700 to-gray-800 px-6 py-6 relative overflow-hidden">
+            {/* Animated background elements */}
+            <div className="absolute top-0 right-0 w-28 h-28 bg-white/5 rounded-full -translate-y-14 translate-x-14"></div>
+            <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/5 rounded-full translate-y-10 -translate-x-10"></div>
+            
+            <div className="flex items-center space-x-3 relative z-10">
+              <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm border border-white/30">
+                <BarChart3 className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-white">No Data Available</h3>
+              <h3 className="text-2xl font-bold text-white drop-shadow-sm">No Data Available</h3>
             </div>
           </div>
-          <div className="p-12 text-center">
-            <BarChart3 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No Weight Entries Found</h3>
-            <p className="text-gray-600">Start tracking your weight to see analytics and trends.</p>
+          <div className="p-16 text-center">
+            <div className="w-24 h-24 bg-gradient-to-br from-gray-300 to-gray-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <BarChart3 className="w-12 h-12 text-gray-600" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">No Weight Entries Found</h3>
+            <p className="text-gray-600 text-lg max-w-md mx-auto">Start tracking your weight to see analytics and trends. Add your first weight entry to unlock detailed insights!</p>
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* Historical Weight Logs Table */}
