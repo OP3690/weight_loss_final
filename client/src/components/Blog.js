@@ -123,7 +123,7 @@ const blogPosts = [
     date: "2024-02-25",
     readTime: "7 min read",
     category: "Health & Wellness",
-    image: "/BlogImg/kike-vega-F2qh3yjz6Jk-unsplash (1).jpg",
+    image: "/BlogImg/dan-gold-4_jhDO54BYg-unsplash.jpg",
     tags: ["vitamin d", "sunlight", "mental health", "wellness", "weight loss"],
     seoDescription: "Learn about the connection between vitamin D, sunlight exposure, and mental health during your weight loss journey."
   },
@@ -204,6 +204,45 @@ const blogPosts = [
     image: "/BlogImg/jenny-hill-mQVWb7kUoOE-unsplash.jpg",
     tags: ["mental health", "stress reduction", "wellness", "life quality", "self-care"],
     seoDescription: "Learn essential mental health strategies to stress less and live more. Prioritize your well-being for a better life."
+  },
+  {
+    id: 16,
+    slug: "sleep-success-rest-enhance-well-being",
+    title: "Sleep for Success: Rest to Enhance Well-Being",
+    excerpt: "Discover how quality sleep is the foundation for weight loss success and overall health improvement.",
+    author: "Sleep & Wellness Specialists",
+    date: "2024-03-30",
+    readTime: "8 min read",
+    category: "Sleep & Wellness",
+    image: "/BlogImg/dmitriy-frantsev-SIqmq_6726Y-unsplash.jpg",
+    tags: ["sleep", "well-being", "weight loss", "health", "recovery"],
+    seoDescription: "Learn how quality sleep enhances well-being and supports weight loss success. Master the art of restorative sleep."
+  },
+  {
+    id: 17,
+    slug: "sunlight-benefits-brighten-mood-build-health",
+    title: "Sunlight Benefits: Brighten Mood & Build Health",
+    excerpt: "Harness the power of natural sunlight to boost your mood, energy levels, and overall health.",
+    author: "Natural Health Experts",
+    date: "2024-04-05",
+    readTime: "7 min read",
+    category: "Natural Health",
+    image: "/BlogImg/nikola-murniece-qLFIKW7FHmA-unsplash.jpg",
+    tags: ["sunlight", "vitamin d", "mood", "health", "natural wellness"],
+    seoDescription: "Discover the amazing benefits of sunlight for mood enhancement and health building. Harness nature's power."
+  },
+  {
+    id: 18,
+    slug: "cut-screentime-sharpen-focus-reduce-anxiety",
+    title: "Cut Screentime: Sharpen Focus, Reduce Anxiety",
+    excerpt: "Learn how reducing screen time can dramatically improve your focus, reduce anxiety, and support your weight loss goals.",
+    author: "Digital Wellness Coaches",
+    date: "2024-04-10",
+    readTime: "9 min read",
+    category: "Digital Wellness",
+    image: "/BlogImg/zac-durant-_6HzPU9Hyfg-unsplash.jpg",
+    tags: ["screen time", "focus", "anxiety", "digital wellness", "mental health"],
+    seoDescription: "Reduce screen time to sharpen focus and reduce anxiety. Improve your mental health and weight loss journey."
   }
 ];
 

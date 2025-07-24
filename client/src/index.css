@@ -1293,3 +1293,91 @@ code {
 .article-content > h3 + p {
   margin-top: 1rem;
 } 
+
+/* Enhanced sleep-related sections */
+.sleep-environment, .sleep-hygiene, .sleep-stages, .recovery-sleep {
+  background: #f0f9ff;
+  border: 1px solid #0ea5e9;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.sleep-environment h3, .sleep-hygiene h3, .sleep-stages h3, .recovery-sleep h3 {
+  color: #0c4a6e;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.sleep-environment ul, .sleep-hygiene ul, .sleep-stages ul, .recovery-sleep ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.sleep-environment li, .sleep-hygiene li, .sleep-stages li, .recovery-sleep li {
+  color: #0c4a6e;
+  margin-bottom: 0.75rem;
+}
+
+/* Enhanced vitamin D and sunlight sections */
+.vitamin-d-benefits, .sunlight-guidelines, .mental-health-benefits, .circadian-rhythm, .safe-sunlight {
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.vitamin-d-benefits h3, .sunlight-guidelines h3, .mental-health-benefits h3, .circadian-rhythm h3, .safe-sunlight h3 {
+  color: #92400e;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.vitamin-d-benefits ul, .sunlight-guidelines ul, .mental-health-benefits ul, .circadian-rhythm ul, .safe-sunlight ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.vitamin-d-benefits li, .sunlight-guidelines li, .mental-health-benefits li, .circadian-rhythm li, .safe-sunlight li {
+  color: #78350f;
+  margin-bottom: 0.75rem;
+}
+
+/* Enhanced digital wellness sections */
+.mental-health-impact, .digital-detox, .focus-improvement, .weight-loss-connection, .digital-balance {
+  background: #fdf4ff;
+  border: 1px solid #c084fc;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.mental-health-impact h3, .digital-detox h3, .focus-improvement h3, .weight-loss-connection h3, .digital-balance h3 {
+  color: #581c87;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.mental-health-impact ul, .digital-detox ul, .focus-improvement ul, .weight-loss-connection ul, .digital-balance ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.mental-health-impact li, .digital-detox li, .focus-improvement li, .weight-loss-connection li, .digital-balance li {
+  color: #581c87;
+  margin-bottom: 0.75rem;
+}
+
+/* Enhanced responsive design for new sections */
+@media (max-width: 768px) {
+  .sleep-environment, .sleep-hygiene, .sleep-stages, .recovery-sleep,
+  .vitamin-d-benefits, .sunlight-guidelines, .mental-health-benefits, .circadian-rhythm, .safe-sunlight,
+  .mental-health-impact, .digital-detox, .focus-improvement, .weight-loss-connection, .digital-balance {
+    padding: 1rem;
+    margin: 1.5rem 0;
+  }
+} 
