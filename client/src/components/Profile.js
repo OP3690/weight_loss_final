@@ -196,6 +196,7 @@ const Profile = () => {
   };
 
   const onSubmit = async (data) => {
+    // Only set loading to true when form is actually submitted
     setLoading(true);
     try {
       const payload = {
@@ -247,6 +248,8 @@ const Profile = () => {
       });
     }
     setIsEditing(true);
+    // Reset loading state when entering edit mode
+    setLoading(false);
   };
 
   const handleDiscardGoal = async () => {
@@ -619,8 +622,11 @@ const Profile = () => {
               </div>
               <div className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {userProfile.pastGoals.slice((pastGoalsPage - 1) * PAST_GOALS_PER_PAGE, pastGoalsPage * PAST_GOALS_PER_PAGE).map((goal, index) => (
-                    <div key={index} className="border border-gray-200 rounded-lg p-4">
+                  {userProfile.pastGoals
+                    .sort((a, b) => new Date(b.startedAt) - new Date(a.startedAt)) // Sort in descending order
+                    .slice((pastGoalsPage - 1) * PAST_GOALS_PER_PAGE, pastGoalsPage * PAST_GOALS_PER_PAGE)
+                    .map((goal, index) => (
+                    <div key={index} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
                       <div className="flex items-center justify-between mb-3">
                         <span className={`status-badge ${
                           goal.status === 'achieved' ? 'status-achieved' : 'status-discarded'
@@ -633,18 +639,24 @@ const Profile = () => {
                       </div>
                       <div className="space-y-2">
                         <div>
-                          <span className="text-xs text-gray-500">Target</span>
-                          <div className="font-semibold">{goal.targetWeight} kg</div>
+                          <span className="text-xs text-gray-500">Target Weight</span>
+                          <div className="font-semibold text-lg">{goal.targetWeight} kg</div>
                         </div>
                         <div>
-                          <span className="text-xs text-gray-500">Started</span>
+                          <span className="text-xs text-gray-500">Starting Weight</span>
                           <div className="font-semibold">{goal.currentWeight} kg</div>
                         </div>
+                        {goal.targetDate && (
+                          <div>
+                            <span className="text-xs text-gray-500">Target Date</span>
+                            <div className="font-semibold">{new Date(goal.targetDate).toLocaleDateString()}</div>
+                          </div>
+                        )}
                       </div>
                       {goal.status === 'discarded' && (
                         <button
                           onClick={() => handleReopenGoal(goal)}
-                          className="w-full mt-3 btn-secondary text-sm"
+                          className="w-full mt-3 btn-secondary text-sm hover:bg-gray-600 hover:text-white transition-colors duration-200"
                         >
                           Reopen Goal
                         </button>
@@ -657,7 +669,7 @@ const Profile = () => {
                     <button
                       onClick={() => setPastGoalsPage(Math.max(1, pastGoalsPage - 1))}
                       disabled={pastGoalsPage === 1}
-                      className="btn-secondary px-3 py-1 text-sm disabled:opacity-50"
+                      className="btn-secondary px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Previous
                     </button>
@@ -667,7 +679,7 @@ const Profile = () => {
                     <button
                       onClick={() => setPastGoalsPage(Math.min(Math.ceil(userProfile.pastGoals.length / PAST_GOALS_PER_PAGE), pastGoalsPage + 1))}
                       disabled={pastGoalsPage === Math.ceil(userProfile.pastGoals.length / PAST_GOALS_PER_PAGE)}
-                      className="btn-secondary px-3 py-1 text-sm disabled:opacity-50"
+                      className="btn-secondary px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Next
                     </button>
@@ -692,8 +704,9 @@ const Profile = () => {
             <div className="p-6">
               {bmiAnalytics ? (
                 <div className="space-y-6">
+                  {/* Current BMI Display */}
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-gray-900 mb-2">{bmiAnalytics.currentBMI}</div>
+                    <div className="text-4xl font-bold text-gray-900 mb-2">{bmiAnalytics.currentBMI}</div>
                     <div className={`status-badge ${
                       bmiAnalytics.category === 'Normal' ? 'status-active' :
                       bmiAnalytics.category === 'Overweight' ? 'status-inactive' :
@@ -701,36 +714,99 @@ const Profile = () => {
                     }`}>
                       {bmiAnalytics.category}
                     </div>
+                    <p className="text-sm text-gray-600 mt-2">Current BMI</p>
+                  </div>
+
+                  {/* BMI Progress Bar */}
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">BMI Range</span>
+                      <span className="font-medium">{bmiAnalytics.currentBMI} / 24.9 (Normal)</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-3">
+                      <div 
+                        className={`h-3 rounded-full transition-all duration-300 ${
+                          bmiAnalytics.currentBMI < 18.5 ? 'bg-blue-500' :
+                          bmiAnalytics.currentBMI < 25 ? 'bg-green-500' :
+                          bmiAnalytics.currentBMI < 30 ? 'bg-yellow-500' :
+                          bmiAnalytics.currentBMI < 35 ? 'bg-orange-500' :
+                          'bg-red-500'
+                        }`}
+                        style={{ width: `${Math.min((bmiAnalytics.currentBMI / 40) * 100, 100)}%` }}
+                      ></div>
+                    </div>
+                    <div className="flex justify-between text-xs text-gray-500">
+                      <span>16.0</span>
+                      <span>18.5</span>
+                      <span>25.0</span>
+                      <span>30.0</span>
+                      <span>35.0</span>
+                      <span>40.0</span>
+                    </div>
+                  </div>
+
+                  {/* Health Insights */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-blue-900 mb-2">Health Insights</h4>
+                    <div className="text-sm text-blue-800 space-y-1">
+                      {bmiAnalytics.currentBMI < 18.5 && (
+                        <p>• Consider gaining weight for better health</p>
+                      )}
+                      {bmiAnalytics.currentBMI >= 18.5 && bmiAnalytics.currentBMI < 25 && (
+                        <p>• You're in the healthy weight range!</p>
+                      )}
+                      {bmiAnalytics.currentBMI >= 25 && bmiAnalytics.currentBMI < 30 && (
+                        <p>• Consider weight loss for better health</p>
+                      )}
+                      {bmiAnalytics.currentBMI >= 30 && (
+                        <p>• Consult a healthcare provider for weight management</p>
+                      )}
+                    </div>
                   </div>
                   
+                  {/* BMI Scale */}
                   <div className="space-y-3">
-                    <h4 className="font-semibold text-gray-900">BMI Scale</h4>
+                    <h4 className="font-semibold text-gray-900">BMI Categories</h4>
                     <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center p-2 rounded ${
+                        bmiAnalytics.currentBMI < 16 ? 'bg-red-100 border border-red-200' : ''
+                      }">
                         <span className="text-gray-600">Extreme Underweight</span>
                         <span className="font-medium">&lt; 16.0</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center p-2 rounded ${
+                        bmiAnalytics.currentBMI >= 16 && bmiAnalytics.currentBMI < 18.5 ? 'bg-blue-100 border border-blue-200' : ''
+                      }">
                         <span className="text-gray-600">Underweight</span>
                         <span className="font-medium">16.0 - 18.4</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center p-2 rounded ${
+                        bmiAnalytics.currentBMI >= 18.5 && bmiAnalytics.currentBMI < 25 ? 'bg-green-100 border border-green-200' : ''
+                      }">
                         <span className="text-gray-600">Normal</span>
                         <span className="font-medium">18.5 - 24.9</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center p-2 rounded ${
+                        bmiAnalytics.currentBMI >= 25 && bmiAnalytics.currentBMI < 30 ? 'bg-yellow-100 border border-yellow-200' : ''
+                      }">
                         <span className="text-gray-600">Overweight</span>
                         <span className="font-medium">25.0 - 29.9</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center p-2 rounded ${
+                        bmiAnalytics.currentBMI >= 30 && bmiAnalytics.currentBMI < 35 ? 'bg-orange-100 border border-orange-200' : ''
+                      }">
                         <span className="text-gray-600">Obese Class-1</span>
                         <span className="font-medium">30.0 - 34.9</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center p-2 rounded ${
+                        bmiAnalytics.currentBMI >= 35 && bmiAnalytics.currentBMI < 40 ? 'bg-red-100 border border-red-200' : ''
+                      }">
                         <span className="text-gray-600">Obese Class-2</span>
                         <span className="font-medium">35.0 - 39.9</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center p-2 rounded ${
+                        bmiAnalytics.currentBMI >= 40 ? 'bg-red-100 border border-red-200' : ''
+                      }">
                         <span className="text-gray-600">Obese Class-3</span>
                         <span className="font-medium">≥ 40.0</span>
                       </div>
