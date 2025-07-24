@@ -16,6 +16,7 @@ import Navigation from './components/Navigation';
 import Onboarding from './components/Onboarding';
 import BMICalculator from './components/BMICalculator';
 import HomePage from './components/HomePage';
+import Blog from './components/Blog';
 
 // Context
 import { UserProvider } from './context/UserContext';
@@ -90,8 +91,12 @@ function App() {
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/analytics" element={<Analytics />} />
-
                 <Route path="/bmi-calculator" element={<BMICalculator />} />
+                
+                {/* Blog Routes */}
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:blogId" element={<Blog />} />
+                
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </main>

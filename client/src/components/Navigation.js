@@ -7,7 +7,8 @@ import {
   CalculatorIcon,
   ArrowRightOnRectangleIcon,
   Bars3Icon,
-  XMarkIcon
+  XMarkIcon,
+  DocumentTextIcon
 } from '@heroicons/react/24/outline';
 
 const Navigation = ({ currentUser, onLogout }) => {
@@ -18,6 +19,7 @@ const Navigation = ({ currentUser, onLogout }) => {
     { name: 'Dashboard', href: '/', icon: HomeIcon },
     { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
     { name: 'BMI Calculator', href: '/bmi-calculator', icon: CalculatorIcon },
+    { name: 'Blog', href: '/blog', icon: DocumentTextIcon },
     { name: 'Profile', href: '/profile', icon: UserIcon },
   ];
 
