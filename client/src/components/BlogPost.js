@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
-  ChevronLeft, 
-  ChevronRight, 
+  ArrowLeft, 
   Clock, 
   User, 
-  Calendar,
+  Calendar, 
+  Share2, 
+  Bookmark,
   TrendingUp,
   Target,
-  Activity
+  Activity,
+  BarChart3,
+  PieChart,
+  LineChart
 } from 'lucide-react';
 
 // Blog data with SEO-optimized content
@@ -501,218 +505,187 @@ const blogPosts = [
   }
 ];
 
-const Blog = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 3;
-  const totalPages = Math.ceil(blogPosts.length / postsPerPage);
+const BlogPost = () => {
+  const { blogId } = useParams();
+  const navigate = useNavigate();
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  useEffect(() => {
+    const foundPost = blogPosts.find(p => p.id === parseInt(blogId));
+    setPost(foundPost);
+    setLoading(false);
 
-  const currentPosts = blogPosts.slice(
-    (currentPage - 1) * postsPerPage,
-    currentPage * postsPerPage
-  );
+    // SEO: Update document title and meta description
+    if (foundPost) {
+      document.title = `${foundPost.title} - GoooFit Weight Loss Blog`;
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) {
+        metaDescription.setAttribute('content', foundPost.seoDescription);
+      }
+    }
+  }, [blogId]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+      </div>
+    );
+  }
+
+  if (!post) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Blog Post Not Found</h1>
+          <p className="text-gray-600 mb-6">The blog post you're looking for doesn't exist.</p>
+          <Link to="/blog" className="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors">
+            Back to Blog
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-purple-50">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white py-20">
-        <div className="max-w-6xl mx-auto px-6 text-center">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-bold mb-6"
-          >
-            Weight Loss Blog
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto"
-          >
-            Evidence-based insights, expert tips, and proven strategies to help you achieve your weight loss goals
-          </motion.p>
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="flex justify-center gap-4"
-          >
-            <div className="flex items-center gap-2 bg-white bg-opacity-20 px-4 py-2 rounded-full">
-              <TrendingUp className="h-5 w-5" />
-              <span>Latest Research</span>
-            </div>
-            <div className="flex items-center gap-2 bg-white bg-opacity-20 px-4 py-2 rounded-full">
-              <Target className="h-5 w-5" />
-              <span>Proven Strategies</span>
-            </div>
-            <div className="flex items-center gap-2 bg-white bg-opacity-20 px-4 py-2 rounded-full">
-              <Activity className="h-5 w-5" />
-              <span>Expert Tips</span>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Blog Posts Grid */}
-      <div className="max-w-6xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {currentPosts.map((post, index) => (
-            <motion.article
-              key={post.id}
+      <div className="relative h-96 bg-gradient-to-r from-orange-500 to-red-500">
+        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div className="relative h-full flex items-center justify-center">
+          <div className="text-center text-white max-w-4xl mx-auto px-6">
+            <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+              className="text-4xl md:text-6xl font-bold mb-6"
             >
-              {/* Featured Image */}
-              <div className="relative h-48 overflow-hidden">
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute top-4 left-4">
-                  <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                    {post.category}
-                  </span>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-6">
-                <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
-                  <div className="flex items-center gap-1">
-                    <User className="h-4 w-4" />
-                    <span>{post.author}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-4 w-4" />
-                    <span>{new Date(post.date).toLocaleDateString('en-US', { 
-                      year: 'numeric', 
-                      month: 'short', 
-                      day: 'numeric' 
-                    })}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-4 w-4" />
-                    <span>{post.readTime}</span>
-                  </div>
-                </div>
-
-                <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 hover:text-orange-600 transition-colors">
-                  <Link to={`/blog/${post.id}`}>
-                    {post.title}
-                  </Link>
-                </h2>
-
-                <p className="text-gray-600 mb-4 line-clamp-3">
-                  {post.excerpt}
-                </p>
-
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {post.tags.slice(0, 3).map((tag, tagIndex) => (
-                    <span
-                      key={tagIndex}
-                      className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs hover:bg-orange-100 hover:text-orange-800 transition-colors"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Read More Button */}
-                <Link
-                  to={`/blog/${post.id}`}
-                  className="inline-flex items-center gap-2 text-orange-600 hover:text-orange-700 font-medium transition-colors"
-                >
-                  Read Full Article
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              </div>
-            </motion.article>
-          ))}
-        </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-4 mt-12">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              {post.title}
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-xl md:text-2xl mb-8"
             >
-              <ChevronLeft className="h-5 w-5" />
-              Previous
-            </button>
-
-            <div className="flex gap-2">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => handlePageChange(page)}
-                  className={`px-4 py-2 rounded-lg transition-colors ${
-                    currentPage === page
-                      ? 'bg-orange-500 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
-            </div>
-
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              Next
-              <ChevronRight className="h-5 w-5" />
-            </button>
+              {post.excerpt}
+            </motion.p>
           </div>
-        )}
+        </div>
       </div>
 
-      {/* SEO Footer */}
-      <div className="bg-gray-900 text-white py-12">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4">Weight Loss Resources</h3>
-              <ul className="space-y-2">
-                <li><Link to="/blog/1" className="hover:text-orange-400 transition-colors">Metabolism Guide</Link></li>
-                <li><Link to="/blog/2" className="hover:text-orange-400 transition-colors">Nutrition Basics</Link></li>
-                <li><Link to="/blog/3" className="hover:text-orange-400 transition-colors">Exercise Strategies</Link></li>
-              </ul>
+      {/* Content Section */}
+      <div className="max-w-4xl mx-auto px-6 py-12">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Main Content */}
+          <div className="flex-1">
+            {/* Article Meta */}
+            <div className="flex items-center gap-6 text-gray-600 mb-8 pb-6 border-b">
+              <div className="flex items-center gap-2">
+                <User className="h-5 w-5" />
+                <span>{post.author}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                <span>{new Date(post.date).toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="h-5 w-5" />
+                <span>{post.readTime}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-medium">
+                  {post.category}
+                </span>
+              </div>
             </div>
-            <div>
-              <h3 className="text-xl font-bold mb-4">Popular Topics</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="hover:text-orange-400 transition-colors">Weight Loss Tips</a></li>
-                <li><a href="#" className="hover:text-orange-400 transition-colors">Healthy Eating</a></li>
-                <li><a href="#" className="hover:text-orange-400 transition-colors">Fitness Routines</a></li>
-              </ul>
+
+            {/* Article Content */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="prose prose-lg max-w-none"
+              dangerouslySetInnerHTML={{ __html: post.content }}
+            />
+
+            {/* Tags */}
+            <div className="mt-12 pt-8 border-t">
+              <h3 className="text-lg font-semibold mb-4">Tags:</h3>
+              <div className="flex flex-wrap gap-2">
+                {post.tags.map((tag, index) => (
+                  <span 
+                    key={index}
+                    className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-orange-100 hover:text-orange-800 transition-colors cursor-pointer"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
             </div>
-            <div>
-              <h3 className="text-xl font-bold mb-4">Get Started</h3>
-              <p className="text-gray-300 mb-4">Ready to start your weight loss journey?</p>
-              <Link to="/" className="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors inline-block">
-                Start Your Journey
-              </Link>
+          </div>
+
+          {/* Sidebar */}
+          <div className="lg:w-80">
+            <div className="sticky top-8">
+              {/* Share Buttons */}
+              <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                <h3 className="text-lg font-semibold mb-4">Share This Article</h3>
+                <div className="flex gap-3">
+                  <button className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+                    <Share2 className="h-4 w-4" />
+                    Share
+                  </button>
+                  <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                    <Bookmark className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Related Posts */}
+              <div className="bg-gray-50 rounded-lg p-6">
+                <h3 className="text-lg font-semibold mb-4">Related Articles</h3>
+                <div className="space-y-4">
+                  {blogPosts
+                    .filter(p => p.id !== post.id)
+                    .slice(0, 3)
+                    .map((relatedPost) => (
+                      <Link 
+                        key={relatedPost.id}
+                        to={`/blog/${relatedPost.id}`}
+                        className="block group"
+                      >
+                        <h4 className="font-medium text-gray-900 group-hover:text-orange-600 transition-colors mb-2">
+                          {relatedPost.title}
+                        </h4>
+                        <p className="text-sm text-gray-600 line-clamp-2">
+                          {relatedPost.excerpt}
+                        </p>
+                      </Link>
+                    ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Back to Blog Button */}
+      <div className="max-w-4xl mx-auto px-6 pb-12">
+        <button
+          onClick={() => navigate('/blog')}
+          className="flex items-center gap-2 text-orange-600 hover:text-orange-700 transition-colors"
+        >
+          <ArrowLeft className="h-5 w-5" />
+          Back to Blog
+        </button>
       </div>
     </div>
   );
 };
 
-export default Blog; 
+export default BlogPost; 

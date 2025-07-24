@@ -17,6 +17,7 @@ import Onboarding from './components/Onboarding';
 import BMICalculator from './components/BMICalculator';
 import HomePage from './components/HomePage';
 import Blog from './components/Blog';
+import BlogPost from './components/BlogPost';
 
 // Context
 import { UserProvider } from './context/UserContext';
@@ -85,35 +86,37 @@ function App() {
     <UserProvider value={{ currentUser, setCurrentUser: handleUserLogin, logout: handleUserLogout }}>
       <GoogleAnalytics />
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-purple-50 flex flex-col">
-        {/* Home Page */}
-        {!currentUser && (
-          <HomePage
-            onStartDemo={() => handleUserLogin({ id: 'demo', name: 'Demo User' })}
-            onRegister={() => { setShowOnboarding(true); setOnboardingMode('register'); }}
-            onLogin={() => { setShowOnboarding(true); setOnboardingMode('login'); }}
-          />
-        )}
+        {/* Navigation - Always show for blog pages */}
+        <Navigation currentUser={currentUser} onLogout={handleUserLogout} />
+        
+        {/* Blog Routes - Accessible to everyone */}
+        <Routes>
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:blogId" element={<BlogPost />} />
+          
+          {/* Home Page - Only show when not logged in and not on blog */}
+          {!currentUser && (
+            <Route path="/" element={
+              <HomePage
+                onStartDemo={() => handleUserLogin({ id: 'demo', name: 'Demo User' })}
+                onRegister={() => { setShowOnboarding(true); setOnboardingMode('register'); }}
+                onLogin={() => { setShowOnboarding(true); setOnboardingMode('login'); }}
+              />
+            } />
+          )}
 
-        {/* Main App Content */}
-        {currentUser && (
-          <div className="flex-1 flex flex-col">
-            <Navigation currentUser={currentUser} onLogout={handleUserLogout} />
-            <main className="flex-1 px-4 sm:px-6 lg:px-8 py-8">
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/analytics" element={<Analytics />} />
-                <Route path="/bmi-calculator" element={<BMICalculator />} />
-                
-                {/* Blog Routes */}
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/blog/:blogId" element={<Blog />} />
-                
-                <Route path="*" element={<Navigate to="/" />} />
-              </Routes>
-            </main>
-          </div>
-        )}
+          {/* Main App Content - Only show when logged in */}
+          {currentUser && (
+            <>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/analytics" element={<Analytics />} />
+              <Route path="/bmi-calculator" element={<BMICalculator />} />
+            </>
+          )}
+          
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
 
         {/* Onboarding Modal */}
         {showOnboarding && (
