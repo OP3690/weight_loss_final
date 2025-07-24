@@ -22,8 +22,15 @@ const Analytics = () => {
   const ENTRIES_PER_PAGE = 7;
   const [userProfile, setUserProfile] = useState(null);
   const [showGoalNotification, setShowGoalNotification] = useState(true);
+  const [hasAttemptedLoad, setHasAttemptedLoad] = useState(false);
 
   const loadUserProfileAndAnalytics = useCallback(async (retryCount = 0) => {
+    // Prevent multiple simultaneous calls
+    if (loading) {
+      console.log('Analytics already loading, skipping duplicate call');
+      return;
+    }
+    
     try {
       setLoading(true);
       
@@ -78,10 +85,15 @@ const Analytics = () => {
       } catch (analyticsError) {
         console.error('Error loading analytics:', analyticsError);
         
-        // If this is the first retry and it's a network error, try once more
-        if (retryCount < 1 && (analyticsError.code === 'ERR_NETWORK' || analyticsError.message.includes('Network Error'))) {
-          console.log('Retrying analytics load...');
-          setTimeout(() => loadUserProfileAndAnalytics(retryCount + 1), 2000);
+        // Only retry once and only for network errors
+        if (retryCount < 1 && analyticsError.code === 'ERR_NETWORK') {
+          console.log('Retrying analytics load once...');
+          setTimeout(() => {
+            // Check if component is still mounted and user hasn't changed
+            if (currentUser && currentUser.id) {
+              loadUserProfileAndAnalytics(retryCount + 1);
+            }
+          }, 3000);
           return;
         }
         
@@ -123,7 +135,7 @@ const Analytics = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentUser, selectedPeriod]);
+  }, [currentUser, selectedPeriod, loading]);
 
   const generateSampleAnalytics = useCallback(() => {
     const days = parseInt(selectedPeriod);
@@ -195,6 +207,14 @@ const Analytics = () => {
 
   useEffect(() => {
     if (currentUser && currentUser.id !== 'demo') {
+      // Only attempt to load once per user
+      if (hasAttemptedLoad) {
+        console.log('Already attempted to load analytics for this user');
+        return;
+      }
+      
+      setHasAttemptedLoad(true);
+      
       // Add a timeout to prevent infinite loading
       const timeoutId = setTimeout(() => {
         if (loading) {
@@ -210,7 +230,12 @@ const Analytics = () => {
       // Demo user - generate sample analytics data
       generateSampleAnalytics();
     }
-  }, [currentUser, loadUserProfileAndAnalytics, generateSampleAnalytics, loading]);
+  }, [currentUser, loadUserProfileAndAnalytics, generateSampleAnalytics, loading, hasAttemptedLoad]);
+
+  // Reset attempt flag when user changes
+  useEffect(() => {
+    setHasAttemptedLoad(false);
+  }, [currentUser?.id]);
 
   const getTrendIcon = () => {
     if (!analytics || !analytics.trend) return <Minus className="w-4 h-4 text-gray-600" />;
