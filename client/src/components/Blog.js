@@ -473,7 +473,7 @@ const Blog = () => {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-purple-50">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white py-20">
-        <div className="w-full px-6 text-center">
+        <div className="max-w-7xl mx-auto px-6 text-center">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -512,7 +512,7 @@ const Blog = () => {
       </div>
 
       {/* Blog Posts Grid */}
-      <div className="w-full px-6 py-16">
+      <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {currentPosts.map((post, index) => (
             <motion.article
@@ -636,7 +636,7 @@ const Blog = () => {
 
       {/* SEO Footer */}
       <div className="bg-gray-900 text-white py-12">
-        <div className="w-full px-6">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <h3 className="text-xl font-bold mb-4">Weight Loss Resources</h3>

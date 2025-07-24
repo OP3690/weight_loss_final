@@ -504,7 +504,7 @@ const BlogPost = () => {
       <div className="relative h-96 bg-gradient-to-r from-orange-500 to-red-500">
         <div className="absolute inset-0 bg-black bg-opacity-40"></div>
         <div className="relative h-full flex items-center justify-center">
-          <div className="text-center text-white w-full px-6">
+          <div className="text-center text-white max-w-5xl mx-auto px-6">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -525,7 +525,7 @@ const BlogPost = () => {
       </div>
 
       {/* Content Section */}
-      <div className="w-full px-6 py-12">
+      <div className="max-w-5xl mx-auto px-6 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Content */}
           <div className="flex-1">
@@ -586,11 +586,36 @@ const BlogPost = () => {
               <div className="bg-gray-50 rounded-lg p-6 mb-6">
                 <h3 className="text-lg font-semibold mb-4">Share This Article</h3>
                 <div className="flex gap-3">
-                  <button className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+                  <button 
+                    onClick={() => {
+                      if (navigator.share) {
+                        navigator.share({
+                          title: post.title,
+                          text: post.excerpt,
+                          url: window.location.href
+                        });
+                      } else {
+                        // Fallback: copy URL to clipboard
+                        navigator.clipboard.writeText(window.location.href);
+                        alert('Link copied to clipboard!');
+                      }
+                    }}
+                    className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                  >
                     <Share2 className="h-4 w-4" />
                     Share
                   </button>
-                  <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                  <button 
+                    onClick={() => {
+                      // Add to bookmarks functionality
+                      if (window.sidebar && window.sidebar.addPanel) {
+                        window.sidebar.addPanel(post.title, window.location.href, '');
+                      } else {
+                        alert('Press ' + (navigator.userAgent.toLowerCase().indexOf('mac') != -1 ? 'Command/Cmd' : 'CTRL') + ' + D to bookmark this page.');
+                      }
+                    }}
+                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+                  >
                     <Bookmark className="h-4 w-4" />
                   </button>
                 </div>
@@ -625,7 +650,7 @@ const BlogPost = () => {
       </div>
 
       {/* Back to Blog Button */}
-      <div className="w-full px-6 pb-12">
+      <div className="max-w-5xl mx-auto px-6 pb-12">
         <button
           onClick={() => navigate('/blog')}
           className="flex items-center gap-2 text-orange-600 hover:text-orange-700 transition-colors"
