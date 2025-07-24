@@ -385,7 +385,7 @@ const blogPosts = [
     date: "2024-05-30",
     readTime: "9 min read",
     category: "Strength Training & Mental Health",
-    image: "/BlogImg/sergio-kian-F2vHthxp2dE-unsplash.jpg",
+    image: "/BlogImg/jared-rice-NTyBbu66_SI-unsplash.jpg",
     tags: ["weightlifting", "strength training", "mental health", "mood", "fitness", "emotional well-being"],
     seoDescription: "Learn how weightlifting and strength training can lift your mood and improve mental health. Discover the mind-body connection.",
     cardTag: "Featured"
@@ -399,7 +399,7 @@ const blogPosts = [
     date: "2024-06-05",
     readTime: "10 min read",
     category: "Clean Eating & Wellness",
-    image: "/BlogImg/helena-lopes-PGnqT0rXWLs-unsplash.jpg",
+    image: "/BlogImg/kalen-emsley-7bwQXzbF6KE-unsplash.jpg",
     tags: ["clean eating", "mental clarity", "wellness", "cognitive function", "nutrition", "focus"],
     seoDescription: "Discover how clean eating habits enhance mental clarity and cognitive function for better overall wellness.",
     cardTag: "New"
@@ -413,7 +413,7 @@ const blogPosts = [
     date: "2024-06-10",
     readTime: "8 min read",
     category: "Health Harmony",
-    image: "/BlogImg/nadine-primeau-Juvw-a-RvvI-unsplash.jpg",
+    image: "/BlogImg/muhammad-faris-JAxiaRRjfSc-unsplash.jpg",
     tags: ["physical activity", "mental rest", "health harmony", "well-being", "balance", "mind-body"],
     seoDescription: "Learn to achieve harmony between active body and restful mind for optimal health and well-being.",
     cardTag: "Trending"
@@ -493,6 +493,13 @@ const Blog = () => {
                     src={post.image} 
                     alt={post.title}
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    onError={(e) => {
+                      console.error(`Failed to load image: ${post.image}`, e);
+                      e.target.style.display = 'none';
+                    }}
+                    onLoad={() => {
+                      console.log(`Successfully loaded image: ${post.image}`);
+                    }}
                   />
                   <div className="absolute top-4 left-4">
                     <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium">
