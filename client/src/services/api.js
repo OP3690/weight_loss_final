@@ -24,9 +24,9 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 15000, // 15 second timeout
+  timeout: 8000, // 8 second timeout for faster failure
   retry: 1, // Only retry once to avoid spam
-  retryDelay: 2000, // Wait 2 seconds between retries
+  retryDelay: 1000, // Wait 1 second between retries
 });
 
 // Utility function to validate MongoDB ObjectId

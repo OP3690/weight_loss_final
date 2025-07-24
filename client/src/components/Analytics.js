@@ -26,22 +26,15 @@ const Analytics = () => {
   const loadUserProfileAndAnalytics = useCallback(async () => {
     try {
       setLoading(true);
-      const profile = await userAPI.getUser(currentUser.id);
+      
+      // Load profile and analytics in parallel for better performance
+      const [profile, response] = await Promise.all([
+        userAPI.getUser(currentUser.id),
+        weightEntryAPI.getAnalytics(currentUser.id, { period: selectedPeriod })
+      ]);
+      
       setUserProfile(profile);
       
-      // Get active goalId from userProfile
-      const activeGoalId = profile && profile.goalId && (profile.goalId === 'demo' || isValidObjectId(profile.goalId)) ? profile.goalId : null;
-      
-      // Pass goalCreatedAt as startDate if present, and goalId for goal-level analytics
-      const params = { period: selectedPeriod };
-      if (profile.goalCreatedAt) {
-        params.startDate = profile.goalCreatedAt;
-      }
-      if (activeGoalId) {
-        params.goalId = activeGoalId;
-      }
-      
-      const response = await weightEntryAPI.getAnalytics(currentUser.id, params);
       if (response.analytics) {
         setAnalytics(response.analytics);
       } else {

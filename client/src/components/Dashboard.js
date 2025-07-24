@@ -298,10 +298,32 @@ const Dashboard = () => {
   const loadUserProfile = async () => {
     if (!currentUser || !currentUser.id) return;
     
+    // Check cache first
+    const cacheKey = `userProfile_${currentUser.id}`;
+    const cached = localStorage.getItem(cacheKey);
+    const cacheTime = localStorage.getItem(`${cacheKey}_time`);
+    const now = Date.now();
+    
+    // Use cache if it's less than 2 minutes old
+    if (cached && cacheTime && (now - parseInt(cacheTime)) < 2 * 60 * 1000) {
+      try {
+        const profile = JSON.parse(cached);
+        setUserProfile(profile);
+        setError(null);
+        return;
+      } catch (e) {
+        // Cache corrupted, continue with API call
+      }
+    }
+    
     try {
       const profile = await userAPI.getUser(currentUser.id);
       setUserProfile(profile);
       setError(null); // Clear any previous errors
+      
+      // Cache the result
+      localStorage.setItem(cacheKey, JSON.stringify(profile));
+      localStorage.setItem(`${cacheKey}_time`, now.toString());
     } catch (error) {
       console.error('Error loading user profile:', error);
       
@@ -338,6 +360,24 @@ const Dashboard = () => {
   const loadGoalEntries = async () => {
     if (!currentUser || !currentUser.id) return;
     
+    // Check cache first
+    const cacheKey = `goalEntries_${currentUser.id}`;
+    const cached = localStorage.getItem(cacheKey);
+    const cacheTime = localStorage.getItem(`${cacheKey}_time`);
+    const now = Date.now();
+    
+    // Use cache if it's less than 1 minute old
+    if (cached && cacheTime && (now - parseInt(cacheTime)) < 1 * 60 * 1000) {
+      try {
+        const entries = JSON.parse(cached);
+        setGoalEntries(entries);
+        setError(null);
+        return;
+      } catch (e) {
+        // Cache corrupted, continue with API call
+      }
+    }
+    
     try {
       // Pass the active goalId to the analytics API
       const response = await weightEntryAPI.getAnalytics(currentUser.id, { 
@@ -345,13 +385,18 @@ const Dashboard = () => {
         goalId: activeGoalId 
       });
       if (response.analytics) {
-        setGoalEntries((response.analytics.entries || []).map(entry => ({
+        const entries = (response.analytics.entries || []).map(entry => ({
           id: entry.id || entry._id,
           date: entry.date,
           weight: entry.weight,
           notes: entry.notes || '',
           goalId: entry.goalId
-        })));
+        }));
+        setGoalEntries(entries);
+        
+        // Cache the result
+        localStorage.setItem(cacheKey, JSON.stringify(entries));
+        localStorage.setItem(`${cacheKey}_time`, now.toString());
       }
     } catch (error) {
       console.error('Error loading goal entries:', error);
@@ -382,18 +427,18 @@ const Dashboard = () => {
     }
   };
 
-  // Always reload profile and entries on mount and when currentUser changes
+  // Load data on mount and when currentUser changes
   useEffect(() => {
     if (currentUser && currentUser.id) {
       console.log('[DASHBOARD] Loading fresh user profile and goal entries for user:', currentUser.id);
       
-      // Add a small delay to prevent rapid successive calls
-      const timer = setTimeout(() => {
-        loadUserProfile();
-        loadGoalEntries();
-      }, 500);
-      
-      return () => clearTimeout(timer);
+      // Load data in parallel for better performance
+      Promise.all([
+        loadUserProfile(),
+        loadGoalEntries()
+      ]).then(() => {
+        localStorage.setItem('dashboardLastUpdate', Date.now().toString());
+      });
     }
   }, [currentUser]);
 
@@ -404,19 +449,20 @@ const Dashboard = () => {
     }
   }, [goalEntries, userProfile]);
 
-  // Force refresh data when component becomes visible (for cases where data might be stale)
+  // Only refresh data when component becomes visible if data is stale (older than 5 minutes)
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden && currentUser && currentUser.id) {
-        console.log('[DASHBOARD] Page became visible, refreshing data...');
+        const lastUpdate = localStorage.getItem('dashboardLastUpdate');
+        const now = Date.now();
         
-        // Add a delay to prevent rapid successive calls
-        const timer = setTimeout(() => {
+        // Only refresh if data is older than 5 minutes
+        if (!lastUpdate || (now - parseInt(lastUpdate)) > 5 * 60 * 1000) {
+          console.log('[DASHBOARD] Page became visible, refreshing stale data...');
           loadUserProfile();
           loadGoalEntries();
-        }, 1000);
-        
-        return () => clearTimeout(timer);
+          localStorage.setItem('dashboardLastUpdate', now.toString());
+        }
       }
     };
 
@@ -519,8 +565,18 @@ const Dashboard = () => {
       });
   }, [currentUser, userProfile, userProfile?.activeGoalId]);
 
+  const clearCache = () => {
+    if (currentUser && currentUser.id) {
+      localStorage.removeItem(`userProfile_${currentUser.id}`);
+      localStorage.removeItem(`userProfile_${currentUser.id}_time`);
+      localStorage.removeItem(`goalEntries_${currentUser.id}`);
+      localStorage.removeItem(`goalEntries_${currentUser.id}_time`);
+    }
+  };
+
   const handleEntryAdded = () => {
     console.log('[DASHBOARD] Entry added, reloading fresh data...');
+    clearCache(); // Clear cache to force fresh data
     if (currentUser && currentUser.id) {
       loadUserProfile();
       loadGoalEntries();
@@ -529,14 +585,16 @@ const Dashboard = () => {
 
   const handleEntryUpdated = () => {
     console.log('[DASHBOARD] Entry updated, reloading fresh data...');
+    clearCache(); // Clear cache to force fresh data
     if (currentUser && currentUser.id) {
       loadUserProfile();
       loadGoalEntries();
-              }
+    }
   };
 
   const refreshData = () => {
     console.log('[DASHBOARD] Manual refresh requested...');
+    clearCache(); // Clear cache to force fresh data
     if (currentUser && currentUser.id) {
       loadUserProfile();
       loadGoalEntries();
