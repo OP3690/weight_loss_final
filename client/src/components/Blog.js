@@ -8,7 +8,7 @@ import {
   User 
 } from 'lucide-react';
 
-// Blog data with SEO-optimized content using local BlogImg images
+// Blog data with SEO-optimized content using unique local BlogImg images
 const blogPosts = [
   {
     id: 1,
@@ -58,7 +58,7 @@ const blogPosts = [
     date: "2024-02-01",
     readTime: "7 min read",
     category: "Mindset & Motivation",
-    image: "/BlogImg/lyfefuel-4wtxPhvQZds-unsplash.jpg",
+    image: "/BlogImg/denys-nevozhai-z0nVqfrOqWA-unsplash.jpg",
     tags: ["motivation", "mindset", "psychology", "weight loss", "goals"],
     seoDescription: "Develop the right mindset for successful weight loss. Learn psychological strategies to maintain motivation and overcome mental barriers."
   },
@@ -71,7 +71,7 @@ const blogPosts = [
     date: "2024-02-05",
     readTime: "6 min read",
     category: "Health & Wellness",
-    image: "/BlogImg/bruce-mars-gJtDg6WfMlQ-unsplash.jpg",
+    image: "/BlogImg/dane-wetton-t1NEMSm1rgI-unsplash.jpg",
     tags: ["sleep", "weight loss", "hormones", "health", "wellness"],
     seoDescription: "Learn how sleep affects weight loss and discover strategies to optimize your sleep for better health and weight management."
   },
@@ -84,7 +84,7 @@ const blogPosts = [
     date: "2024-02-10",
     readTime: "9 min read",
     category: "Advanced Strategies",
-    image: "/BlogImg/lyfefuel-4wtxPhvQZds-unsplash.jpg",
+    image: "/BlogImg/alexander-red-d3bYmnZ0ank-unsplash.jpg",
     tags: ["plateau", "weight loss", "advanced strategies", "progress", "motivation"],
     seoDescription: "Break through weight loss plateaus with advanced strategies. Learn techniques to restart progress and continue your weight loss journey."
   },
@@ -97,7 +97,7 @@ const blogPosts = [
     date: "2024-02-15",
     readTime: "8 min read",
     category: "Science & Research",
-    image: "/BlogImg/bruce-mars-gJtDg6WfMlQ-unsplash.jpg",
+    image: "/BlogImg/bruno-nascimento-PHIgYUGQPvU-unsplash.jpg",
     tags: ["metabolism", "weight loss", "BMR", "exercise", "nutrition"],
     seoDescription: "Learn the science behind metabolism and weight loss. Discover how to optimize your body's energy systems for sustainable weight management results."
   },
@@ -110,7 +110,7 @@ const blogPosts = [
     date: "2024-02-20",
     readTime: "10 min read",
     category: "Nutrition",
-    image: "/BlogImg/lyfefuel-4wtxPhvQZds-unsplash.jpg",
+    image: "/BlogImg/helena-lopes-PGnqT0rXWLs-unsplash.jpg",
     tags: ["nutrition", "macronutrients", "weight loss", "healthy eating", "meal planning"],
     seoDescription: "Master the fundamentals of nutrition for sustainable weight loss. Learn about macronutrients, meal timing, and optimal food choices."
   },
@@ -123,7 +123,7 @@ const blogPosts = [
     date: "2024-02-25",
     readTime: "7 min read",
     category: "Health & Wellness",
-    image: "/BlogImg/bruce-mars-gJtDg6WfMlQ-unsplash.jpg",
+    image: "/BlogImg/kike-vega-F2qh3yjz6Jk-unsplash (1).jpg",
     tags: ["vitamin d", "sunlight", "mental health", "wellness", "weight loss"],
     seoDescription: "Learn about the connection between vitamin D, sunlight exposure, and mental health during your weight loss journey."
   },
@@ -136,7 +136,7 @@ const blogPosts = [
     date: "2024-03-01",
     readTime: "11 min read",
     category: "Fasting & Nutrition",
-    image: "/BlogImg/bruce-mars-gJtDg6WfMlQ-unsplash.jpg",
+    image: "/BlogImg/logan-weaver-lgnwvr-Opd6Z-sgakI-unsplash.jpg",
     tags: ["intermittent fasting", "weight loss", "nutrition", "health", "metabolism"],
     seoDescription: "Master intermittent fasting for weight loss success. Learn proven strategies, methods, and tips for sustainable results."
   },
@@ -149,7 +149,7 @@ const blogPosts = [
     date: "2024-03-05",
     readTime: "9 min read",
     category: "Mental Health & Wellness",
-    image: "/BlogImg/lyfefuel-4wtxPhvQZds-unsplash.jpg",
+    image: "/BlogImg/heather-ford-Ug7kk0kThLk-unsplash.jpg",
     tags: ["stress management", "weight loss", "mental health", "cortisol", "wellness"],
     seoDescription: "Learn how stress affects weight loss and discover effective stress management techniques for better weight loss results."
   },
@@ -162,9 +162,48 @@ const blogPosts = [
     date: "2024-03-10",
     readTime: "10 min read",
     category: "Gut Health & Nutrition",
-    image: "/BlogImg/bruce-mars-tj27cwu86Wk-unsplash.jpg",
+    image: "/BlogImg/logan-weaver-lgnwvr-u76Gd0hP5w4-unsplash.jpg",
     tags: ["gut health", "microbiome", "weight loss", "probiotics", "nutrition"],
     seoDescription: "Discover the connection between gut health and weight loss. Learn how to optimize your microbiome for better weight management."
+  },
+  {
+    id: 13,
+    slug: "exercise-daily-boost-body-mind-happiness",
+    title: "Exercise Daily: Boost Body & Mind for Happiness",
+    excerpt: "Discover how daily exercise transforms not just your body, but your mental well-being and overall happiness.",
+    author: "Fitness & Wellness Experts",
+    date: "2024-03-15",
+    readTime: "8 min read",
+    category: "Fitness & Wellness",
+    image: "/BlogImg/sergio-kian-F2vHthxp2dE-unsplash.jpg",
+    tags: ["exercise", "daily fitness", "mental health", "happiness", "wellness"],
+    seoDescription: "Learn how daily exercise boosts both body and mind for lasting happiness and improved mental well-being."
+  },
+  {
+    id: 14,
+    slug: "mindful-eating-fuel-body-lift-mood",
+    title: "Mindful Eating: Fuel Your Body, Lift Your Mood",
+    excerpt: "Transform your relationship with food through mindful eating practices that nourish both body and soul.",
+    author: "Mindful Living Specialists",
+    date: "2024-03-20",
+    readTime: "7 min read",
+    category: "Mindful Living",
+    image: "/BlogImg/nadine-primeau-Juvw-a-RvvI-unsplash.jpg",
+    tags: ["mindful eating", "nutrition", "mental health", "mood", "wellness"],
+    seoDescription: "Master mindful eating to fuel your body and lift your mood. Transform your relationship with food for better health."
+  },
+  {
+    id: 15,
+    slug: "mental-health-matters-stress-less-live-more",
+    title: "Mental Health Matters: Stress Less, Live More",
+    excerpt: "Prioritize your mental health with proven strategies to reduce stress and enhance your quality of life.",
+    author: "Mental Health Professionals",
+    date: "2024-03-25",
+    readTime: "9 min read",
+    category: "Mental Health",
+    image: "/BlogImg/jenny-hill-mQVWb7kUoOE-unsplash.jpg",
+    tags: ["mental health", "stress reduction", "wellness", "life quality", "self-care"],
+    seoDescription: "Learn essential mental health strategies to stress less and live more. Prioritize your well-being for a better life."
   }
 ];
 
