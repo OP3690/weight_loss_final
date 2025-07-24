@@ -385,7 +385,7 @@ const blogPosts = [
     date: "2024-05-30",
     readTime: "9 min read",
     category: "Strength Training & Mental Health",
-    image: "/BlogImg/dane-wetton-t1NEMSm1rgI-unsplash.jpg",
+    image: "/BlogImg/sergio-kian-F2vHthxp2dE-unsplash.jpg",
     tags: ["weightlifting", "strength training", "mental health", "mood", "fitness", "emotional well-being"],
     seoDescription: "Learn how weightlifting and strength training can lift your mood and improve mental health. Discover the mind-body connection.",
     cardTag: "Featured"
@@ -399,7 +399,7 @@ const blogPosts = [
     date: "2024-06-05",
     readTime: "10 min read",
     category: "Clean Eating & Wellness",
-    image: "/BlogImg/lyfefuel-4wtxPhvQZds-unsplash.jpg",
+    image: "/BlogImg/helena-lopes-PGnqT0rXWLs-unsplash.jpg",
     tags: ["clean eating", "mental clarity", "wellness", "cognitive function", "nutrition", "focus"],
     seoDescription: "Discover how clean eating habits enhance mental clarity and cognitive function for better overall wellness.",
     cardTag: "New"
@@ -413,7 +413,7 @@ const blogPosts = [
     date: "2024-06-10",
     readTime: "8 min read",
     category: "Health Harmony",
-    image: "/BlogImg/denys-nevozhai-z0nVqfrOqWA-unsplash.jpg",
+    image: "/BlogImg/nadine-primeau-Juvw-a-RvvI-unsplash.jpg",
     tags: ["physical activity", "mental rest", "health harmony", "well-being", "balance", "mind-body"],
     seoDescription: "Learn to achieve harmony between active body and restful mind for optimal health and well-being.",
     cardTag: "Trending"
