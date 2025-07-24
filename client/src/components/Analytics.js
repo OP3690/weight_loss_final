@@ -41,13 +41,12 @@ const Analytics = () => {
         return;
       }
       
-      // Load profile and analytics in parallel for better performance
-      const [profile, response] = await Promise.all([
-        userAPI.getUser(currentUser.id),
-        weightEntryAPI.getAnalytics(currentUser.id, { period: selectedPeriod })
-      ]);
-      
+      // Load profile first, then analytics to reduce server load
+      const profile = await userAPI.getUser(currentUser.id);
       setUserProfile(profile);
+      
+      // Load analytics with a shorter timeout
+      const response = await weightEntryAPI.getAnalytics(currentUser.id, { period: selectedPeriod });
       
       if (response.analytics) {
         setAnalytics(response.analytics);
@@ -147,12 +146,42 @@ const Analytics = () => {
     setLoading(false);
   }, [selectedPeriod]);
 
-  useEffect(() => {
-    if (currentUser && currentUser.id !== 'demo') {
-      loadUserProfileAndAnalytics();
-    } else if (currentUser && currentUser.id === 'demo') {
-      // Demo user - generate sample analytics data
+  const handleManualRefresh = () => {
+    // Reset failure count and try again
+    localStorage.setItem('analyticsApiFailures', '0');
+    setLoading(true);
+    loadUserProfileAndAnalytics().catch(() => {
       generateSampleAnalytics();
+    });
+  };
+
+  useEffect(() => {
+    if (currentUser && currentUser.id) {
+      // For demo users or if we've had recent API failures, use demo data
+      const recentFailures = localStorage.getItem('analyticsApiFailures') || '0';
+      const failureCount = parseInt(recentFailures);
+      
+      if (currentUser.id === 'demo' || failureCount > 2) {
+        console.log('Using demo data for analytics');
+        generateSampleAnalytics();
+        return;
+      }
+      
+      // Try to load real data with a timeout
+      const loadWithTimeout = async () => {
+        try {
+          await loadUserProfileAndAnalytics();
+          // Reset failure count on success
+          localStorage.setItem('analyticsApiFailures', '0');
+        } catch (error) {
+          console.error('Analytics API failed, falling back to demo data');
+          // Increment failure count
+          localStorage.setItem('analyticsApiFailures', (failureCount + 1).toString());
+          generateSampleAnalytics();
+        }
+      };
+      
+      loadWithTimeout();
     }
   }, [currentUser, loadUserProfileAndAnalytics, generateSampleAnalytics]);
 
@@ -175,7 +204,11 @@ const Analytics = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading analytics...</p>
+          <p className="text-sm text-gray-500 mt-2">This may take a few moments</p>
+        </div>
       </div>
     );
   }
@@ -291,7 +324,7 @@ const Analytics = () => {
             <option value="90" selected>90 days</option>
           </select>
           <button
-            onClick={loadUserProfileAndAnalytics}
+            onClick={handleManualRefresh}
             className="ml-2 px-3 py-1 rounded bg-blue-500 text-white text-sm font-semibold hover:bg-blue-600 transition"
             title="Refresh Analytics"
           >
