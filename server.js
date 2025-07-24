@@ -12,20 +12,43 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(helmet());
 app.use(compression());
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? [
-        'https://gooofit.com',
-        'https://www.gooofit.com',
-        'https://weight-loss-lac.vercel.app',
-        'https://client-9jm305kpo-omprakash-utahas-projects.vercel.app',
-        'https://weight-management-frontend.vercel.app',
-        'https://weight-management-client.vercel.app',
-        'http://localhost:3000'
-      ]
-    : 'http://localhost:3000',
-  credentials: true
-}));
+// More robust CORS configuration
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'https://gooofit.com',
+      'https://www.gooofit.com',
+      'https://weight-loss-lac.vercel.app',
+      'https://client-9jm305kpo-omprakash-utahas-projects.vercel.app',
+      'https://weight-management-frontend.vercel.app',
+      'https://weight-management-client.vercel.app',
+      'http://localhost:3000'
+    ];
+    
+    console.log('CORS request from origin:', origin);
+    console.log('Allowed origins:', allowedOrigins);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      console.log('CORS allowed for origin:', origin);
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+};
+
+app.use(cors(corsOptions));
+
+// Handle preflight requests
+app.options('*', cors(corsOptions));
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
