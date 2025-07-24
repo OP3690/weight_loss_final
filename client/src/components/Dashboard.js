@@ -298,34 +298,45 @@ const Dashboard = () => {
   const loadUserProfile = async () => {
     if (!currentUser || !currentUser.id) return;
     
-    // Check backend health first
-    const isHealthy = await checkBackendHealth();
-    if (!isHealthy) {
-      console.error('Backend is not healthy, skipping profile load');
-      setError('Backend connection failed. Please try again later.');
-      return;
-    }
-    
     try {
       const profile = await userAPI.getUser(currentUser.id);
       setUserProfile(profile);
       setError(null); // Clear any previous errors
     } catch (error) {
       console.error('Error loading user profile:', error);
-      setError('Failed to load user profile. Please try again.');
+      
+      // If it's a demo user, show demo data
+      if (currentUser.id === 'demo') {
+        const demoProfile = {
+          id: 'demo',
+          name: 'Demo User',
+          email: 'demo@example.com',
+          mobile: '+1234567890',
+          gender: 'male',
+          age: 30,
+          height: 170,
+          currentWeight: 78.5,
+          targetWeight: 65,
+          targetDate: new Date(Date.now() + 160 * 24 * 60 * 60 * 1000),
+          goalStatus: 'active',
+          goalCreatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+          goalId: 'demo-goal-123',
+          pastGoals: [],
+          goals: [],
+          createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+          updatedAt: new Date()
+        };
+        setUserProfile(demoProfile);
+        setError(null);
+      } else {
+        setError('Failed to load user profile. Please try again.');
+      }
     }
   };
 
   // Define loadGoalEntries function
   const loadGoalEntries = async () => {
     if (!currentUser || !currentUser.id) return;
-    
-    // Check backend health first
-    const isHealthy = await checkBackendHealth();
-    if (!isHealthy) {
-      console.error('Backend is not healthy, skipping goal entries load');
-      return;
-    }
     
     try {
       // Pass the active goalId to the analytics API
@@ -344,7 +355,30 @@ const Dashboard = () => {
       }
     } catch (error) {
       console.error('Error loading goal entries:', error);
-      setError('Failed to load weight entries. Please try again.');
+      
+      // If it's a demo user, show demo entries
+      if (currentUser.id === 'demo') {
+        const demoEntries = [];
+        const startDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        for (let i = 0; i < 30; i++) {
+          const date = new Date(startDate);
+          date.setDate(startDate.getDate() + i);
+          const baseWeight = 78.5 - (i * 0.1);
+          const fluctuation = (Math.random() - 0.5) * 0.5;
+          const weight = Math.round((baseWeight + fluctuation) * 10) / 10;
+          demoEntries.push({
+            id: `demo-entry-${i}`,
+            date: date.toISOString(),
+            weight,
+            notes: i % 7 === 0 ? 'Weekly check-in' : '',
+            goalId: 'demo-goal-123'
+          });
+        }
+        setGoalEntries(demoEntries);
+        setError(null);
+      } else {
+        setError('Failed to load weight entries. Please try again.');
+      }
     }
   };
 

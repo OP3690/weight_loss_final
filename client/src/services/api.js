@@ -24,9 +24,9 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000, // 10 second timeout
-  retry: 3, // Retry failed requests
-  retryDelay: 1000, // Wait 1 second between retries
+  timeout: 15000, // 15 second timeout
+  retry: 1, // Only retry once to avoid spam
+  retryDelay: 2000, // Wait 2 seconds between retries
 });
 
 // Utility function to validate MongoDB ObjectId
@@ -81,10 +81,11 @@ api.interceptors.response.use(
     if (config.retryCount >= config.retry || error.code !== 'ERR_NETWORK') {
       const message = error.response?.data?.message || error.message || 'Something went wrong';
       
-      // Only show toast for non-retry errors to avoid spam
+      // Only show toast for final failures, not for retries
       if (config.retryCount >= config.retry) {
         console.error('API Error after retries:', error);
-        toast.error(`Connection failed: ${message}`);
+        // Don't show toast for every error to avoid spam
+        // Let components handle their own error display
       }
       
       return Promise.reject(error);
