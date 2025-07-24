@@ -24,117 +24,10 @@ const Analytics = () => {
   const [showGoalNotification, setShowGoalNotification] = useState(true);
   const [hasAttemptedLoad, setHasAttemptedLoad] = useState(false);
 
+  // TEMPORARILY DISABLED: Backend server is down
   const loadUserProfileAndAnalytics = useCallback(async (retryCount = 0) => {
-    // Prevent multiple simultaneous calls
-    if (loading) {
-      console.log('Analytics already loading, skipping duplicate call');
-      return;
-    }
-    
-    try {
-      setLoading(true);
-      
-      // Try to get user profile with retry logic
-      let profile;
-      try {
-        profile = await userAPI.getUser(currentUser.id);
-        setUserProfile(profile);
-      } catch (profileError) {
-        console.error('Error loading user profile:', profileError);
-        // If profile fails, create a basic profile and continue
-        profile = {
-          id: currentUser.id,
-          name: currentUser.name,
-          currentWeight: 0,
-          targetWeight: 0,
-          goalStatus: 'inactive'
-        };
-        setUserProfile(profile);
-      }
-      
-      // Get active goalId from userProfile
-      const activeGoalId = profile && profile.goalId && (profile.goalId === 'demo' || isValidObjectId(profile.goalId)) ? profile.goalId : null;
-      
-      // Pass goalCreatedAt as startDate if present, and goalId for goal-level analytics
-      const params = { period: selectedPeriod };
-      if (profile.goalCreatedAt) {
-        params.startDate = profile.goalCreatedAt;
-      }
-      if (activeGoalId) {
-        params.goalId = activeGoalId;
-      }
-      
-      try {
-        const response = await weightEntryAPI.getAnalytics(currentUser.id, params);
-        if (response.analytics) {
-          setAnalytics(response.analytics);
-        } else {
-          // No data available, show empty state
-          setAnalytics({
-            totalEntries: 0,
-            averageWeight: 0,
-            weightChange: 0,
-            trend: 'stable',
-            entries: [],
-            currentWeight: profile.currentWeight || 0,
-            targetWeight: profile.targetWeight || 0,
-            progressToTarget: 0,
-            initialWeight: profile.currentWeight || 0
-          });
-        }
-      } catch (analyticsError) {
-        console.error('Error loading analytics:', analyticsError);
-        
-        // Only retry once and only for network errors
-        if (retryCount < 1 && analyticsError.code === 'ERR_NETWORK') {
-          console.log('Retrying analytics load once...');
-          setTimeout(() => {
-            // Check if component is still mounted and user hasn't changed
-            if (currentUser && currentUser.id) {
-              loadUserProfileAndAnalytics(retryCount + 1);
-            }
-          }, 3000);
-          return;
-        }
-        
-        // Set default analytics data to prevent infinite loading
-        setAnalytics({
-          totalEntries: 0,
-          averageWeight: 0,
-          weightChange: 0,
-          trend: 'stable',
-          entries: [],
-          currentWeight: profile.currentWeight || 0,
-          targetWeight: profile.targetWeight || 0,
-          progressToTarget: 0,
-          initialWeight: profile.currentWeight || 0
-        });
-      }
-    } catch (error) {
-      console.error('Error loading analytics:', error);
-      // Set default analytics data to prevent infinite loading
-      setAnalytics({
-        totalEntries: 0,
-        averageWeight: 0,
-        weightChange: 0,
-        trend: 'stable',
-        entries: [],
-        currentWeight: 0,
-        targetWeight: 0,
-        progressToTarget: 0,
-        initialWeight: 0
-      });
-      // Set a basic user profile to prevent loading issues
-      setUserProfile({
-        id: currentUser.id,
-        name: currentUser.name,
-        currentWeight: 0,
-        targetWeight: 0,
-        goalStatus: 'inactive'
-      });
-    } finally {
-      setLoading(false);
-    }
+    console.log('Backend API calls temporarily disabled due to server issues');
+    return;
   }, [currentUser, selectedPeriod, loading]);
 
   const generateSampleAnalytics = useCallback(() => {
@@ -207,6 +100,11 @@ const Analytics = () => {
 
   useEffect(() => {
     if (currentUser && currentUser.id !== 'demo') {
+      // TEMPORARY: Skip backend calls due to server issues - use demo data for all users
+      console.log('Backend server is down - using demo data for all users');
+      generateSampleAnalytics();
+      return;
+      
       // Only attempt to load once per user
       if (hasAttemptedLoad) {
         console.log('Already attempted to load analytics for this user');
