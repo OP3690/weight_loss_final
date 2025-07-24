@@ -15,8 +15,32 @@
       "dest": "/BlogImg/$1"
     },
     {
-      "src": "/blog/(.*)",
-      "dest": "/blog/$1"
+      "src": "/favicon.ico",
+      "dest": "/favicon.ico"
+    },
+    {
+      "src": "/favicon.svg",
+      "dest": "/favicon.svg"
+    },
+    {
+      "src": "/favicon-(.*).png",
+      "dest": "/favicon-$1.png"
+    },
+    {
+      "src": "/android-chrome-(.*).png",
+      "dest": "/android-chrome-$1.png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "dest": "/apple-touch-icon.png"
+    },
+    {
+      "src": "/manifest.json",
+      "dest": "/manifest.json"
+    },
+    {
+      "src": "/site.webmanifest",
+      "dest": "/site.webmanifest"
     },
     {
       "src": "/static/(.*)",
