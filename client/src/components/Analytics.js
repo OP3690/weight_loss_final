@@ -209,7 +209,7 @@ const Analytics = () => {
   const medianWeight = calculateMedianWeight(last90Days);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5 bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 min-h-screen">
+    <div className="w-full px-4 sm:px-6 lg:px-8 py-6 space-y-5 bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 min-h-screen">
       {/* Goal Creation Notification */}
       {hasNoActiveGoal && showGoalNotification && (
         <motion.div
@@ -328,7 +328,7 @@ const Analytics = () => {
           </div>
         </div>
         <div className="p-5">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {/* Total Entries */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -428,6 +428,31 @@ const Analytics = () => {
                 </p>
               </div>
             </motion.div>
+
+            {/* Latest Weight - Additional Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              whileHover={{ scale: 1.02, y: -2 }}
+              className="bg-gradient-to-br from-indigo-50 via-indigo-100 to-indigo-200 rounded-xl p-4 border border-indigo-300 shadow-md hover:shadow-lg transition-all duration-300 group relative overflow-hidden xl:block hidden"
+            >
+              <div className="absolute top-0 right-0 w-8 h-8 bg-indigo-400/20 rounded-full -translate-y-4 translate-x-4"></div>
+              <div className="flex items-center justify-between relative z-10">
+                <div>
+                  <p className="text-xs font-semibold text-indigo-700 mb-1">Latest Weight</p>
+                  <p className="text-2xl font-bold text-indigo-900 group-hover:text-indigo-800 transition-colors">{analytics?.currentWeight || '0.0'} kg</p>
+                </div>
+                <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300">
+                  <TrendingUp className="w-5 h-5 text-white" />
+                </div>
+              </div>
+              <div className="mt-3">
+                <p className="text-xs text-indigo-600 font-medium">
+                  Current
+                </p>
+              </div>
+            </motion.div>
           </div>
         </div>
       </motion.div>
@@ -452,7 +477,7 @@ const Analytics = () => {
           </div>
         </div>
         <div className="p-5">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {/* Last 7 Days */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -499,6 +524,22 @@ const Analytics = () => {
               </div>
               <p className="text-2xl font-bold text-purple-900 mb-2 group-hover:text-purple-800 transition-colors">0.0 kg</p>
               <p className="text-xs text-purple-600 font-semibold">Total Change</p>
+            </motion.div>
+
+            {/* Weekly Average - Additional Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              whileHover={{ scale: 1.02, y: -2 }}
+              className="bg-gradient-to-br from-teal-50 via-teal-100 to-teal-200 rounded-xl p-4 border border-teal-300 shadow-md hover:shadow-lg transition-all duration-300 text-center group relative overflow-hidden xl:block hidden"
+            >
+              <div className="absolute top-0 right-0 w-8 h-8 bg-teal-400/20 rounded-full -translate-y-4 translate-x-4"></div>
+              <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md group-hover:shadow-lg transition-all duration-300 relative z-10">
+                <TrendingUp className="w-6 h-6 text-white" />
+              </div>
+              <p className="text-2xl font-bold text-teal-900 mb-2 group-hover:text-teal-800 transition-colors">0.0 kg</p>
+              <p className="text-xs text-teal-600 font-semibold">Weekly Average</p>
             </motion.div>
           </div>
         </div>
