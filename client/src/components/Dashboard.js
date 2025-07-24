@@ -297,6 +297,12 @@ const Dashboard = () => {
   // Define loadUserProfile function
   const loadUserProfile = async () => {
     if (!currentUser || !currentUser.id) return;
+    
+    // Skip API call for demo users
+    if (currentUser.id === 'demo') {
+      return;
+    }
+    
     try {
       const profile = await userAPI.getUser(currentUser.id);
       setUserProfile(profile);
@@ -308,6 +314,12 @@ const Dashboard = () => {
   // Define loadGoalEntries function
   const loadGoalEntries = async () => {
     if (!currentUser || !currentUser.id) return;
+    
+    // Skip API call for demo users
+    if (currentUser.id === 'demo') {
+      return;
+    }
+    
     try {
       // Pass the active goalId to the analytics API
       const response = await weightEntryAPI.getAnalytics(currentUser.id, { 
