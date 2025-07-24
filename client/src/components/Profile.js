@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { User, Save, Edit, Target, Scale } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useUser } from '../context/UserContext';
-import { userAPI, calculateBMI, getBMICategory, getBMIPosition, isValidObjectId } from '../services/api';
+import { userAPI, calculateBMI, getBMICategory, getBMIPosition } from '../services/api';
 import { weightEntryAPI } from '../services/api';
 
 const Profile = () => {
@@ -12,6 +12,12 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
+  
+  // Debug modalLoading state changes
+  useEffect(() => {
+    console.log('[PROFILE] modalLoading state changed to:', modalLoading);
+  }, [modalLoading]);
+
   const [userProfile, setUserProfile] = useState(null);
   const [bmiAnalytics, setBmiAnalytics] = useState(null);
   const [weightEntries, setWeightEntries] = useState([]);
@@ -19,6 +25,14 @@ const Profile = () => {
   const [isEditingGoal, setIsEditingGoal] = useState(false);
   const [pastGoalsPage, setPastGoalsPage] = useState(1);
   const PAST_GOALS_PER_PAGE = 3;
+
+  // Reset modalLoading when modals are closed
+  useEffect(() => {
+    if (!isCreatingGoal && !isEditingGoal) {
+      console.log('[PROFILE] All modals closed, resetting modalLoading to false');
+      setModalLoading(false);
+    }
+  }, [isCreatingGoal, isEditingGoal]);
 
   const {
     register,
@@ -70,7 +84,7 @@ const Profile = () => {
       console.log('[PROFILE] Setting loading to false');
       setLoading(false);
     }
-  }, [currentUser?.id]);
+  }, [currentUser?.id, loading]);
 
   useEffect(() => {
     if (currentUser && currentUser.id !== 'demo') {
@@ -260,6 +274,8 @@ const Profile = () => {
   };
 
   const handleCreateGoal = () => {
+    console.log('[PROFILE] handleCreateGoal called, resetting modalLoading to false');
+    setModalLoading(false);
     reset({
       height: userProfile.height,
       currentWeight: userProfile.currentWeight,
@@ -308,7 +324,7 @@ const Profile = () => {
   const handleReopenGoal = async (goal) => {
     try {
       // Copy goal data to active fields and set goalStatus to 'active'
-      const updated = await userAPI.updateUser(userProfile.id, {
+      await userAPI.updateUser(userProfile.id, {
         currentWeight: goal.currentWeight,
         targetWeight: goal.targetWeight,
         targetDate: goal.targetDate,
@@ -552,6 +568,8 @@ const Profile = () => {
                   <button onClick={handleDiscardGoal} className="px-3 py-1 rounded bg-red-100 text-red-700 text-xs font-semibold hover:bg-red-200 transition mb-1 md:mb-0">Discard</button>
                   <button onClick={handleAchieveGoal} className="px-3 py-1 rounded bg-green-100 text-green-700 text-xs font-semibold hover:bg-green-200 transition mb-1 md:mb-0">Achieve</button>
                   <button onClick={() => {
+                    console.log('[PROFILE] Modify button clicked, resetting modalLoading to false');
+                    setModalLoading(false);
                     reset({
                       height: userProfile.height,
                       currentWeight: userProfile.currentWeight,
@@ -754,8 +772,14 @@ const Profile = () => {
               {errors.targetDate && <p className="text-sm text-red-600">{errors.targetDate.message}</p>}
             </div>
             <div className="flex items-center justify-end space-x-4 pt-4">
-              <button type="button" onClick={() => setIsCreatingGoal(false)} className="btn-secondary">Cancel</button>
-              <button type="submit" disabled={modalLoading} className="btn-primary">{modalLoading ? 'Saving...' : 'Create Goal'}</button>
+              <button type="button" onClick={() => {
+                console.log('[PROFILE] Create goal modal cancelled, resetting modalLoading to false');
+                setModalLoading(false);
+                setIsCreatingGoal(false);
+              }} className="btn-secondary">Cancel</button>
+              <button type="submit" disabled={modalLoading} className="btn-primary">
+                {modalLoading ? 'Saving...' : 'Create Goal'}
+              </button>
             </div>
           </form>
         </div>
@@ -804,7 +828,11 @@ const Profile = () => {
               {errors.targetDate && <p className="text-sm text-red-600">{errors.targetDate.message}</p>}
             </div>
             <div className="flex items-center justify-end space-x-4 pt-4">
-              <button type="button" onClick={() => setIsEditingGoal(false)} className="btn-secondary">Cancel</button>
+              <button type="button" onClick={() => {
+                console.log('[PROFILE] Edit goal modal cancelled, resetting modalLoading to false');
+                setModalLoading(false);
+                setIsEditingGoal(false);
+              }} className="btn-secondary">Cancel</button>
               <button type="submit" disabled={modalLoading} className="btn-primary">{modalLoading ? 'Saving...' : 'Update Goal'}</button>
             </div>
           </form>
