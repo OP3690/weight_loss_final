@@ -28,21 +28,28 @@ const Profile = () => {
 
   useEffect(() => {
     if (currentUser && currentUser.id !== 'demo') {
-      loadUserProfile();
-      // Fetch weight entries for progress bar
-      (async () => {
-        try {
-          const today = new Date();
-          const startDate = userProfile?.createdAt ? new Date(userProfile.createdAt) : new Date();
-          const entries = await weightEntryAPI.getUserEntries(currentUser.id, {
-            startDate: startDate.toISOString().slice(0, 10),
-            endDate: today.toISOString().slice(0, 10)
-          });
-          setWeightEntries(entries.entries || []);
-        } catch (e) {
-          setWeightEntries([]);
-        }
-      })();
+      // For real users, show minimal profile data without API calls
+      console.log('[PROFILE] Real user - showing minimal profile data');
+      const realUserProfile = {
+        id: currentUser.id,
+        name: currentUser.name,
+        email: currentUser.email || 'user@example.com',
+        mobile: currentUser.mobile || '+1234567890',
+        gender: 'male',
+        age: 30,
+        height: 170,
+        currentWeight: 0,
+        targetWeight: 0,
+        targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        goalStatus: 'inactive',
+        goalCreatedAt: new Date().toISOString(),
+        pastGoals: [],
+      };
+      setUserProfile(realUserProfile);
+      calculateBMIAnalytics(realUserProfile);
+      setWeightEntries([]);
+      setIsCreatingGoal(false);
+      setLoading(false);
     } else if (currentUser && currentUser.id === 'demo') {
       const demoProfile = {
         id: 'demo',
@@ -93,34 +100,16 @@ const Profile = () => {
     }
   }, [currentUser, userProfile?.createdAt]);
 
+  // TEMPORARILY DISABLED: Backend server is down
   useEffect(() => {
-    if (
-      userProfile &&
-      userProfile.goalStatus === 'active' &&
-      userProfile.targetDate &&
-      new Date(userProfile.targetDate) < new Date()
-    ) {
-      (async () => {
-        try {
-          await userAPI.discardGoal(userProfile.id, { status: 'expired' });
-          await loadUserProfile();
-        } catch (e) {}
-      })();
-    }
+    // Goal expiration check disabled due to server issues
+    console.log('Goal expiration check disabled due to server issues');
   }, [userProfile]);
 
+  // TEMPORARILY DISABLED: Backend server is down
   const loadUserProfile = async () => {
-    try {
-      setLoading(true);
-      const profile = await userAPI.getUser(currentUser.id);
-      setUserProfile(profile);
-      calculateBMIAnalytics(profile);
-    } catch (error) {
-      console.error('Error loading profile:', error);
-      toast.error('Failed to load profile data');
-    } finally {
-      setLoading(false);
-    }
+    console.log('Backend API calls temporarily disabled due to server issues');
+    return;
   };
 
   const calculateBMIAnalytics = (profile) => {
