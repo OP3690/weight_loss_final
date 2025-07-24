@@ -4,6 +4,9 @@ import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import './NoSpinner.css';
 
+// Google Analytics
+import GoogleAnalytics from './components/GoogleAnalytics';
+
 // Components
 import Dashboard from './components/Dashboard';
 import Profile from './components/Profile';
@@ -67,6 +70,7 @@ function App() {
 
   return (
     <UserProvider value={{ currentUser, setCurrentUser: handleUserLogin, logout: handleUserLogout }}>
+      <GoogleAnalytics />
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-purple-50 flex flex-col">
         {/* Home Page */}
         {!currentUser && (

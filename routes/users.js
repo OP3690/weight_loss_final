@@ -940,24 +940,7 @@ router.post('/forgot-password', [
     
   } catch (error) {
     console.error('❌ Password reset request error:', error);
-    
-    // Provide more specific error messages
-    let errorMessage = 'Failed to process password reset request';
-    
-    if (error.message.includes('Email transporter verification failed')) {
-      errorMessage = 'Email service is currently unavailable. Please try again later.';
-    } else if (error.message.includes('Invalid login') || error.message.includes('Authentication Failed')) {
-      errorMessage = 'Email authentication failed. Please contact support.';
-    } else if (error.message.includes('ENOTFOUND') || error.message.includes('ECONNREFUSED')) {
-      errorMessage = 'Unable to connect to email service. Please try again later.';
-    } else if (error.message.includes('timeout')) {
-      errorMessage = 'Email service timeout. Please try again.';
-    }
-    
-    res.status(500).json({ 
-      message: errorMessage,
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+    res.status(500).json({ message: 'Failed to process password reset request' });
   }
 });
 

@@ -5,6 +5,7 @@ import { userAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import { X } from 'lucide-react';
 import ForgotPasswordPopup from './ForgotPasswordPopup';
+import { trackUserRegistration, trackUserLogin } from './GoogleAnalytics';
 
 // CSS to remove spinner arrows from number inputs
 const numberInputStyles = `
@@ -332,6 +333,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
         });
         
         toast.success('Registration successful! Welcome to GoooFit!');
+        trackUserRegistration(); // Track user registration
         onSuccess(response.user);
       } else {
         const response = await userAPI.login({
@@ -340,6 +342,7 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
       });
       
         toast.success('Login successful! Welcome back to GoooFit!');
+        trackUserLogin(); // Track user login
         onSuccess(response.user);
       }
     } catch (error) {

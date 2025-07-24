@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { calculateBMI, getBMICategory } from '../services/api';
 import { Calculator, TrendingUp, TrendingDown, Target, Info, Zap, Heart, Scale } from 'lucide-react';
 import './NoSpinner.css';
+import { trackBMICalculation } from './GoogleAnalytics';
 
 const bmiSegments = [
   { label: 'Underweight', min: 0, max: 18.5, color: '#3b82f6', bgColor: '#dbeafe', textColor: '#1e40af' },
@@ -370,6 +371,7 @@ const BMICalculator = () => {
     }
     
     setResult({ bmi, category, requiredWeight, weightDiff });
+    trackBMICalculation(); // Track BMI calculation
     setIsCalculating(false);
   };
 
