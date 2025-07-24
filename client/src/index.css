@@ -75,4 +75,109 @@
   .glass-effect {
     @apply backdrop-blur-sm bg-white/80 border border-white/20;
   }
+  
+  /* Blog Content Styles */
+  .blog-content {
+    @apply text-gray-800 leading-relaxed;
+  }
+  
+  .blog-content h2 {
+    @apply text-2xl font-bold text-gray-900 mt-8 mb-4 border-b border-gray-200 pb-2;
+  }
+  
+  .blog-content h3 {
+    @apply text-xl font-semibold text-gray-800 mt-6 mb-3;
+  }
+  
+  .blog-content h4 {
+    @apply text-lg font-medium text-gray-700 mt-4 mb-2;
+  }
+  
+  .blog-content p {
+    @apply mb-4 text-gray-700 leading-7;
+  }
+  
+  .blog-content ul {
+    @apply mb-4 pl-6 space-y-2;
+  }
+  
+  .blog-content ol {
+    @apply mb-4 pl-6 space-y-2;
+  }
+  
+  .blog-content li {
+    @apply text-gray-700 leading-6;
+  }
+  
+  .blog-content strong {
+    @apply font-semibold text-gray-900;
+  }
+  
+  .blog-content em {
+    @apply italic text-gray-600;
+  }
+  
+  .blog-content blockquote {
+    @apply border-l-4 border-blue-500 pl-4 py-2 my-6 bg-blue-50 rounded-r-lg;
+  }
+  
+  .blog-content code {
+    @apply bg-gray-100 px-2 py-1 rounded text-sm font-mono text-gray-800;
+  }
+  
+  .blog-content pre {
+    @apply bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto my-4;
+  }
+  
+  /* Line clamp utilities */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Prose styles for blog content */
+  .prose {
+    @apply text-gray-800;
+  }
+  
+  .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+    @apply text-gray-900 font-bold;
+  }
+  
+  .prose p {
+    @apply mb-4 leading-7;
+  }
+  
+  .prose ul, .prose ol {
+    @apply mb-4 pl-6;
+  }
+  
+  .prose li {
+    @apply mb-2;
+  }
+  
+  .prose strong {
+    @apply font-semibold;
+  }
+  
+  .prose em {
+    @apply italic;
+  }
+  
+  .prose blockquote {
+    @apply border-l-4 border-gray-300 pl-4 py-2 my-6 bg-gray-50;
+  }
+  
+  .prose code {
+    @apply bg-gray-100 px-2 py-1 rounded text-sm;
+  }
 } 
