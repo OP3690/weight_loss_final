@@ -385,7 +385,7 @@ const blogPosts = [
     date: "2024-05-30",
     readTime: "9 min read",
     category: "Strength Training & Mental Health",
-    image: "./BlogImg/bruce-mars-gJtDg6WfMlQ-unsplash.jpg",
+    image: "/BlogImg/bruce-mars-gJtDg6WfMlQ-unsplash.jpg",
     tags: ["weightlifting", "strength training", "mental health", "mood", "fitness", "emotional well-being"],
     seoDescription: "Learn how weightlifting and strength training can lift your mood and improve mental health. Discover the mind-body connection.",
     cardTag: "Featured"
@@ -399,7 +399,7 @@ const blogPosts = [
     date: "2024-06-05",
     readTime: "10 min read",
     category: "Clean Eating & Wellness",
-    image: "./BlogImg/kalen-emsley-7bwQXzbF6KE-unsplash.jpg",
+    image: "/BlogImg/kalen-emsley-7bwQXzbF6KE-unsplash.jpg",
     tags: ["clean eating", "mental clarity", "wellness", "cognitive function", "nutrition", "focus"],
     seoDescription: "Discover how clean eating habits enhance mental clarity and cognitive function for better overall wellness.",
     cardTag: "New"
@@ -413,7 +413,7 @@ const blogPosts = [
     date: "2024-06-10",
     readTime: "8 min read",
     category: "Health Harmony",
-    image: "./BlogImg/muhammad-faris-JAxiaRRjfSc-unsplash.jpg",
+    image: "/BlogImg/muhammad-faris-JAxiaRRjfSc-unsplash.jpg",
     tags: ["physical activity", "mental rest", "health harmony", "well-being", "balance", "mind-body"],
     seoDescription: "Learn to achieve harmony between active body and restful mind for optimal health and well-being.",
     cardTag: "Trending"
@@ -497,12 +497,31 @@ const Blog = () => {
                       console.error(`Failed to load image: ${post.image}`, e);
                       console.error('Current window location:', window.location.href);
                       console.error('Attempting to load from:', post.image);
-                      // Try alternative path if original fails
-                      if (!post.image.includes('http')) {
-                        const alternativePath = `${window.location.origin}${post.image}`;
-                        console.error('Trying alternative path:', alternativePath);
-                        e.target.src = alternativePath;
-                      }
+                      
+                      // Try multiple fallback paths
+                      const fallbackPaths = [
+                        `/${post.image}`,
+                        `${window.location.origin}/${post.image}`,
+                        `${window.location.origin}/BlogImg/${post.image.split('/').pop()}`,
+                        `./${post.image}`,
+                        post.image.replace('BlogImg/', '/BlogImg/')
+                      ];
+                      
+                      let currentIndex = 0;
+                      const tryNextPath = () => {
+                        if (currentIndex < fallbackPaths.length) {
+                          const nextPath = fallbackPaths[currentIndex];
+                          console.error(`Trying fallback path ${currentIndex + 1}:`, nextPath);
+                          e.target.src = nextPath;
+                          currentIndex++;
+                        } else {
+                          console.error('All fallback paths failed');
+                          e.target.style.display = 'none';
+                        }
+                      };
+                      
+                      e.target.onerror = tryNextPath;
+                      tryNextPath();
                     }}
                     onLoad={() => {
                       console.log(`Successfully loaded image: ${post.image}`);
