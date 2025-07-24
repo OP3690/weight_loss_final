@@ -26,6 +26,48 @@ const Profile = () => {
     reset
   } = useForm();
 
+  // ENABLED: For goal management functions
+  const loadUserProfile = useCallback(async () => {
+    // Prevent multiple simultaneous calls
+    if (loading) {
+      console.log('Profile loading already in progress, skipping...');
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      const profile = await userAPI.getUser(currentUser.id);
+      setUserProfile(profile);
+      calculateBMIAnalytics(profile);
+      
+      // Load weight entries for the current goal
+      if (profile && profile.goalId) {
+        try {
+          console.log('[PROFILE] Loading weight entries for goalId:', profile.goalId);
+          const entriesResponse = await weightEntryAPI.getUserEntries(currentUser.id, {
+            goalId: profile.goalId
+          });
+          console.log('[PROFILE] Weight entries response:', entriesResponse);
+          if (entriesResponse && entriesResponse.entries) {
+            setWeightEntries(entriesResponse.entries);
+            console.log('[PROFILE] Set weight entries:', entriesResponse.entries.length, 'entries');
+          } else {
+            console.log('[PROFILE] No entries found in response');
+            setWeightEntries([]);
+          }
+        } catch (entriesError) {
+          console.error('Error loading weight entries:', entriesError);
+          setWeightEntries([]);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading profile:', error);
+      // Don't show toast error for data loading
+    } finally {
+      setLoading(false);
+    }
+  }, [currentUser?.id, loading]);
+
   useEffect(() => {
     if (currentUser && currentUser.id !== 'demo') {
       // For real users, load actual profile data from backend
@@ -99,48 +141,6 @@ const Profile = () => {
       })();
     }
   }, [userProfile, loadUserProfile]);
-
-  // ENABLED: For goal management functions
-  const loadUserProfile = useCallback(async () => {
-    // Prevent multiple simultaneous calls
-    if (loading) {
-      console.log('Profile loading already in progress, skipping...');
-      return;
-    }
-    
-    try {
-      setLoading(true);
-      const profile = await userAPI.getUser(currentUser.id);
-      setUserProfile(profile);
-      calculateBMIAnalytics(profile);
-      
-      // Load weight entries for the current goal
-      if (profile && profile.goalId) {
-        try {
-          console.log('[PROFILE] Loading weight entries for goalId:', profile.goalId);
-          const entriesResponse = await weightEntryAPI.getUserEntries(currentUser.id, {
-            goalId: profile.goalId
-          });
-          console.log('[PROFILE] Weight entries response:', entriesResponse);
-          if (entriesResponse && entriesResponse.entries) {
-            setWeightEntries(entriesResponse.entries);
-            console.log('[PROFILE] Set weight entries:', entriesResponse.entries.length, 'entries');
-          } else {
-            console.log('[PROFILE] No entries found in response');
-            setWeightEntries([]);
-          }
-        } catch (entriesError) {
-          console.error('Error loading weight entries:', entriesError);
-          setWeightEntries([]);
-        }
-      }
-    } catch (error) {
-      console.error('Error loading profile:', error);
-      // Don't show toast error for data loading
-    } finally {
-      setLoading(false);
-    }
-  }, [currentUser?.id, loading]);
 
   const calculateBMIAnalytics = (profile) => {
     if (!profile) return;
@@ -267,9 +267,11 @@ const Profile = () => {
 
   const onSubmitGoal = async (data) => {
     try {
+      console.log('[PROFILE] Starting goal creation with data:', data);
       setLoading(true);
       
       // First, set the goal status to active
+      console.log('[PROFILE] Setting goal status to active...');
       await userAPI.updateUser(currentUser.id, { goalStatus: 'active' });
       
       // Then, set the goal fields one by one to avoid validation issues
@@ -281,7 +283,10 @@ const Profile = () => {
         goalCreatedAt: new Date().toISOString()
       };
       
+      console.log('[PROFILE] Updating user with goal payload:', goalPayload);
       const response = await userAPI.updateUser(currentUser.id, goalPayload);
+      console.log('[PROFILE] Goal creation response:', response);
+      
       setUserProfile(response);
       calculateBMIAnalytics(response);
       toast.success('Goal created successfully!');
@@ -291,6 +296,7 @@ const Profile = () => {
       console.error('Goal creation error:', error);
       toast.error('Failed to create goal');
     } finally {
+      console.log('[PROFILE] Goal creation completed, setting loading to false');
       setLoading(false);
     }
   };
