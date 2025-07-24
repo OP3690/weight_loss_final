@@ -301,34 +301,34 @@ const Analytics = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20"
+        className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-white/20"
       >
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-            <TrendingUp className="w-6 h-6 text-white" />
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+            <TrendingUp className="w-5 h-5 text-white" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900">Summary Statistics</h2>
+          <h2 className="text-xl font-bold text-gray-900">Summary Statistics</h2>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
           {/* Total Entries */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300"
+            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">Total Entries</p>
-                <p className="text-3xl font-bold text-gray-900">{analytics?.totalEntries || 0}</p>
+                <p className="text-xs font-medium text-gray-600 mb-1">Total Entries</p>
+                <p className="text-2xl font-bold text-gray-900">{analytics?.totalEntries || 0}</p>
               </div>
-              <div className="w-14 h-14 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Calendar className="w-7 h-7 text-white" />
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center shadow-md">
+                <Calendar className="w-5 h-5 text-white" />
               </div>
             </div>
-            <div className="mt-4">
-              <p className="text-sm text-gray-600 font-medium">
+            <div className="mt-2">
+              <p className="text-xs text-gray-600 font-medium">
                 Last {selectedPeriod} days
               </p>
             </div>
@@ -340,19 +340,19 @@ const Analytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300"
+            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">Average Weight</p>
-                <p className="text-3xl font-bold text-gray-900">{analytics?.averageWeight || '0.0'} kg</p>
+                <p className="text-xs font-medium text-gray-600 mb-1">Average Weight</p>
+                <p className="text-2xl font-bold text-gray-900">{analytics?.averageWeight || '0.0'} kg</p>
               </div>
-              <div className="w-14 h-14 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
-                <TrendingUp className="w-7 h-7 text-white" />
+              <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center shadow-md">
+                <TrendingUp className="w-5 h-5 text-white" />
               </div>
             </div>
-            <div className="mt-4">
-              <p className="text-sm text-gray-600 font-medium">
+            <div className="mt-2">
+              <p className="text-xs text-gray-600 font-medium">
                 Over {selectedPeriod} days
               </p>
             </div>
@@ -364,19 +364,19 @@ const Analytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300"
+            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">Weight Change</p>
-                <p className="text-3xl font-bold text-gray-900">{analytics?.weightChange || '0.0'} kg</p>
+                <p className="text-xs font-medium text-gray-600 mb-1">Weight Change</p>
+                <p className="text-2xl font-bold text-gray-900">{analytics?.weightChange || '0.0'} kg</p>
               </div>
-              <div className="w-14 h-14 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center shadow-md">
                 {getTrendIcon()}
               </div>
             </div>
-            <div className="mt-4">
-              <p className="text-sm text-gray-600 font-medium">
+            <div className="mt-2">
+              <p className="text-xs text-gray-600 font-medium">
                 {analytics?.trend || 'Stable'}
               </p>
             </div>
@@ -388,19 +388,19 @@ const Analytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300"
+            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">Progress to Target</p>
-                <p className="text-3xl font-bold text-gray-900">{analytics?.progressToTarget?.toFixed(1) || '0.0'}%</p>
+                <p className="text-xs font-medium text-gray-600 mb-1">Progress to Target</p>
+                <p className="text-2xl font-bold text-gray-900">{analytics?.progressToTarget?.toFixed(1) || '0.0'}%</p>
               </div>
-              <div className="w-14 h-14 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Target className="w-7 h-7 text-white" />
+              <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center shadow-md">
+                <Target className="w-5 h-5 text-white" />
               </div>
             </div>
-            <div className="mt-4">
-              <p className="text-sm text-gray-600 font-medium">
+            <div className="mt-2">
+              <p className="text-xs text-gray-600 font-medium">
                 Goal Progress
               </p>
             </div>
@@ -412,19 +412,19 @@ const Analytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 xl:block hidden"
+            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300 lg:block hidden"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">Latest Weight</p>
-                <p className="text-3xl font-bold text-gray-900">{analytics?.currentWeight || '0.0'} kg</p>
+                <p className="text-xs font-medium text-gray-600 mb-1">Latest Weight</p>
+                <p className="text-2xl font-bold text-gray-900">{analytics?.currentWeight || '0.0'} kg</p>
               </div>
-              <div className="w-14 h-14 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
-                <TrendingUp className="w-7 h-7 text-white" />
+              <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center shadow-md">
+                <TrendingUp className="w-5 h-5 text-white" />
               </div>
             </div>
-            <div className="mt-4">
-              <p className="text-sm text-gray-600 font-medium">
+            <div className="mt-2">
+              <p className="text-xs text-gray-600 font-medium">
                 Current
               </p>
             </div>
@@ -437,28 +437,28 @@ const Analytics = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20"
+        className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-white/20"
       >
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg">
-            <TrendingUp className="w-6 h-6 text-white" />
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg">
+            <TrendingUp className="w-5 h-5 text-white" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900">Progress Trend Analysis</h2>
+          <h2 className="text-xl font-bold text-gray-900">Progress Trend Analysis</h2>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {/* Last 7 Days */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 text-center"
+            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300 text-center"
           >
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <ArrowUp className="w-8 h-8 text-white" />
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
+              <ArrowUp className="w-6 h-6 text-white" />
             </div>
-            <p className="text-3xl font-bold text-gray-900 mb-2">0.0 kg</p>
-            <p className="text-sm text-gray-600 font-semibold">Last 7 Days</p>
+            <p className="text-2xl font-bold text-gray-900 mb-1">0.0 kg</p>
+            <p className="text-xs text-gray-600 font-semibold">Last 7 Days</p>
           </motion.div>
 
           {/* Last 30 Days */}
@@ -467,13 +467,13 @@ const Analytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 text-center"
+            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300 text-center"
           >
-            <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <Calendar className="w-8 h-8 text-white" />
+            <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
+              <Calendar className="w-6 h-6 text-white" />
             </div>
-            <p className="text-3xl font-bold text-gray-900 mb-2">0.0 kg</p>
-            <p className="text-sm text-gray-600 font-semibold">Last 30 Days</p>
+            <p className="text-2xl font-bold text-gray-900 mb-1">0.0 kg</p>
+            <p className="text-xs text-gray-600 font-semibold">Last 30 Days</p>
           </motion.div>
 
           {/* Total Change */}
@@ -482,13 +482,13 @@ const Analytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 text-center"
+            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300 text-center"
           >
-            <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <Target className="w-8 h-8 text-white" />
+            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
+              <Target className="w-6 h-6 text-white" />
             </div>
-            <p className="text-3xl font-bold text-gray-900 mb-2">0.0 kg</p>
-            <p className="text-sm text-gray-600 font-semibold">Total Change</p>
+            <p className="text-2xl font-bold text-gray-900 mb-1">0.0 kg</p>
+            <p className="text-xs text-gray-600 font-semibold">Total Change</p>
           </motion.div>
 
           {/* Weekly Average - Additional Card */}
@@ -497,13 +497,13 @@ const Analytics = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 text-center xl:block hidden"
+            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/20 hover:shadow-lg transition-all duration-300 text-center"
           >
-            <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <TrendingUp className="w-8 h-8 text-white" />
+            <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
+              <TrendingUp className="w-6 h-6 text-white" />
             </div>
-            <p className="text-3xl font-bold text-gray-900 mb-2">0.0 kg</p>
-            <p className="text-sm text-gray-600 font-semibold">Weekly Average</p>
+            <p className="text-2xl font-bold text-gray-900 mb-1">0.0 kg</p>
+            <p className="text-xs text-gray-600 font-semibold">Weekly Average</p>
           </motion.div>
         </div>
       </motion.div>
