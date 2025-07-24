@@ -15,6 +15,22 @@ import blogImg3 from '../assets/blog3.jpg';
 import blogImg4 from '../assets/blog4.jpg';
 import blogImg5 from '../assets/blog5.jpg';
 import blogImg6 from '../assets/blog6.jpg';
+import blogImg7 from '../assets/blog7.jpg';
+import blogImg8 from '../assets/blog8.jpg';
+import blogImg9 from '../assets/blog9.jpg';
+import blogImg10 from '../assets/blog10.jpg';
+import blogImg11 from '../assets/blog11.jpg';
+import blogImg12 from '../assets/blog12.jpg';
+import blogImg13 from '../assets/blog13.jpg';
+import blogImg14 from '../assets/blog14.jpg';
+import blogImg15 from '../assets/blog15.jpg';
+import blogImg16 from '../assets/blog16.jpg';
+import blogImg17 from '../assets/blog17.jpg';
+import blogImg18 from '../assets/blog18.jpg';
+import blogImg19 from '../assets/blog19.jpg';
+import blogImg20 from '../assets/blog20.jpg';
+import blogImg21 from '../assets/blog21.jpg';
+import blogImg22 from '../assets/blog22.jpg';
 
 // Blog data with SEO-optimized content using imported images
 const blogPosts = [
@@ -99,6 +115,209 @@ const blogPosts = [
     image: blogImg6,
     tags: ["plateau", "weight loss", "advanced strategies", "progress", "motivation"],
     seoDescription: "Break through weight loss plateaus with advanced strategies. Learn techniques to restart progress and continue your weight loss journey."
+  },
+  {
+    id: 7,
+    slug: "metabolism-weight-loss-science-explained",
+    title: "The Science of Weight Loss: Understanding Your Body's Metabolism",
+    excerpt: "Discover how your metabolism works and learn evidence-based strategies to optimize it for sustainable weight loss.",
+    author: "Gooofit Research Team",
+    date: "2024-02-15",
+    readTime: "8 min read",
+    category: "Science & Research",
+    image: blogImg7,
+    tags: ["metabolism", "weight loss", "BMR", "exercise", "nutrition"],
+    seoDescription: "Learn the science behind metabolism and weight loss. Discover how to optimize your body's energy systems for sustainable weight management results."
+  },
+  {
+    id: 8,
+    slug: "nutrition-basics-weight-loss-guide",
+    title: "Nutrition Fundamentals for Sustainable Weight Loss",
+    excerpt: "Master the basics of nutrition to create a sustainable eating plan that supports your weight loss goals.",
+    author: "Gooofit Research Team",
+    date: "2024-02-20",
+    readTime: "10 min read",
+    category: "Nutrition",
+    image: blogImg8,
+    tags: ["nutrition", "macronutrients", "weight loss", "healthy eating", "meal planning"],
+    seoDescription: "Master the fundamentals of nutrition for sustainable weight loss. Learn about macronutrients, meal timing, and optimal food choices."
+  },
+  {
+    id: 9,
+    slug: "sunlight-wellness-vitamin-d-mental-health",
+    title: "Sunlight for Wellness: Vitamin D & Mental Health",
+    excerpt: "Discover the crucial connection between vitamin D, sunlight exposure, and your mental health during weight loss.",
+    author: "Gooofit Research Team",
+    date: "2024-02-25",
+    readTime: "7 min read",
+    category: "Health & Wellness",
+    image: blogImg9,
+    tags: ["vitamin d", "sunlight", "mental health", "wellness", "weight loss"],
+    seoDescription: "Learn about the connection between vitamin D, sunlight exposure, and mental health during your weight loss journey.",
+    cardTag: "Trending"
+  },
+  {
+    id: 10,
+    slug: "intermittent-fasting-weight-loss-complete-guide",
+    title: "Intermittent Fasting: A Complete Guide to Weight Loss Success",
+    excerpt: "Master the art of intermittent fasting with proven strategies for sustainable weight loss and improved health.",
+    author: "Gooofit Research Team",
+    date: "2024-03-01",
+    readTime: "11 min read",
+    category: "Fasting & Nutrition",
+    image: blogImg10,
+    tags: ["intermittent fasting", "weight loss", "nutrition", "health", "metabolism"],
+    seoDescription: "Master intermittent fasting for weight loss success. Learn proven strategies, methods, and tips for sustainable results.",
+    cardTag: "Popular"
+  },
+  {
+    id: 11,
+    slug: "stress-management-weight-loss-connection",
+    title: "Stress Management: The Missing Link in Your Weight Loss Journey",
+    excerpt: "Discover how stress affects your weight loss efforts and learn effective strategies to manage it for better results.",
+    author: "Gooofit Research Team",
+    date: "2024-03-05",
+    readTime: "9 min read",
+    category: "Mental Health & Wellness",
+    image: blogImg11,
+    tags: ["stress management", "weight loss", "mental health", "cortisol", "wellness"],
+    seoDescription: "Learn how stress affects weight loss and discover effective stress management techniques for better weight loss results."
+  },
+  {
+    id: 12,
+    slug: "gut-health-weight-loss-microbiome",
+    title: "Gut Health and Weight Loss: The Microbiome Connection",
+    excerpt: "Explore the fascinating connection between your gut microbiome and weight loss success.",
+    author: "Gooofit Research Team",
+    date: "2024-03-10",
+    readTime: "10 min read",
+    category: "Gut Health & Nutrition",
+    image: blogImg12,
+    tags: ["gut health", "microbiome", "weight loss", "probiotics", "nutrition"],
+    seoDescription: "Discover the connection between gut health and weight loss. Learn how to optimize your microbiome for better weight management."
+  },
+  {
+    id: 13,
+    slug: "exercise-daily-boost-body-mind-happiness",
+    title: "Exercise Daily: Boost Body & Mind for Happiness",
+    excerpt: "Discover how daily exercise transforms not just your body, but your mental well-being and overall happiness.",
+    author: "Gooofit Research Team",
+    date: "2024-03-15",
+    readTime: "8 min read",
+    category: "Fitness & Wellness",
+    image: blogImg13,
+    tags: ["exercise", "daily fitness", "mental health", "happiness", "wellness"]
+  },
+  {
+    id: 14,
+    slug: "mindful-eating-fuel-body-lift-mood",
+    title: "Mindful Eating: Fuel Your Body, Lift Your Mood",
+    excerpt: "Transform your relationship with food through mindful eating practices that nourish both body and soul.",
+    author: "Gooofit Research Team",
+    date: "2024-03-20",
+    readTime: "7 min read",
+    category: "Mindful Living",
+    image: blogImg14,
+    tags: ["mindful eating", "nutrition", "mental health", "mood", "wellness"]
+  },
+  {
+    id: 15,
+    slug: "mental-health-matters-stress-less-live-more",
+    title: "Mental Health Matters: Stress Less, Live More",
+    excerpt: "Prioritize your mental health with proven strategies to reduce stress and enhance your quality of life.",
+    author: "Gooofit Research Team",
+    date: "2024-03-25",
+    readTime: "9 min read",
+    category: "Mental Health",
+    image: blogImg15,
+    tags: ["mental health", "stress reduction", "wellness", "life quality", "self-care"]
+  },
+  {
+    id: 16,
+    slug: "sleep-success-rest-enhance-well-being",
+    title: "Sleep for Success: Rest to Enhance Well-Being",
+    excerpt: "Discover how quality sleep is the foundation for weight loss success and overall health improvement.",
+    author: "Gooofit Research Team",
+    date: "2024-03-30",
+    readTime: "8 min read",
+    category: "Sleep & Wellness",
+    image: blogImg16,
+    tags: ["sleep", "well-being", "weight loss", "health", "recovery"]
+  },
+  {
+    id: 17,
+    slug: "sunlight-benefits-brighten-mood-build-health",
+    title: "Sunlight Benefits: Brighten Mood & Build Health",
+    excerpt: "Harness the power of natural sunlight to boost your mood, energy levels, and overall health.",
+    author: "Gooofit Research Team",
+    date: "2024-04-05",
+    readTime: "7 min read",
+    category: "Natural Health",
+    image: blogImg17,
+    tags: ["sunlight", "vitamin d", "mood", "health", "natural wellness"]
+  },
+  {
+    id: 18,
+    slug: "cut-screentime-sharpen-focus-reduce-anxiety",
+    title: "Cut Screentime: Sharpen Focus, Reduce Anxiety",
+    excerpt: "Learn how reducing screen time can dramatically improve your focus, reduce anxiety, and support your weight loss goals.",
+    author: "Gooofit Research Team",
+    date: "2024-04-10",
+    readTime: "9 min read",
+    category: "Digital Wellness",
+    image: blogImg18,
+    tags: ["screen time", "focus", "anxiety", "digital wellness", "mental health"]
+  },
+  {
+    id: 19,
+    slug: "fitness-joy-move-body-feel-alive",
+    title: "Fitness for Joy: Move Your Body, Feel Alive",
+    excerpt: "Discover how movement and fitness can bring joy, energy, and vitality to your life beyond just weight loss.",
+    author: "Gooofit Research Team",
+    date: "2024-04-15",
+    readTime: "8 min read",
+    category: "Fitness & Joy",
+    image: blogImg19,
+    tags: ["fitness", "joy", "movement", "energy", "vitality", "wellness"],
+    cardTag: "Trending"
+  },
+  {
+    id: 20,
+    slug: "healthy-diet-hacks-nourish-body-spark-happiness",
+    title: "Healthy Diet Hacks: Nourish Body, Spark Happiness",
+    excerpt: "Learn simple and effective diet hacks that nourish your body while boosting your mood and happiness levels.",
+    author: "Gooofit Research Team",
+    date: "2024-04-20",
+    readTime: "10 min read",
+    category: "Nutrition & Happiness",
+    image: blogImg20,
+    tags: ["healthy diet", "nutrition hacks", "happiness", "mood", "wellness"]
+  },
+  {
+    id: 21,
+    slug: "meditate-peace-calm-mind-stronger-health",
+    title: "Meditate for Peace: Calm Mind, Stronger Health",
+    excerpt: "Explore the transformative power of meditation for mental peace, stress reduction, and enhanced overall health.",
+    author: "Gooofit Research Team",
+    date: "2024-04-25",
+    readTime: "9 min read",
+    category: "Meditation & Wellness",
+    image: blogImg21,
+    tags: ["meditation", "peace", "mental health", "stress reduction", "wellness"],
+    cardTag: "New"
+  },
+  {
+    id: 22,
+    slug: "healthy-eating-happier-stronger-you",
+    title: "Healthy Eating for a Happier, Stronger You",
+    excerpt: "Discover how nutritious eating habits can transform your mood, energy levels, and overall strength.",
+    author: "Gooofit Research Team",
+    date: "2024-05-25",
+    readTime: "8 min read",
+    category: "Nutrition & Wellness",
+    image: blogImg22,
+    tags: ["healthy eating", "nutrition", "mood", "energy", "strength", "wellness"],
+    cardTag: "Popular"
   }
 ];
 
