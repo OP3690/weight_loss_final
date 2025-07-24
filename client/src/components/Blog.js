@@ -21,7 +21,8 @@ const blogPosts = [
     category: "Science & Research",
     image: "/BlogImg/bruce-mars-gJtDg6WfMlQ-unsplash.jpg",
     tags: ["metabolism", "weight loss", "BMR", "exercise", "nutrition"],
-    seoDescription: "Learn the science behind metabolism and weight loss. Discover how to optimize your body's energy systems for sustainable weight management results."
+    seoDescription: "Learn the science behind metabolism and weight loss. Discover how to optimize your body's energy systems for sustainable weight management results.",
+    cardTag: "Most Viewed"
   },
   {
     id: 2,
@@ -34,7 +35,8 @@ const blogPosts = [
     category: "Nutrition",
     image: "/BlogImg/lyfefuel-4wtxPhvQZds-unsplash.jpg",
     tags: ["nutrition", "macronutrients", "weight loss", "healthy eating", "meal planning"],
-    seoDescription: "Master the fundamentals of nutrition for sustainable weight loss. Learn about macronutrients, meal timing, and optimal food choices."
+    seoDescription: "Master the fundamentals of nutrition for sustainable weight loss. Learn about macronutrients, meal timing, and optimal food choices.",
+    cardTag: "Popular"
   },
   {
     id: 3,
@@ -47,7 +49,8 @@ const blogPosts = [
     category: "Fitness & Exercise",
     image: "/BlogImg/bruce-mars-tj27cwu86Wk-unsplash.jpg",
     tags: ["exercise", "workout", "HIIT", "strength training", "fat burning", "fitness"],
-    seoDescription: "Discover the most effective exercise strategies for maximum fat burning. Learn about HIIT, strength training, and optimal workout planning."
+    seoDescription: "Discover the most effective exercise strategies for maximum fat burning. Learn about HIIT, strength training, and optimal workout planning.",
+    cardTag: "Featured"
   },
   {
     id: 4,
@@ -73,7 +76,8 @@ const blogPosts = [
     category: "Health & Wellness",
     image: "/BlogImg/dane-wetton-t1NEMSm1rgI-unsplash.jpg",
     tags: ["sleep", "weight loss", "hormones", "health", "wellness"],
-    seoDescription: "Learn how sleep affects weight loss and discover strategies to optimize your sleep for better health and weight management."
+    seoDescription: "Learn how sleep affects weight loss and discover strategies to optimize your sleep for better health and weight management.",
+    cardTag: "New"
   },
   {
     id: 6,
@@ -125,7 +129,8 @@ const blogPosts = [
     category: "Health & Wellness",
     image: "/BlogImg/dan-gold-4_jhDO54BYg-unsplash.jpg",
     tags: ["vitamin d", "sunlight", "mental health", "wellness", "weight loss"],
-    seoDescription: "Learn about the connection between vitamin D, sunlight exposure, and mental health during your weight loss journey."
+    seoDescription: "Learn about the connection between vitamin D, sunlight exposure, and mental health during your weight loss journey.",
+    cardTag: "Trending"
   },
   {
     id: 10,
@@ -138,7 +143,8 @@ const blogPosts = [
     category: "Fasting & Nutrition",
     image: "/BlogImg/logan-weaver-lgnwvr-Opd6Z-sgakI-unsplash.jpg",
     tags: ["intermittent fasting", "weight loss", "nutrition", "health", "metabolism"],
-    seoDescription: "Master intermittent fasting for weight loss success. Learn proven strategies, methods, and tips for sustainable results."
+    seoDescription: "Master intermittent fasting for weight loss success. Learn proven strategies, methods, and tips for sustainable results.",
+    cardTag: "Popular"
   },
   {
     id: 11,
@@ -164,7 +170,8 @@ const blogPosts = [
     category: "Gut Health & Nutrition",
     image: "/BlogImg/logan-weaver-lgnwvr-u76Gd0hP5w4-unsplash.jpg",
     tags: ["gut health", "microbiome", "weight loss", "probiotics", "nutrition"],
-    seoDescription: "Discover the connection between gut health and weight loss. Learn how to optimize your microbiome for better weight management."
+    seoDescription: "Discover the connection between gut health and weight loss. Learn how to optimize your microbiome for better weight management.",
+    cardTag: "New"
   },
   {
     id: 13,
@@ -190,7 +197,8 @@ const blogPosts = [
     category: "Mindful Living",
     image: "/BlogImg/nadine-primeau-Juvw-a-RvvI-unsplash.jpg",
     tags: ["mindful eating", "nutrition", "mental health", "mood", "wellness"],
-    seoDescription: "Master mindful eating to fuel your body and lift your mood. Transform your relationship with food for better health."
+    seoDescription: "Master mindful eating to fuel your body and lift your mood. Transform your relationship with food for better health.",
+    cardTag: "Featured"
   },
   {
     id: 15,
@@ -255,7 +263,8 @@ const blogPosts = [
     category: "Fitness & Joy",
     image: "/BlogImg/alex-shaw-ldpBiWRiVZ4-unsplash.jpg",
     tags: ["fitness", "joy", "movement", "energy", "vitality", "wellness"],
-    seoDescription: "Discover how fitness brings joy and vitality to your life. Learn to move your body and feel truly alive."
+    seoDescription: "Discover how fitness brings joy and vitality to your life. Learn to move your body and feel truly alive.",
+    cardTag: "Trending"
   },
   {
     id: 20,
@@ -281,7 +290,49 @@ const blogPosts = [
     category: "Meditation & Wellness",
     image: "/BlogImg/patrick-malleret-L5o5ainVP_I-unsplash.jpg",
     tags: ["meditation", "peace", "mental health", "stress reduction", "wellness"],
-    seoDescription: "Learn meditation techniques for peace of mind and stronger health. Transform your life through mindful practices."
+    seoDescription: "Learn meditation techniques for peace of mind and stronger health. Transform your life through mindful practices.",
+    cardTag: "New"
+  },
+  {
+    id: 22,
+    slug: "run-joy-exercise-uplift-mind",
+    title: "Run for Joy: Exercise to Uplift Your Mind",
+    excerpt: "Discover how running and cardiovascular exercise can elevate your mood, reduce stress, and boost mental clarity.",
+    author: "Gooofit Research Team",
+    date: "2024-05-01",
+    readTime: "8 min read",
+    category: "Fitness & Mental Health",
+    image: "/BlogImg/andrew-tanglao-5hqYJ_8WQ8E-unsplash.jpg",
+    tags: ["running", "cardio", "mental health", "joy", "exercise", "mood boost"],
+    seoDescription: "Learn how running and cardio exercise can uplift your mind and improve mental well-being. Discover the joy of movement.",
+    cardTag: "New"
+  },
+  {
+    id: 23,
+    slug: "nourish-body-soul-balanced-diet",
+    title: "Nourish Body & Soul with Balanced Diet",
+    excerpt: "Create a balanced diet that nourishes both your physical body and spiritual well-being for holistic health.",
+    author: "Gooofit Research Team",
+    date: "2024-05-05",
+    readTime: "10 min read",
+    category: "Holistic Nutrition",
+    image: "/BlogImg/ella-olsson-C1Q3qOTlegg-unsplash.jpg",
+    tags: ["balanced diet", "holistic health", "nutrition", "wellness", "mind-body"],
+    seoDescription: "Learn to create a balanced diet that nourishes both body and soul for complete holistic health and wellness."
+  },
+  {
+    id: 24,
+    slug: "calm-mind-fit-body-mental-health-boost",
+    title: "Calm Mind, Fit Body: Mental Health Boost",
+    excerpt: "Achieve the perfect balance of mental calmness and physical fitness for optimal health and well-being.",
+    author: "Gooofit Research Team",
+    date: "2024-05-10",
+    readTime: "9 min read",
+    category: "Mind-Body Wellness",
+    image: "/BlogImg/thought-catalog-505eectW54k-unsplash.jpg",
+    tags: ["mental health", "fitness", "mind-body", "calm", "wellness"],
+    seoDescription: "Learn to achieve calm mind and fit body for optimal mental health and physical wellness. Balance is key.",
+    cardTag: "Featured"
   }
 ];
 
@@ -298,6 +349,24 @@ const Blog = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Function to get tag color based on tag type
+  const getTagColor = (tag) => {
+    switch (tag) {
+      case 'Most Viewed':
+        return 'bg-red-500';
+      case 'New':
+        return 'bg-green-500';
+      case 'Popular':
+        return 'bg-blue-500';
+      case 'Featured':
+        return 'bg-purple-500';
+      case 'Trending':
+        return 'bg-orange-500';
+      default:
+        return 'bg-gray-500';
+    }
   };
 
   return (
@@ -346,6 +415,14 @@ const Blog = () => {
                       {post.category}
                     </span>
                   </div>
+                  {/* Card Tag */}
+                  {post.cardTag && (
+                    <div className="absolute top-4 right-4">
+                      <span className={`${getTagColor(post.cardTag)} text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg`}>
+                        {post.cardTag}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="p-6">
