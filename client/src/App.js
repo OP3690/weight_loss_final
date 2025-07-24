@@ -62,6 +62,8 @@ function App() {
     setCurrentUser(null);
     localStorage.removeItem('currentUser');
     toast.success('Logged out successfully');
+    // Redirect to homepage after logout
+    window.location.href = '/';
   };
 
   if (loading) {
