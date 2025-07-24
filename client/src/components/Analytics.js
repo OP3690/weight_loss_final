@@ -9,7 +9,7 @@ import {
   ArrowDown,
   Minus,
   FlagIcon,
-  XMarkIcon,
+  X,
   ArrowPathIcon,
   ChartBarIcon,
   ScaleIcon,
@@ -241,7 +241,7 @@ const Analytics = () => {
               onClick={() => setShowGoalNotification(false)}
               className="text-white/80 hover:text-white transition-colors"
             >
-              <XMarkIcon className="w-5 h-5" />
+              <X className="w-5 h-5" />
             </button>
           </div>
         </motion.div>
