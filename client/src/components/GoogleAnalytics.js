@@ -41,10 +41,20 @@ export const trackConversion = (conversionId, conversionLabel) => {
   }
 };
 
+// Helper function to track page view conversions (from Google Ads snippet)
+export const trackPageViewConversion = (url) => {
+  if (window.gtag_report_conversion) {
+    return window.gtag_report_conversion(url);
+  }
+  return false;
+};
+
 // Predefined tracking events for common actions
 export const trackUserRegistration = () => {
   trackEvent('sign_up', 'engagement', 'user_registration');
   trackConversion('user_registration', 'sign_up');
+  // Track page view conversion for registration
+  trackPageViewConversion();
 };
 
 export const trackUserLogin = () => {
@@ -57,6 +67,8 @@ export const trackWeightEntry = () => {
 
 export const trackBMICalculation = () => {
   trackEvent('bmi_calculation', 'engagement', 'health_tools');
+  // Track page view conversion for BMI calculation
+  trackPageViewConversion();
 };
 
 export const trackPasswordReset = () => {

@@ -15,10 +15,27 @@ import {
   SparklesIcon
 } from '@heroicons/react/24/outline';
 import ForgotPasswordPopup from './ForgotPasswordPopup';
+import { trackPageViewConversion } from './GoogleAnalytics';
 
 const HomePage = ({ onStartDemo, onRegister, onLogin }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+
+  // Wrapper functions with conversion tracking
+  const handleRegister = () => {
+    trackPageViewConversion();
+    onRegister();
+  };
+
+  const handleLogin = () => {
+    trackPageViewConversion();
+    onLogin();
+  };
+
+  const handleStartDemo = () => {
+    trackPageViewConversion();
+    onStartDemo();
+  };
 
   useEffect(() => {
     setIsVisible(true);
@@ -168,7 +185,7 @@ const HomePage = ({ onStartDemo, onRegister, onLogin }) => {
                 About
               </motion.a>
               <motion.button
-                onClick={onLogin}
+                onClick={handleLogin}
                 className="text-gray-600 hover:text-orange-500 transition-colors font-medium"
                 whileHover={{ scale: 1.05 }}
               >
@@ -182,7 +199,7 @@ const HomePage = ({ onStartDemo, onRegister, onLogin }) => {
                 Forgot Password?
               </motion.button>
               <motion.button
-                onClick={onRegister}
+                onClick={handleRegister}
                 className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-2 rounded-full hover:from-orange-600 hover:to-red-600 transition-all duration-300 shadow-lg hover:shadow-xl"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -244,7 +261,7 @@ const HomePage = ({ onStartDemo, onRegister, onLogin }) => {
               className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
             >
               <motion.button
-                onClick={onRegister}
+                onClick={handleRegister}
                 className="group bg-gradient-to-r from-orange-500 to-red-500 text-white px-10 py-5 rounded-full text-xl font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-orange-500/25"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -255,7 +272,7 @@ const HomePage = ({ onStartDemo, onRegister, onLogin }) => {
                 </span>
               </motion.button>
               <motion.button
-                onClick={onStartDemo}
+                onClick={handleStartDemo}
                 className="border-2 border-orange-500 text-orange-600 px-10 py-5 rounded-full text-xl font-semibold hover:bg-orange-500 hover:text-white transition-all duration-300 transform hover:scale-105 shadow-lg"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -437,7 +454,7 @@ const HomePage = ({ onStartDemo, onRegister, onLogin }) => {
               Join thousands of users who are already achieving their weight loss goals with GoooFit.
             </p>
             <motion.button
-              onClick={onRegister}
+              onClick={handleRegister}
               className="bg-white text-orange-600 px-10 py-5 rounded-full text-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-2xl hover:shadow-white/25 group"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
