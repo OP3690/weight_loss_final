@@ -312,16 +312,27 @@ router.get('/user/:userId/analytics', async (req, res) => {
       const days = parseInt(period);
       const entries = [];
       const startWeight = 76;
+      
+      // Use deterministic seed for consistent demo data
+      // This prevents numbers from "moving" on every request
+      const seed = 12345; // Fixed seed for consistent results
+      
       for (let i = days - 1; i >= 0; i--) {
         const date = new Date();
         date.setDate(date.getDate() - i);
         const baseWeight = startWeight - (days - i) * 0.1;
-        const fluctuation = (Math.random() - 0.5) * 0.5;
+        
+        // Deterministic fluctuation based on day and seed
+        const deterministicRandom = ((seed + i) * 9301 + 49297) % 233280;
+        const normalizedRandom = deterministicRandom / 233280;
+        const fluctuation = (normalizedRandom - 0.5) * 0.3; // Reduced fluctuation range
+        
         const weight = Math.round((baseWeight + fluctuation) * 10) / 10;
         entries.push({
           date,
           weight,
           bmi: calculateBMI(weight, 170),
+          notes: i % 7 === 0 ? 'Weekly check-in' : '',
           goalId: 'demo-goal-123',
           createdAt: date
         });

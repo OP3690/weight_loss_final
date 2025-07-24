@@ -31,18 +31,51 @@ const Analytics = () => {
     try {
       setLoading(true);
       
-      // Load user profile
-      const profile = await userAPI.getUser(currentUser.id);
-      setUserProfile(profile);
-      
-      // Load analytics data
-      const analyticsResponse = await weightEntryAPI.getAnalytics(currentUser.id, {
-        period: selectedPeriod,
-        goalId: profile.goalId
-      });
-      
-      if (analyticsResponse.analytics) {
-        setAnalytics(analyticsResponse.analytics);
+      // For demo users, we'll get analytics from backend but set a demo profile
+      if (currentUser.id === 'demo') {
+        // Load analytics data from backend (which has consistent demo data)
+        const analyticsResponse = await weightEntryAPI.getAnalytics(currentUser.id, {
+          period: selectedPeriod
+        });
+        
+        if (analyticsResponse.analytics) {
+          setAnalytics(analyticsResponse.analytics);
+          
+          // Set demo user profile
+          setUserProfile({
+            id: 'demo',
+            name: 'Demo User',
+            email: 'demo@example.com',
+            mobile: '+1234567890',
+            gender: 'male',
+            age: 30,
+            height: 170,
+            currentWeight: analyticsResponse.analytics.currentWeight,
+            targetWeight: analyticsResponse.analytics.targetWeight,
+            targetDate: new Date(Date.now() + 83 * 24 * 60 * 60 * 1000),
+            goalStatus: 'active',
+            goalCreatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+            goalId: 'demo-goal-123',
+            pastGoals: [],
+            goals: [],
+            createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+            updatedAt: new Date()
+          });
+        }
+      } else {
+        // Load user profile for real users
+        const profile = await userAPI.getUser(currentUser.id);
+        setUserProfile(profile);
+        
+        // Load analytics data
+        const analyticsResponse = await weightEntryAPI.getAnalytics(currentUser.id, {
+          period: selectedPeriod,
+          goalId: profile.goalId
+        });
+        
+        if (analyticsResponse.analytics) {
+          setAnalytics(analyticsResponse.analytics);
+        }
       }
     } catch (error) {
       console.error('Error loading analytics:', error);
@@ -52,85 +85,13 @@ const Analytics = () => {
     }
   }, [currentUser?.id, selectedPeriod]);
 
-  const generateSampleAnalytics = useCallback(() => {
-    const days = parseInt(selectedPeriod);
-    const entries = [];
-    const startWeight = 76;
-    
-    // Use deterministic seed for consistent demo data
-    // This prevents numbers from "moving" on every page refresh/re-render
-    const seed = 12345; // Fixed seed for consistent results
-    
-    for (let i = days - 1; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      const baseWeight = startWeight - (days - i) * 0.1;
-      
-      // Deterministic fluctuation based on day and seed
-      const deterministicRandom = ((seed + i) * 9301 + 49297) % 233280;
-      const normalizedRandom = deterministicRandom / 233280;
-      const fluctuation = (normalizedRandom - 0.5) * 0.3; // Reduced fluctuation range
-      
-      const weight = Math.round((baseWeight + fluctuation) * 10) / 10;
-      entries.push({
-        date,
-        weight,
-        bmi: calculateBMI(weight, 170),
-        notes: i % 7 === 0 ? 'Weekly check-in' : '',
-        goalId: 'demo-goal-123',
-        createdAt: date
-      });
-    }
-    const weights = entries.map(entry => entry.weight);
-    const averageWeight = weights.reduce((sum, weight) => sum + weight, 0) / weights.length;
-    const weightChange = weights[weights.length - 1] - weights[0];
-    let trend = 'stable';
-    if (weightChange < -0.5) trend = 'decreasing';
-    else if (weightChange > 0.5) trend = 'increasing';
-    setAnalytics({
-      totalEntries: entries.length,
-      averageWeight: averageWeight.toFixed(1),
-      weightChange: weightChange.toFixed(1),
-      trend,
-      entries,
-      currentWeight: weights[weights.length - 1],
-      targetWeight: 70,
-      progressToTarget: Math.max(0, Math.min(100, ((startWeight - weights[weights.length - 1]) / (startWeight - 70)) * 100)),
-      initialWeight: startWeight
-    });
-    setUserProfile({
-      id: 'demo',
-      name: 'Demo User',
-      email: 'demo@example.com',
-      mobile: '+1234567890',
-      gender: 'male',
-      age: 30,
-      height: 170,
-      currentWeight: weights[weights.length - 1],
-      targetWeight: 70,
-      targetDate: new Date(Date.now() + 83 * 24 * 60 * 60 * 1000),
-      goalStatus: 'active',
-      goalCreatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-      goalId: 'demo-goal-123',
-      pastGoals: [],
-      goals: [],
-      createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date()
-    });
-    setLoading(false);
-  }, [selectedPeriod]);
-
   useEffect(() => {
     if (!currentUser?.id) return;
     
-    if (currentUser.id === 'demo') {
-      // Demo user - generate sample analytics data
-      generateSampleAnalytics();
-    } else {
-      // For real users, load actual data from backend
-      console.log('Real user - loading actual data from backend');
-      loadUserProfileAndAnalytics();
-    }
+    // For both demo and real users, load data from backend
+    // This ensures consistency in data structure and behavior
+    console.log('Loading analytics data from backend for user:', currentUser.id);
+    loadUserProfileAndAnalytics();
   }, [currentUser?.id, selectedPeriod]);
 
   // Reset attempt flag when user changes
