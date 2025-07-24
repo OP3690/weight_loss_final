@@ -343,11 +343,10 @@ const Dashboard = () => {
   // Always reload profile and entries on mount and when currentUser changes
   useEffect(() => {
     if (currentUser && currentUser.id) {
-      // TEMPORARY: Skip backend calls due to server issues - use demo data for all users
       if (currentUser.id !== 'demo') {
-        console.log('[DASHBOARD] Backend server is down - using demo data for all users');
-        // Use demo data for all users temporarily
-        const demoProfile = {
+        // For real users, show minimal data or empty state
+        console.log('[DASHBOARD] Real user - showing minimal dashboard data');
+        const realUserProfile = {
           id: currentUser.id,
           name: currentUser.name,
           email: currentUser.email || 'user@example.com',
@@ -355,51 +354,73 @@ const Dashboard = () => {
           gender: 'male',
           age: 30,
           height: 170,
-          currentWeight: 74.2,
-          targetWeight: 70,
-          targetDate: new Date(Date.now() + 83 * 24 * 60 * 60 * 1000),
-          goalStatus: 'active',
-          goalCreatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-          goalId: 'demo-goal-123',
+          currentWeight: 0,
+          targetWeight: 0,
+          targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+          goalStatus: 'inactive',
+          goalCreatedAt: new Date(),
+          goalId: null,
           pastGoals: [],
           goals: [],
-          createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+          createdAt: new Date(),
           updatedAt: new Date()
         };
         
-        // Generate 30 days of demo entries with deterministic data
-        const demoEntries = [];
-        const today = new Date();
-        const seed = 12345; // Fixed seed for consistent results
-        
-        for (let i = 29; i >= 0; i--) {
-          const date = new Date(today);
-          date.setDate(today.getDate() - i);
-          const baseWeight = 76 - i * 0.1;
-          
-          // Deterministic fluctuation based on day and seed
-          const deterministicRandom = ((seed + i) * 9301 + 49297) % 233280;
-          const normalizedRandom = deterministicRandom / 233280;
-          const fluctuation = (normalizedRandom - 0.5) * 0.2; // Reduced fluctuation range
-          
-          const weight = Math.round((baseWeight + fluctuation) * 10) / 10;
-          demoEntries.push({
-            id: `demo-entry-${i}`,
-            date: date.toISOString().slice(0, 10),
-            weight,
-            notes: i % 7 === 0 ? 'Weekly check-in' : ''
-          });
-        }
-        
-        setUserProfile(demoProfile);
-        setGoalEntries(demoEntries);
+        setUserProfile(realUserProfile);
+        setGoalEntries([]); // Empty entries for real users
         setIsLoading(false);
         return;
       }
       
-      console.log('[DASHBOARD] Loading fresh user profile and goal entries for user:', currentUser.id);
-      loadUserProfile();
-      loadGoalEntries();
+      // Demo user - use demo data
+      console.log('[DASHBOARD] Demo user - using demo data');
+      const demoProfile = {
+        id: 'demo',
+        name: 'Demo User',
+        email: 'demo@example.com',
+        mobile: '+1234567890',
+        gender: 'male',
+        age: 30,
+        height: 170,
+        currentWeight: 74.2,
+        targetWeight: 70,
+        targetDate: new Date(Date.now() + 83 * 24 * 60 * 60 * 1000),
+        goalStatus: 'active',
+        goalCreatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        goalId: 'demo-goal-123',
+        pastGoals: [],
+        goals: [],
+        createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        updatedAt: new Date()
+      };
+      
+      // Generate 30 days of demo entries with deterministic data
+      const demoEntries = [];
+      const today = new Date();
+      const seed = 12345; // Fixed seed for consistent results
+      
+      for (let i = 29; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        const baseWeight = 76 - i * 0.1;
+        
+        // Deterministic fluctuation based on day and seed
+        const deterministicRandom = ((seed + i) * 9301 + 49297) % 233280;
+        const normalizedRandom = deterministicRandom / 233280;
+        const fluctuation = (normalizedRandom - 0.5) * 0.2; // Reduced fluctuation range
+        
+        const weight = Math.round((baseWeight + fluctuation) * 10) / 10;
+        demoEntries.push({
+          id: `demo-entry-${i}`,
+          date: date.toISOString().slice(0, 10),
+          weight,
+          notes: i % 7 === 0 ? 'Weekly check-in' : ''
+        });
+      }
+      
+      setUserProfile(demoProfile);
+      setGoalEntries(demoEntries);
+      setIsLoading(false);
     }
   }, [currentUser]);
 

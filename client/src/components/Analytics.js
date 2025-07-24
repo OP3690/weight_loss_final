@@ -100,35 +100,33 @@ const Analytics = () => {
 
   useEffect(() => {
     if (currentUser && currentUser.id !== 'demo') {
-      // TEMPORARY: Skip backend calls due to server issues - use demo data for all users
-      console.log('Backend server is down - using demo data for all users');
-      generateSampleAnalytics();
+      // For real users, show empty analytics or minimal data
+      console.log('Real user - showing minimal analytics data');
+      setAnalytics({
+        totalEntries: 0,
+        averageWeight: 0,
+        weightChange: 0,
+        trend: 'stable',
+        entries: [],
+        currentWeight: 0,
+        targetWeight: 0,
+        progressToTarget: 0,
+        initialWeight: 0
+      });
+      setUserProfile({
+        id: currentUser.id,
+        name: currentUser.name,
+        currentWeight: 0,
+        targetWeight: 0,
+        goalStatus: 'inactive'
+      });
+      setLoading(false);
       return;
-      
-      // Only attempt to load once per user
-      if (hasAttemptedLoad) {
-        console.log('Already attempted to load analytics for this user');
-        return;
-      }
-      
-      setHasAttemptedLoad(true);
-      
-      // Add a timeout to prevent infinite loading
-      const timeoutId = setTimeout(() => {
-        if (loading) {
-          console.log('Analytics loading timeout - falling back to demo data');
-          generateSampleAnalytics();
-        }
-      }, 15000); // 15 second timeout
-      
-      loadUserProfileAndAnalytics();
-      
-      return () => clearTimeout(timeoutId);
     } else if (currentUser && currentUser.id === 'demo') {
       // Demo user - generate sample analytics data
       generateSampleAnalytics();
     }
-  }, [currentUser, loadUserProfileAndAnalytics, generateSampleAnalytics, loading, hasAttemptedLoad]);
+  }, [currentUser, generateSampleAnalytics]);
 
   // Reset attempt flag when user changes
   useEffect(() => {
