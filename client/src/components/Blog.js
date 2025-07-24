@@ -385,7 +385,7 @@ const blogPosts = [
     date: "2024-05-30",
     readTime: "9 min read",
     category: "Strength Training & Mental Health",
-    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop",
+    image: "/BlogImg/alex-shaw-ldpBiWRiVZ4-unsplash.jpg",
     tags: ["weightlifting", "strength training", "mental health", "mood", "fitness", "emotional well-being"],
     seoDescription: "Learn how weightlifting and strength training can lift your mood and improve mental health. Discover the mind-body connection.",
     cardTag: "Featured"
@@ -394,29 +394,29 @@ const blogPosts = [
     id: 29,
     slug: "eat-clean-think-clear-diet-wellness",
     title: "Eat Clean, Think Clear: Diet for Wellness",
-    excerpt: "Learn how clean eating habits can enhance mental clarity, focus, and overall cognitive function for better wellness.",
+    excerpt: "Explore the powerful connection between clean eating and mental clarity for optimal wellness and cognitive function.",
     author: "Gooofit Research Team",
     date: "2024-06-05",
     readTime: "10 min read",
-    category: "Clean Eating & Wellness",
-    image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&h=600&fit=crop",
-    tags: ["clean eating", "mental clarity", "wellness", "cognitive function", "nutrition", "focus"],
-    seoDescription: "Discover how clean eating habits enhance mental clarity and cognitive function for better overall wellness.",
+    category: "Holistic Nutrition",
+    image: "/BlogImg/alexander-red-d3bYmnZ0ank-unsplash.jpg",
+    tags: ["clean eating", "nutrition", "mental clarity", "wellness", "cognitive function", "healthy diet"],
+    seoDescription: "Discover how clean eating can improve mental clarity and cognitive function for better overall wellness.",
     cardTag: "New"
   },
   {
     id: 30,
     slug: "active-body-restful-mind-health-harmony",
     title: "Active Body, Restful Mind: Health Harmony",
-    excerpt: "Achieve perfect harmony between physical activity and mental rest for optimal health and well-being.",
+    excerpt: "Learn how to balance physical activity with mental rest for optimal health and well-being harmony.",
     author: "Gooofit Research Team",
     date: "2024-06-10",
-    readTime: "8 min read",
-    category: "Health Harmony",
-    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
-    tags: ["physical activity", "mental rest", "health harmony", "well-being", "balance", "mind-body"],
-    seoDescription: "Learn to achieve harmony between active body and restful mind for optimal health and well-being.",
-    cardTag: "Trending"
+    readTime: "9 min read",
+    category: "Mind-Body Wellness",
+    image: "/BlogImg/dmitriy-frantsev-SIqmq_6726Y-unsplash.jpg",
+    tags: ["physical activity", "mental rest", "health harmony", "wellness", "balance", "mind-body connection"],
+    seoDescription: "Achieve health harmony by balancing physical activity with mental rest for optimal well-being.",
+    cardTag: "Featured"
   }
 ];
 
