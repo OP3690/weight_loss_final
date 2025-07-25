@@ -526,7 +526,7 @@ const HomePage = ({ onStartDemo, onRegister, onLogin }) => {
               <ul className="space-y-2">
                 <li><a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">About</a></li>
                 <li><a href="/blog" className="text-gray-400 hover:text-orange-500 transition-colors">Blog</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">Careers</a></li>
+                <li><a href="/careers" className="text-gray-400 hover:text-orange-500 transition-colors">Careers</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">Contact</a></li>
               </ul>
             </div>

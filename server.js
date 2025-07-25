@@ -62,9 +62,15 @@ mongoose.connect(MONGODB_URI, {
 .then(() => console.log('MongoDB connected successfully'))
 .catch(err => console.error('MongoDB connection error:', err));
 
+// Import routes
+const userRoutes = require('./routes/users');
+const weightEntryRoutes = require('./routes/weightEntries');
+const careersRoutes = require('./routes/careers');
+
 // Routes
-app.use('/api/users', require('./routes/users'));
-app.use('/api/weight-entries', require('./routes/weightEntries'));
+app.use('/api/users', userRoutes);
+app.use('/api/weight-entries', weightEntryRoutes);
+app.use('/api/careers', careersRoutes);
 
 // Import ping service
 const PingService = require('./services/pingService');

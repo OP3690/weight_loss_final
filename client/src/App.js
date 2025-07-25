@@ -11,13 +11,13 @@ import GoogleAnalytics from './components/GoogleAnalytics';
 import Dashboard from './components/Dashboard';
 import Profile from './components/Profile';
 import Analytics from './components/Analytics';
-
 import Navigation from './components/Navigation';
 import Onboarding from './components/Onboarding';
 import BMICalculator from './components/BMICalculator';
 import HomePage from './components/HomePage';
 import Blog from './components/Blog';
 import BlogPost from './components/BlogPost';
+import Careers from './components/Careers';
 
 // Context
 import { UserProvider } from './context/UserContext';
@@ -89,7 +89,10 @@ function App() {
         <Routes>
           {/* Blog Routes - Accessible to everyone */}
           <Route path="/blog" element={<Blog />} />
-                            <Route path="/blog/:blogSlug" element={<BlogPost />} />
+          <Route path="/blog/:blogSlug" element={<BlogPost />} />
+          
+          {/* Careers Route - Accessible to everyone */}
+          <Route path="/careers" element={<Careers />} />
           
           {/* Home Page - Only show when not logged in */}
           {!currentUser && (
