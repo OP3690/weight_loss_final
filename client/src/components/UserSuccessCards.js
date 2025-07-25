@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import api from '../services/api';
 
 const UserSuccessCards = () => {
   const [currentStories, setCurrentStories] = useState([]);
@@ -11,11 +12,10 @@ const UserSuccessCards = () => {
   // Fetch user success stories from API
   const fetchUserSuccessStories = async () => {
     try {
-      const response = await fetch('/api/user-success?limit=10');
-      const data = await response.json();
+      const response = await api.get('/user-success?limit=10');
       
-      if (data.success) {
-        setCurrentStories(data.data);
+      if (response.data.success) {
+        setCurrentStories(response.data.data);
         setError(null);
       } else {
         setError('Failed to fetch user success stories');
