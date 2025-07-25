@@ -16,125 +16,157 @@ const axios = require('axios');
 
 class StandalonePingService {
   constructor() {
-    this.serverUrl = process.env.SERVER_URL || 'https://weight-loss-final.onrender.com';
-    this.pingEndpoints = [
-      '/api/health',
-      '/api/users/health',
-      '/api/weight-entries/health'
-    ];
     this.isRunning = false;
+    this.pingInterval = null;
+    this.serverUrl = 'https://gooofit.onrender.com';
+    this.pingEndpoints = [
+      '/api/health'
+    ];
     this.pingCount = 0;
+    this.startTime = new Date();
   }
 
+  // Start the ping service
   start() {
     if (this.isRunning) {
-      console.log('Ping service is already running');
+      console.log('🔄 Ping service is already running');
       return;
     }
 
-    console.log('🚀 Starting standalone ping service...');
+    console.log('🚀 Starting standalone ping service to keep server awake...');
     console.log(`📡 Target server: ${this.serverUrl}`);
-    console.log('⏰ Ping interval: 10-14 minutes (random)');
-    console.log('💤 Purpose: Keep Render server awake (prevents 15min sleep)');
-    console.log('---');
-
+    console.log(`⏰ Ping interval: 14 minutes`);
+    console.log(`🕐 Started at: ${this.startTime.toLocaleString()}`);
+    console.log('='.repeat(60));
+    
     this.isRunning = true;
-    this.scheduleNextPing();
+
+    // Ping every 14 minutes
+    this.pingInterval = setInterval(() => {
+      this.pingServer();
+    }, 14 * 60 * 1000); // 14 minutes in milliseconds
+
+    // Initial ping
+    this.pingServer();
   }
 
+  // Stop the ping service
   stop() {
+    if (!this.isRunning) {
+      console.log('🛑 Ping service is not running');
+      return;
+    }
+
     console.log('🛑 Stopping ping service...');
     this.isRunning = false;
-    process.exit(0);
+
+    if (this.pingInterval) {
+      clearInterval(this.pingInterval);
+      this.pingInterval = null;
+    }
   }
 
-  scheduleNextPing() {
-    if (!this.isRunning) return;
-
-    const interval = this.getRandomInterval(10, 14); // 10-14 minutes
-    const nextPingTime = new Date(Date.now() + interval);
-    
-    console.log(`⏰ Next ping scheduled for: ${nextPingTime.toLocaleTimeString()}`);
-    
-    setTimeout(() => {
-      this.pingServer();
-    }, interval);
-  }
-
+  // Ping the server
   async pingServer() {
-    if (!this.isRunning) return;
-
-    this.pingCount++;
-    const endpoint = this.pingEndpoints[Math.floor(Math.random() * this.pingEndpoints.length)];
-    const url = `${this.serverUrl}${endpoint}`;
-    
-    console.log(`\n📡 Ping #${this.pingCount} - ${new Date().toLocaleTimeString()}`);
-    console.log(`🎯 Endpoint: ${endpoint}`);
-    
     try {
+      this.pingCount++;
+      const endpoint = this.pingEndpoints[Math.floor(Math.random() * this.pingEndpoints.length)];
+      const url = `${this.serverUrl}${endpoint}`;
+      const timestamp = new Date().toLocaleString();
+      
+      console.log(`\n📡 [${timestamp}] Ping #${this.pingCount}: ${url}`);
+      
       const startTime = Date.now();
       const response = await axios.get(url, {
-        timeout: 15000, // 15 second timeout
+        timeout: 10000, // 10 second timeout
         headers: {
           'User-Agent': 'StandalonePingService/1.0',
           'X-Ping-Service': 'true'
         }
       });
-      
       const responseTime = Date.now() - startTime;
+
+      console.log(`✅ [${timestamp}] Ping #${this.pingCount} successful:`);
+      console.log(`   Status: ${response.status} - ${response.statusText}`);
+      console.log(`   Response time: ${responseTime}ms`);
+      console.log(`   Data: ${JSON.stringify(response.data)}`);
       
-      console.log(`✅ Success: ${response.status} - ${response.statusText}`);
-      console.log(`⏱️ Response time: ${responseTime}ms`);
-      console.log(`📊 Server uptime: ${response.data.uptime ? Math.round(response.data.uptime / 60) + ' minutes' : 'N/A'}`);
-      
+      // Log uptime
+      const uptime = Date.now() - this.startTime.getTime();
+      const uptimeHours = Math.floor(uptime / (1000 * 60 * 60));
+      const uptimeMinutes = Math.floor((uptime % (1000 * 60 * 60)) / (1000 * 60));
+      console.log(`   Uptime: ${uptimeHours}h ${uptimeMinutes}m`);
+
     } catch (error) {
-      console.log(`❌ Failed: ${error.message}`);
+      const timestamp = new Date().toLocaleString();
+      console.log(`\n❌ [${timestamp}] Ping #${this.pingCount} failed:`);
+      console.log(`   Error: ${error.message}`);
       
       if (error.response) {
-        console.log(`📊 Status: ${error.response.status}`);
+        console.log(`   Status: ${error.response.status} - ${error.response.statusText}`);
+        console.log(`   Data: ${JSON.stringify(error.response.data)}`);
+      } else if (error.request) {
+        console.log(`   No response received`);
       }
       
-      // Retry in 2 minutes if it's a connection error
+      // If it's a timeout or connection error, try again in 2 minutes
       if (error.code === 'ECONNABORTED' || error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
-        console.log('🔄 Retrying in 2 minutes...');
+        console.log('🔄 Retrying ping in 2 minutes...');
         setTimeout(() => {
           this.pingServer();
-        }, 2 * 60 * 1000);
-        return;
+        }, 2 * 60 * 1000); // 2 minutes
       }
     }
-    
-    // Schedule next ping
-    this.scheduleNextPing();
   }
 
-  getRandomInterval(minMinutes, maxMinutes) {
-    const minMs = minMinutes * 60 * 1000;
-    const maxMs = maxMinutes * 60 * 1000;
-    return Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs;
+  // Get service status
+  getStatus() {
+    const uptime = Date.now() - this.startTime.getTime();
+    const uptimeHours = Math.floor(uptime / (1000 * 60 * 60));
+    const uptimeMinutes = Math.floor((uptime % (1000 * 60 * 60)) / (1000 * 60));
+    
+    return {
+      isRunning: this.isRunning,
+      serverUrl: this.serverUrl,
+      pingCount: this.pingCount,
+      uptime: `${uptimeHours}h ${uptimeMinutes}m`,
+      nextPingIn: this.pingInterval ? '14 minutes' : 'Not scheduled'
+    };
   }
 }
+
+// Create and start the ping service
+const pingService = new StandalonePingService();
 
 // Handle graceful shutdown
 process.on('SIGINT', () => {
   console.log('\n🛑 Received SIGINT, shutting down gracefully...');
-  if (pingService) {
-    pingService.stop();
-  }
+  pingService.stop();
+  console.log('👋 Ping service stopped. Goodbye!');
+  process.exit(0);
 });
 
 process.on('SIGTERM', () => {
   console.log('\n🛑 Received SIGTERM, shutting down gracefully...');
-  if (pingService) {
-    pingService.stop();
-  }
+  pingService.stop();
+  console.log('👋 Ping service stopped. Goodbye!');
+  process.exit(0);
 });
 
 // Start the service
-const pingService = new StandalonePingService();
 pingService.start();
 
-// Initial ping
-setTimeout(() => {
-  pingService.pingServer();
-}, 5000); // First ping after 5 seconds 
+// Log status every hour
+setInterval(() => {
+  const status = pingService.getStatus();
+  console.log('\n📊 Hourly Status Report:');
+  console.log(`   Running: ${status.isRunning}`);
+  console.log(`   Total pings: ${status.pingCount}`);
+  console.log(`   Uptime: ${status.uptime}`);
+  console.log(`   Next ping: ${status.nextPingIn}`);
+  console.log('='.repeat(60));
+}, 60 * 60 * 1000); // Every hour
+
+console.log('\n💡 To stop the ping service, press Ctrl+C');
+console.log('💡 The service will automatically ping the server every 14 minutes');
+console.log('💡 This keeps the server awake and prevents it from going to sleep'); 
