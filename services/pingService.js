@@ -4,7 +4,7 @@ class PingService {
   constructor() {
     this.isRunning = false;
     this.pingInterval = null;
-    this.serverUrl = process.env.SERVER_URL || 'https://weight-loss-final.onrender.com';
+    this.serverUrl = process.env.SERVER_URL || 'https://gooofit.onrender.com';
     this.pingEndpoints = [
       '/api/health'
     ];
