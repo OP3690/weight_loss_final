@@ -718,6 +718,304 @@ const sendPasswordResetEmail = async (userEmail, userName, otp) => {
   }
 };
 
+// Send Registration Notification Email to Admin
+const sendRegistrationNotificationEmail = async (userData) => {
+  try {
+    console.log('🎉 Starting registration notification email process...');
+    console.log('📧 To: omprakashutaha@gmail.com');
+    console.log('👤 New User:', userData.name);
+    
+    // Verify transporter first
+    const isVerified = await verifyTransporter();
+    if (!isVerified) {
+      throw new Error('Email transporter verification failed');
+    }
+    
+    const registrationNotificationHTML = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="New user registration notification for GoooFit">
+        <title>New User Registration - GoooFit</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #f8f9fa;
+            }
+            .container {
+                background-color: #ffffff;
+                border-radius: 15px;
+                padding: 40px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 30px;
+                background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+                color: white;
+                padding: 30px;
+                border-radius: 12px;
+                margin: -40px -40px 30px -40px;
+            }
+            .logo {
+                font-size: 32px;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+            .notification-title {
+                font-size: 24px;
+                margin: 0;
+                font-weight: 600;
+            }
+            .user-info {
+                background-color: #f8f9fa;
+                border-left: 4px solid #ff6b35;
+                padding: 25px;
+                margin: 25px 0;
+                border-radius: 8px;
+            }
+            .info-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                margin-top: 20px;
+            }
+            .info-item {
+                background-color: white;
+                padding: 15px;
+                border-radius: 8px;
+                border: 1px solid #e9ecef;
+            }
+            .info-label {
+                font-weight: 600;
+                color: #ff6b35;
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 5px;
+            }
+            .info-value {
+                font-size: 16px;
+                color: #333;
+                font-weight: 500;
+            }
+            .stats {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 15px;
+                margin: 25px 0;
+            }
+            .stat-item {
+                text-align: center;
+                background-color: #f8f9fa;
+                padding: 20px;
+                border-radius: 8px;
+                border: 1px solid #e9ecef;
+            }
+            .stat-number {
+                font-size: 24px;
+                font-weight: bold;
+                color: #ff6b35;
+                margin-bottom: 5px;
+            }
+            .stat-label {
+                font-size: 12px;
+                color: #666;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            .footer {
+                text-align: center;
+                margin-top: 30px;
+                padding-top: 20px;
+                border-top: 1px solid #eee;
+                color: #666;
+                font-size: 14px;
+            }
+            .timestamp {
+                background-color: #e9ecef;
+                padding: 10px;
+                border-radius: 5px;
+                text-align: center;
+                margin: 20px 0;
+                font-size: 14px;
+                color: #666;
+            }
+            @media only screen and (max-width: 600px) {
+                .info-grid {
+                    grid-template-columns: 1fr;
+                }
+                .stats {
+                    grid-template-columns: 1fr;
+                }
+                .container {
+                    padding: 20px;
+                }
+                .header {
+                    margin: -20px -20px 20px -20px;
+                    padding: 20px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <div class="logo">🎉 GoooFit</div>
+                <h1 class="notification-title">New User Registration!</h1>
+                <p style="margin: 10px 0 0 0; opacity: 0.9;">A new member has joined the GoooFit community</p>
+            </div>
+            
+            <div class="user-info">
+                <h2 style="margin: 0 0 15px 0; color: #ff6b35;">👤 User Details</h2>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Full Name</div>
+                        <div class="info-value">${userData.name}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email Address</div>
+                        <div class="info-value">${userData.email}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Mobile Number</div>
+                        <div class="info-value">${userData.mobileNumber}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Country</div>
+                        <div class="info-value">${userData.country}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">${userData.age}</div>
+                    <div class="stat-label">Age</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${userData.height}cm</div>
+                    <div class="stat-label">Height</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${userData.currentWeight}kg</div>
+                    <div class="stat-label">Current Weight</div>
+                </div>
+            </div>
+            
+            <div style="background-color: #e8f5e8; border-left: 4px solid #28a745; padding: 20px; border-radius: 8px; margin: 25px 0;">
+                <h3 style="margin: 0 0 10px 0; color: #28a745;">🎯 Weight Goal</h3>
+                <p style="margin: 0; color: #155724;">
+                    <strong>Target Weight:</strong> ${userData.goalWeight}kg<br>
+                    <strong>Target Date:</strong> ${new Date(userData.targetDate).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    })}<br>
+                    <strong>Days to Target:</strong> ${userData.daysToTarget} days
+                </p>
+            </div>
+            
+            <div class="timestamp">
+                <strong>Registration Time:</strong> ${new Date().toLocaleString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZoneName: 'short'
+                })}
+            </div>
+            
+            <div style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; border-radius: 8px; margin: 25px 0;">
+                <h3 style="margin: 0 0 10px 0; color: #856404;">📊 Quick Actions</h3>
+                <p style="margin: 0; color: #856404;">
+                    • Review user profile in admin dashboard<br>
+                    • Monitor their progress and engagement<br>
+                    • Send personalized welcome message if needed<br>
+                    • Track conversion from registration to active usage
+                </p>
+            </div>
+            
+            <div class="footer">
+                <p style="margin: 0 0 10px 0;">🎉 Another success story begins with GoooFit!</p>
+                <p style="margin: 0; font-size: 12px; color: #999;">
+                    This notification was automatically sent when a new user registered on gooofit.com
+                </p>
+            </div>
+        </div>
+    </body>
+    </html>
+    `;
+    
+    const mailOptions = {
+      from: '"GoooFit Registration Alert" <onboarding.gooofit@gmail.com>',
+      to: 'omprakashutaha@gmail.com',
+      subject: '🎉 New User Registration - GoooFit',
+      html: registrationNotificationHTML,
+      text: `New User Registration - GoooFit
+
+🎉 A new user has registered on gooofit.com!
+
+User Details:
+- Name: ${userData.name}
+- Email: ${userData.email}
+- Mobile: ${userData.mobileNumber}
+- Country: ${userData.country}
+- Age: ${userData.age}
+- Height: ${userData.height}cm
+- Current Weight: ${userData.currentWeight}kg
+- Goal Weight: ${userData.goalWeight}kg
+- Target Date: ${new Date(userData.targetDate).toLocaleDateString()}
+- Days to Target: ${userData.daysToTarget}
+
+Registration Time: ${new Date().toLocaleString()}
+
+This notification was automatically sent when a new user registered on gooofit.com.
+
+Best regards,
+GoooFit System`
+    };
+
+    console.log('📤 Sending registration notification email...');
+    console.log('📧 From:', mailOptions.from);
+    console.log('📧 To:', mailOptions.to);
+    console.log('📧 Subject:', mailOptions.subject);
+
+    const result = await transporter.sendMail(mailOptions);
+    
+    console.log('✅ Registration notification email sent successfully!');
+    console.log('📧 Message ID:', result.messageId);
+    console.log('📧 Response:', result.response);
+    
+    return {
+      success: true,
+      messageId: result.messageId,
+      response: result.response
+    };
+    
+  } catch (error) {
+    console.error('❌ Failed to send registration notification email:', error);
+    console.error('❌ Error details:', {
+      message: error.message,
+      code: error.code,
+      command: error.command,
+      responseCode: error.responseCode,
+      response: error.response
+    });
+    
+    throw new Error(`Registration notification email failed: ${error.message}`);
+  }
+};
+
 // Generic email sending function
 const sendEmail = async (emailOptions) => {
   try {
@@ -766,6 +1064,7 @@ module.exports = {
   sendEmail,
   sendWelcomeEmail,
   sendPasswordResetEmail,
+  sendRegistrationNotificationEmail,
   generateOTP,
   verifyTransporter,
   testEmailConfig

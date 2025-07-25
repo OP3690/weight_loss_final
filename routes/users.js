@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const router = express.Router();
 const WeightEntry = require('../models/WeightEntry');
-const { sendWelcomeEmail, sendPasswordResetEmail, generateOTP } = require('../services/emailService');
+const { sendWelcomeEmail, sendPasswordResetEmail, sendRegistrationNotificationEmail, generateOTP } = require('../services/emailService');
 const PasswordReset = require('../models/PasswordReset');
 
 // Validation middleware for full user updates
@@ -232,6 +232,26 @@ router.post('/register', [
     } catch (emailError) {
       console.error('Failed to send welcome email:', emailError);
       // Don't fail registration if email fails
+    }
+    
+    // Send registration notification email to admin
+    try {
+      await sendRegistrationNotificationEmail({
+        name: user.name,
+        email: user.email,
+        mobileNumber: user.mobileNumber,
+        country: user.country,
+        age: user.age,
+        height: user.height,
+        currentWeight: user.currentWeight,
+        goalWeight: user.goalWeight,
+        targetDate: user.targetDate,
+        daysToTarget: user.daysToTarget
+      });
+      console.log('Registration notification email sent successfully to admin');
+    } catch (notificationError) {
+      console.error('Failed to send registration notification email:', notificationError);
+      // Don't fail registration if notification email fails
     }
     
     console.log('✅ Registration completed successfully!');
