@@ -213,8 +213,8 @@ const Careers = () => {
 
       const response = await careersAPI.applyForJob(formDataToSend);
 
-      // Check if response exists and has success property
-      if (response && response.success) {
+      // Check if response exists and has message property (success case)
+      if (response && response.message && response.message.includes('successfully')) {
         setSubmitStatus('success');
         setFormData({
           firstName: '',
