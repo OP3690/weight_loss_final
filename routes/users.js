@@ -399,7 +399,83 @@ router.post('/test-registration-email', async (req, res) => {
   }
 });
 
-// Test endpoint for registration notification email
+
+
+// Create new user profile
+router.post('/', validateUserData, async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ 
+        message: 'Validation failed', 
+        errors: errors.array() 
+      });
+    }
+
+    const userData = req.body;
+    const user = new User(userData);
+    // Migrate any existing UUID goalIds to ObjectIds
+    await migrateGoalIds(user);
+    await user.save();
+
+    // Automatically create a weight entry for the goal start date if it doesn't exist
+    if (user.goalId && user.goalCreatedAt && user.currentWeight) {
+      const WeightEntry = require('../models/WeightEntry');
+      const entryDate = new Date(user.goalCreatedAt);
+      entryDate.setUTCHours(0, 0, 0, 0);
+      const startOfDay = new Date(entryDate);
+      const endOfDay = new Date(entryDate);
+      endOfDay.setUTCDate(startOfDay.getUTCDate() + 1);
+      const existingEntry = await WeightEntry.findOne({
+        userId: user._id,
+        goalId: user.goalId,
+        date: { $gte: startOfDay, $lt: endOfDay }
+      });
+      if (!existingEntry) {
+        const createdEntry = await WeightEntry.create({
+          userId: user._id,
+          weight: user.currentWeight,
+          date: entryDate,
+          goalId: user.goalId,
+          notes: 'Auto-created for goal start'
+        });
+        console.log('[AUTO-WEIGHT-ENTRY]', createdEntry);
+      }
+    }
+
+    res.status(201).json({
+      message: 'User profile created successfully',
+      user: {
+        id: user._id,
+        name: user.name,
+        gender: user.gender,
+        age: user.age,
+        height: user.height,
+        currentWeight: user.currentWeight,
+        targetWeight: user.targetWeight,
+        targetDate: user.targetDate,
+        currentBMI: user.currentBMI,
+        targetBMI: user.targetBMI
+      }
+    });
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).json({ message: 'Error creating user profile' });
+  }
+});
+
+// Get all users (for demo purposes)
+router.get('/', async (req, res) => {
+  try {
+    const users = await User.find().select('-__v');
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ message: 'Error fetching users' });
+  }
+});
+
+// Test endpoint for registration notification email (must be before /:id route)
 router.get('/test-registration-notification', async (req, res) => {
   try {
     const testUserData = {
@@ -475,80 +551,6 @@ router.post('/test-registration-notification', async (req, res) => {
       error: error.message,
       stack: error.stack
     });
-  }
-});
-
-// Create new user profile
-router.post('/', validateUserData, async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ 
-        message: 'Validation failed', 
-        errors: errors.array() 
-      });
-    }
-
-    const userData = req.body;
-    const user = new User(userData);
-    // Migrate any existing UUID goalIds to ObjectIds
-    await migrateGoalIds(user);
-    await user.save();
-
-    // Automatically create a weight entry for the goal start date if it doesn't exist
-    if (user.goalId && user.goalCreatedAt && user.currentWeight) {
-      const WeightEntry = require('../models/WeightEntry');
-      const entryDate = new Date(user.goalCreatedAt);
-      entryDate.setUTCHours(0, 0, 0, 0);
-      const startOfDay = new Date(entryDate);
-      const endOfDay = new Date(entryDate);
-      endOfDay.setUTCDate(startOfDay.getUTCDate() + 1);
-      const existingEntry = await WeightEntry.findOne({
-        userId: user._id,
-        goalId: user.goalId,
-        date: { $gte: startOfDay, $lt: endOfDay }
-      });
-      if (!existingEntry) {
-        const createdEntry = await WeightEntry.create({
-          userId: user._id,
-          weight: user.currentWeight,
-          date: entryDate,
-          goalId: user.goalId,
-          notes: 'Auto-created for goal start'
-        });
-        console.log('[AUTO-WEIGHT-ENTRY]', createdEntry);
-      }
-    }
-
-    res.status(201).json({
-      message: 'User profile created successfully',
-      user: {
-        id: user._id,
-        name: user.name,
-        gender: user.gender,
-        age: user.age,
-        height: user.height,
-        currentWeight: user.currentWeight,
-        targetWeight: user.targetWeight,
-        targetDate: user.targetDate,
-        currentBMI: user.currentBMI,
-        targetBMI: user.targetBMI
-      }
-    });
-  } catch (error) {
-    console.error('Error creating user:', error);
-    res.status(500).json({ message: 'Error creating user profile' });
-  }
-});
-
-// Get all users (for demo purposes)
-router.get('/', async (req, res) => {
-  try {
-    const users = await User.find().select('-__v');
-    res.json(users);
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    res.status(500).json({ message: 'Error fetching users' });
   }
 });
 
