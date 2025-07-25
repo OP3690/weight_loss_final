@@ -60,12 +60,12 @@ api.interceptors.response.use(
   (error) => {
     // Don't show toast errors for demo users or network errors that are expected
     const isDemoUser = error.config?.url?.includes('/demo') || 
-                      error.config?.data?.includes('demo') ||
+                      (typeof error.config?.data === 'string' && error.config?.data?.includes('demo')) ||
                       error.config?.params?.userId === 'demo' ||
                       error.config?.url?.includes('demo');
     
     const isNetworkError = !error.response && error.message === 'Network Error';
-    const isTimeoutError = error.code === 'ECONNABORTED' || error.message.includes('timeout');
+    const isTimeoutError = error.code === 'ECONNABORTED' || (typeof error.message === 'string' && error.message.includes('timeout'));
     const isExpectedFailure = isDemoUser || isNetworkError || isTimeoutError;
     
     // Only show errors for unexpected failures

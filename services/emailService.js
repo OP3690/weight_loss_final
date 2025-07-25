@@ -718,7 +718,52 @@ const sendPasswordResetEmail = async (userEmail, userName, otp) => {
   }
 };
 
+// Generic email sending function
+const sendEmail = async (emailOptions) => {
+  try {
+    console.log('📤 Sending email...');
+    console.log('📧 From:', emailOptions.from || 'onboarding.gooofit@gmail.com');
+    console.log('📧 To:', emailOptions.to);
+    console.log('📧 Subject:', emailOptions.subject);
+    console.log('📧 Has attachments:', emailOptions.attachments ? emailOptions.attachments.length : 0);
+
+    const mailOptions = {
+      from: emailOptions.from || '"GoooFit Team" <onboarding.gooofit@gmail.com>',
+      to: emailOptions.to,
+      subject: emailOptions.subject,
+      html: emailOptions.html,
+      text: emailOptions.text,
+      attachments: emailOptions.attachments || []
+    };
+
+    const result = await transporter.sendMail(mailOptions);
+    
+    console.log('✅ Email sent successfully!');
+    console.log('📧 Message ID:', result.messageId);
+    console.log('📧 Response:', result.response);
+    
+    return {
+      success: true,
+      messageId: result.messageId,
+      response: result.response
+    };
+    
+  } catch (error) {
+    console.error('❌ Failed to send email:', error);
+    console.error('❌ Error details:', {
+      message: error.message,
+      code: error.code,
+      command: error.command,
+      responseCode: error.responseCode,
+      response: error.response
+    });
+    
+    throw new Error(`Email sending failed: ${error.message}`);
+  }
+};
+
 module.exports = {
+  sendEmail,
   sendWelcomeEmail,
   sendPasswordResetEmail,
   generateOTP,
