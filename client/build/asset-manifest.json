@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.50f33d40.css",
-    "main.js": "/static/js/main.5fd10b23.js",
+    "main.js": "/static/js/main.f421d465.js",
     "static/media/blog13.jpg": "/static/media/blog13.99309eb9cce90423a641.jpg",
     "static/media/austin-distel-wD1LRb9OeEo-unsplash.jpg": "/static/media/austin-distel-wD1LRb9OeEo-unsplash.b4c256506e843c32c679.jpg",
     "static/media/blog17.jpg": "/static/media/blog17.422074ea49d6aa0099e5.jpg",
@@ -31,10 +31,10 @@
     "static/media/blog18.jpg": "/static/media/blog18.f599f7d34584bb530e40.jpg",
     "index.html": "/index.html",
     "main.50f33d40.css.map": "/static/css/main.50f33d40.css.map",
-    "main.5fd10b23.js.map": "/static/js/main.5fd10b23.js.map"
+    "main.f421d465.js.map": "/static/js/main.f421d465.js.map"
   },
   "entrypoints": [
     "static/css/main.50f33d40.css",
-    "static/js/main.5fd10b23.js"
+    "static/js/main.f421d465.js"
   ]
 }
