@@ -334,7 +334,8 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
         
         toast.success('Registration successful! Welcome to GoooFit!');
         trackUserRegistration(); // Track user registration
-        onSuccess(response.user);
+        // Include token in user object for authentication
+        onSuccess({ ...response.user, token: response.token });
       } else {
         const response = await userAPI.login({
         email: data.email,
@@ -343,7 +344,8 @@ const Onboarding = ({ onSuccess, onClose, initialMode }) => {
       
         toast.success('Login successful! Welcome back to GoooFit!');
         trackUserLogin(); // Track user login
-        onSuccess(response.user);
+        // Include token in user object for authentication
+        onSuccess({ ...response.user, token: response.token });
       }
     } catch (error) {
       toast.error(error.response?.data?.message || 'An error occurred');

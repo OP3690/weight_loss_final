@@ -318,29 +318,13 @@ const testEmailConfig = async () => {
     console.log('   EMAIL_PASSWORD:', process.env.EMAIL_PASSWORD ? 'SET' : 'NOT SET');
     console.log('   NODE_ENV:', process.env.NODE_ENV || 'NOT SET');
     
-    // Try primary configuration (Gmail SMTP)
+    // Try primary configuration (Gmail SMTP) - only verify, don't send
     console.log('🔧 Testing Gmail SMTP configuration...');
     const isVerified = await verifyTransporter();
     if (isVerified) {
       console.log('✅ Gmail email configuration is working');
-      
-      // Try sending a test email
-      console.log('📤 Attempting to send test email...');
-      try {
-        const testResult = await transporter.sendMail({
-          from: '"GoooFit Test" <onboarding.gooofit@gmail.com>',
-          to: 'onboarding.gooofit@gmail.com',
-          subject: 'Test Email - GoooFit',
-          text: 'This is a test email to verify Gmail SMTP is working correctly.',
-          html: '<p>This is a test email to verify Gmail SMTP is working correctly.</p>'
-        });
-        console.log('✅ Test email sent successfully!');
-        console.log('📧 Message ID:', testResult.messageId);
-        return true;
-      } catch (testError) {
-        console.error('❌ Test email failed:', testError.message);
-        return false;
-      }
+      console.log('📧 Note: Email sending is limited by Gmail daily quota');
+      return true;
     }
     
     // Try LOGIN authentication method

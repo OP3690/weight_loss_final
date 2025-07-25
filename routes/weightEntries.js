@@ -11,6 +11,13 @@ const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
+  // Special handling for demo users only
+  if (req.params.userId === 'demo') {
+    // Allow demo users to bypass authentication
+    req.user = { id: req.params.userId, email: 'demo@example.com' };
+    return next();
+  }
+
   if (!token) {
     return res.status(401).json({ message: 'Access token required' });
   }
@@ -95,6 +102,9 @@ router.post('/', validateWeightEntry, async (req, res) => {
       });
     }
 
+    // Always use the user's current active goalId if available
+    const activeGoalId = user.goalId || goalId;
+    
     // Find existing entry for the same day (UTC)
     const startOfDay = new Date(entryDate);
     startOfDay.setUTCHours(0, 0, 0, 0);
@@ -113,7 +123,7 @@ router.post('/', validateWeightEntry, async (req, res) => {
       // Update existing entry
       weightEntry.weight = weight;
       weightEntry.notes = notes;
-      if (goalId) weightEntry.goalId = goalId;
+      weightEntry.goalId = activeGoalId; // Always use the active goalId
       message = 'Weight entry updated successfully';
     } else {
       // Create new entry
@@ -122,7 +132,7 @@ router.post('/', validateWeightEntry, async (req, res) => {
         weight,
         date: entryDate,
         notes,
-        goalId
+        goalId: activeGoalId // Always use the active goalId
       });
       message = 'Weight entry created successfully';
       statusCode = 201;
@@ -269,12 +279,18 @@ router.put('/:id', validateWeightEntry, async (req, res) => {
       });
     }
     
-    const updateData = { weight, notes };
+    // Get the user to ensure we use the current active goalId
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Always use the user's current active goalId
+    const activeGoalId = user.goalId || goalId;
+    
+    const updateData = { weight, notes, goalId: activeGoalId };
     if (date) {
       updateData.date = new Date(date);
-    }
-    if (goalId) {
-      updateData.goalId = goalId;
     }
     
     const entry = await WeightEntry.findByIdAndUpdate(
@@ -320,7 +336,65 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// Get weight analytics for a user
+// Demo analytics route (no authentication required)
+router.get('/user/demo/analytics', async (req, res) => {
+  try {
+    const { period = '90', startDate, goalId } = req.query; // days, optional startDate, and goalId
+
+    const days = parseInt(period);
+    const entries = [];
+    const startWeight = 76;
+    
+    // Use deterministic seed for consistent demo data
+    // This prevents numbers from "moving" on every request
+    const seed = 12345; // Fixed seed for consistent results
+    
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const baseWeight = startWeight - (days - i) * 0.1;
+      
+      // Deterministic fluctuation based on day and seed
+      const deterministicRandom = ((seed + i) * 9301 + 49297) % 233280;
+      const normalizedRandom = deterministicRandom / 233280;
+      const fluctuation = (normalizedRandom - 0.5) * 0.3; // Reduced fluctuation range
+      
+      const weight = Math.round((baseWeight + fluctuation) * 10) / 10;
+      entries.push({
+        date,
+        weight,
+        bmi: calculateBMI(weight, 170),
+        notes: i % 7 === 0 ? 'Weekly check-in' : '',
+        goalId: 'demo-goal-123',
+        createdAt: date
+      });
+    }
+    const weights = entries.map(entry => entry.weight);
+    const averageWeight = weights.reduce((sum, weight) => sum + weight, 0) / weights.length;
+    const weightChange = weights[weights.length - 1] - weights[0];
+    let trend = 'stable';
+    if (weightChange < -0.5) trend = 'decreasing';
+    else if (weightChange > 0.5) trend = 'increasing';
+    return res.json({
+      analytics: {
+        totalEntries: entries.length,
+        averageWeight: averageWeight.toFixed(1),
+        weightChange: weightChange.toFixed(1),
+        trend,
+        entries,
+        currentWeight: weights[weights.length - 1],
+        targetWeight: 70,
+        progressToTarget: Math.max(0, Math.min(100, ((startWeight - weights[weights.length - 1]) / (startWeight - 70)) * 100)),
+        initialWeight: startWeight
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching demo analytics:', error);
+    res.status(500).json({ message: 'Error fetching demo analytics' });
+  }
+});
+
+// Get weight analytics for a user (requires authentication for real users)
 router.get('/user/:userId/analytics', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.params;
@@ -383,9 +457,28 @@ router.get('/user/:userId/analytics', authenticateToken, async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Find the correct targetWeight and goalCreatedAt for the current goal
+        // Find the correct targetWeight and goalCreatedAt for the current goal
     let targetWeight = user.targetWeight;
     let goalCreatedAt = user.goalCreatedAt;
+    
+    // If user has no active goal (achieved/discarded), return empty analytics
+    if (!user.targetWeight || user.goalStatus !== 'active') {
+      return res.json({
+        message: 'No active goal found',
+        analytics: {
+          totalEntries: 0,
+          averageWeight: 0,
+          weightChange: 0,
+          trend: 'stable',
+          bmiTrend: [],
+          currentWeight: user.currentWeight || 0,
+          targetWeight: null,
+          progressToTarget: 0,
+          initialWeight: user.currentWeight || 0,
+          entries: []
+        }
+      });
+    }
     
     if (goalId) {
       // Check active goal
@@ -400,20 +493,9 @@ router.get('/user/:userId/analytics', authenticateToken, async (req, res) => {
         }
       }
     }
-
-    console.log('[ANALYTICS DEBUG]', {
-      goalId,
-      userGoalId: user.goalId?.toString(),
-      userTargetWeight: user.targetWeight,
-      foundTargetWeight: targetWeight,
-      goalCreatedAt,
-      pastGoals: user.pastGoals?.map(g => ({ goalId: g.goalId?.toString(), targetWeight: g.targetWeight }))
-    });
-
-    // Build filter for WeightEntry - be more flexible with goalId filtering
-    const filter = {
-      userId
-    };
+    
+    // Add database indexes hint for better performance
+    const filter = { userId: user._id };
     
     // If goalId is provided, try to filter by it, but don't make it mandatory
     if (goalId && goalId !== 'undefined' && goalId !== 'null') {
@@ -422,7 +504,6 @@ router.get('/user/:userId/analytics', authenticateToken, async (req, res) => {
     
     // If we have a goalCreatedAt, only include entries whose date is on or after the goal was created
     if (goalCreatedAt) {
-      // Use date part only (YYYY-MM-DD) to avoid time-based filtering issues
       const goalDate = new Date(goalCreatedAt);
       const goalDateStr = goalDate.toISOString().slice(0, 10); // 'YYYY-MM-DD'
       const startOfGoalDate = new Date(goalDateStr + 'T00:00:00.000Z');
@@ -431,18 +512,20 @@ router.get('/user/:userId/analytics', authenticateToken, async (req, res) => {
       // Fallback to startDate if no goalCreatedAt
       filter.date = { $gte: new Date(startDate) };
     } else {
-      // Default to period days back
-      const filterStartDate = new Date();
-      filterStartDate.setDate(filterStartDate.getDate() - parseInt(period));
-      filter.date = { $gte: filterStartDate };
+      // Default to last 90 days if no date filter
+      const defaultStartDate = new Date();
+      defaultStartDate.setDate(defaultStartDate.getDate() - days);
+      filter.date = { $gte: defaultStartDate };
     }
     
-    // Debug log for filter
     console.log('[ANALYTICS FILTER]', filter);
-
-    // First, try with the filter as is
-    let entries = await WeightEntry.find(filter).sort({ date: 1 });
     
+    // Use lean() for better performance and add limit for large datasets
+    let entries = await WeightEntry.find(filter)
+      .sort({ date: 1 })
+      .lean()
+      .limit(1000); // Limit to prevent memory issues
+
     // If no entries found and we were filtering by goalId, try without goalId filter
     if (entries.length === 0 && filter.goalId) {
       console.log('[ANALYTICS] No entries found with goalId filter, trying without goalId');
@@ -493,7 +576,7 @@ router.get('/user/:userId/analytics', authenticateToken, async (req, res) => {
     const bmiTrend = entries.map(entry => ({
       date: entry.date,
       weight: entry.weight,
-      bmi: entry.calculateBMI(user.height)
+      bmi: calculateBMI(entry.weight, user.height)
     }));
 
     console.log('[PROGRESS DEBUG]', {

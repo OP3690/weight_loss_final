@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import { motion } from 'framer-motion';
 import { User, Save, Edit, Target, Scale } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useUser } from '../context/UserContext';
@@ -13,11 +12,6 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
   
-  // Debug modalLoading state changes
-  useEffect(() => {
-    console.log('[PROFILE] modalLoading state changed to:', modalLoading);
-  }, [modalLoading]);
-
   const [userProfile, setUserProfile] = useState(null);
   const [bmiAnalytics, setBmiAnalytics] = useState(null);
   const [weightEntries, setWeightEntries] = useState([]);
@@ -25,11 +19,11 @@ const Profile = () => {
   const [isEditingGoal, setIsEditingGoal] = useState(false);
   const [pastGoalsPage, setPastGoalsPage] = useState(1);
   const PAST_GOALS_PER_PAGE = 3;
+  const loadingRef = useRef(false);
 
   // Reset modalLoading when modals are closed
   useEffect(() => {
     if (!isCreatingGoal && !isEditingGoal) {
-      console.log('[PROFILE] All modals closed, resetting modalLoading to false');
       setModalLoading(false);
     }
   }, [isCreatingGoal, isEditingGoal]);
@@ -39,121 +33,163 @@ const Profile = () => {
     handleSubmit,
     formState: { errors },
     reset
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      height: '',
+      currentWeight: '',
+      targetWeight: '',
+      targetDate: ''
+    }
+  });
+
+  // Reset form when create goal modal opens (after useForm is initialized)
+  useEffect(() => {
+    if (isCreatingGoal && userProfile) {
+      const latestWeight = getCurrentWeight() || 0;
+      
+      reset({
+        height: userProfile?.height || '',
+        currentWeight: latestWeight || '',
+        targetWeight: '',
+        targetDate: ''
+      });
+    }
+  }, [isCreatingGoal, userProfile?.height, weightEntries, reset]); // Use weightEntries instead of userProfile?.currentWeight
 
   // ENABLED: For goal management functions
-  const loadUserProfile = useCallback(async () => {
-    console.log('[PROFILE] loadUserProfile called, current loading state:', loading);
-    // Prevent multiple simultaneous calls
-    if (loading) {
-      console.log('Profile loading already in progress, skipping...');
-      return;
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (loadingRef.current) return;
+      
+      try {
+        loadingRef.current = true;
+        setLoading(true);
+        
+        if (currentUser && currentUser.id !== 'demo') {
+          const profile = await userAPI.getUser(currentUser.id);
+          setUserProfile(profile);
+          
+          // Load weight entries for the current goal
+          if (profile && profile.goalId) {
+            try {
+              const entriesResponse = await weightEntryAPI.getUserEntries(currentUser.id, {
+                goalId: profile.goalId
+              });
+              if (entriesResponse && entriesResponse.entries) {
+                setWeightEntries(entriesResponse.entries);
+                calculateBMIAnalytics(profile, entriesResponse.entries);
+              } else {
+                setWeightEntries([]);
+                calculateBMIAnalytics(profile, []);
+              }
+            } catch (entriesError) {
+              console.error('Error loading weight entries:', entriesError);
+              setWeightEntries([]);
+              calculateBMIAnalytics(profile, []);
+            }
+          } else {
+            setWeightEntries([]);
+            calculateBMIAnalytics(profile, []);
+          }
+        } else if (currentUser && currentUser.id === 'demo') {
+          const demoProfile = {
+            id: 'demo',
+            name: 'Demo User',
+            email: 'demo@example.com',
+            mobileNumber: '+1234567890',
+            gender: 'Other',
+            age: 25,
+            height: 170,
+            currentWeight: 70,
+            targetWeight: 65,
+            goalStatus: 'active',
+            goalCreatedAt: new Date().toISOString(),
+            pastGoals: [
+              {
+                goalId: 'demo-goal-1',
+                targetWeight: 68,
+                currentWeight: 75,
+                status: 'achieved',
+                startedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+                targetDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString()
+              },
+              {
+                goalId: 'demo-goal-2',
+                targetWeight: 70,
+                currentWeight: 78,
+                status: 'discarded',
+                startedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+                targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
+              }
+            ]
+          };
+          setUserProfile(demoProfile);
+          calculateBMIAnalytics(demoProfile);
+        }
+      } catch (error) {
+        console.error('Error loading profile:', error);
+        // Don't show toast error for data loading
+      } finally {
+        loadingRef.current = false;
+        setLoading(false);
+      }
+    };
+
+    if (currentUser) {
+      loadProfile();
+    }
+  }, [currentUser?.id]); // Only depend on currentUser.id, not the entire currentUser object
+
+  // DISABLED: Goal expiration check - causing infinite loops
+  // useEffect(() => {
+  //   if (
+  //     userProfile &&
+  //     userProfile.goalStatus === 'active' &&
+  //     userProfile.targetDate &&
+  //     new Date(userProfile.targetDate) < new Date()
+  //   ) {
+  //     (async () => {
+  //       try {
+  //         await userAPI.discardGoal(userProfile.id, { status: 'expired' });
+  //         // Clear cache and reload profile
+  //         clearCacheForUser(userProfile.id);
+  //         const updatedProfile = await userAPI.getUser(userProfile.id);
+  //         setUserProfile(updatedProfile);
+  //         calculateBMIAnalytics(updatedProfile);
+  //       } catch (e) {
+  //         console.error('Goal expiration check failed:', e);
+  //       }
+  //     })();
+  //   }
+  // }, [userProfile?.goalStatus, userProfile?.targetDate]);
+
+  // Get the latest weight from entries, fallback to profile currentWeight
+  const getCurrentWeight = () => {
+    if (!weightEntries || weightEntries.length === 0) {
+      return userProfile?.currentWeight || 0;
     }
     
-    try {
-      console.log('[PROFILE] Setting loading to true');
-      setLoading(true);
-      const profile = await userAPI.getUser(currentUser.id);
-      setUserProfile(profile);
-      calculateBMIAnalytics(profile);
-      
-      // Load weight entries for the current goal
-      if (profile && profile.goalId) {
-        try {
-          console.log('[PROFILE] Loading weight entries for goalId:', profile.goalId);
-          const entriesResponse = await weightEntryAPI.getUserEntries(currentUser.id, {
-            goalId: profile.goalId
-          });
-          console.log('[PROFILE] Weight entries response:', entriesResponse);
-          if (entriesResponse && entriesResponse.entries) {
-            setWeightEntries(entriesResponse.entries);
-            console.log('[PROFILE] Set weight entries:', entriesResponse.entries.length, 'entries');
-          } else {
-            console.log('[PROFILE] No entries found in response');
-          setWeightEntries([]);
-        }
-        } catch (entriesError) {
-          console.error('Error loading weight entries:', entriesError);
-          setWeightEntries([]);
-        }
-      }
-    } catch (error) {
-      console.error('Error loading profile:', error);
-      // Don't show toast error for data loading
-    } finally {
-      console.log('[PROFILE] Setting loading to false');
-      setLoading(false);
-    }
-  }, [currentUser?.id, loading]);
+    // Sort entries by date (newest first) and get the first one
+    const sortedEntries = [...weightEntries].sort((a, b) => new Date(b.date) - new Date(a.date));
+    return sortedEntries[0]?.weight || userProfile?.currentWeight || 0;
+  };
 
-  useEffect(() => {
-    if (currentUser && currentUser.id !== 'demo') {
-      // For real users, load actual profile data from backend
-      console.log('[PROFILE] Real user - loading actual profile data from backend');
-      loadUserProfile();
-    } else if (currentUser && currentUser.id === 'demo') {
-      const demoProfile = {
-        id: 'demo',
-        name: 'Demo User',
-        email: 'demo@example.com',
-        mobileNumber: '+1234567890',
-        gender: 'Other',
-        age: 25,
-        height: 170,
-        currentWeight: 70,
-        targetWeight: 65,
-        goalStatus: 'active',
-        goalCreatedAt: new Date().toISOString(),
-        pastGoals: [
-          {
-            goalId: 'demo-goal-1',
-            targetWeight: 68,
-            currentWeight: 75,
-            status: 'achieved',
-            startedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-            targetDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString()
-          },
-          {
-            goalId: 'demo-goal-2',
-            targetWeight: 70,
-            currentWeight: 78,
-            status: 'discarded',
-            startedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
-            targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
-          }
-        ]
-      };
-      setUserProfile(demoProfile);
-      calculateBMIAnalytics(demoProfile);
-    }
-    // Reset loading state when component mounts
-    setLoading(false);
-  }, [currentUser, loadUserProfile]);
-
-  // ENABLED: Goal expiration check
-  useEffect(() => {
-    if (
-      userProfile &&
-      userProfile.goalStatus === 'active' &&
-      userProfile.targetDate &&
-      new Date(userProfile.targetDate) < new Date()
-    ) {
-      (async () => {
-        try {
-          await userAPI.discardGoal(userProfile.id, { status: 'expired' });
-          await loadUserProfile();
-        } catch (e) {
-          console.error('Goal expiration check failed:', e);
-        }
-      })();
-    }
-  }, [userProfile, loadUserProfile]);
-
-  const calculateBMIAnalytics = (profile) => {
+  const calculateBMIAnalytics = (profile, weightEntries = []) => {
     if (!profile) return;
 
+    // Get the latest weight from entries, fallback to profile currentWeight
+    const getLatestWeightFromEntries = () => {
+      if (!weightEntries || weightEntries.length === 0) {
+        return Number(profile.currentWeight);
+      }
+      
+      // Sort entries by date (newest first) and get the first one
+      const sortedEntries = [...weightEntries].sort((a, b) => new Date(b.date) - new Date(a.date));
+      return Number(sortedEntries[0]?.weight) || Number(profile.currentWeight);
+    };
+
     // Defensive checks
-    const currentWeight = Number(profile.currentWeight);
+    const currentWeight = getLatestWeightFromEntries();
     const targetWeight = Number(profile.targetWeight);
     const height = Number(profile.height);
 
@@ -210,11 +246,14 @@ const Profile = () => {
       const response = await userAPI.updateUser(currentUser.id, payload);
       toast.success('Profile updated successfully!');
       
+      // Update the user profile with the response data
+      setUserProfile(response);
+      calculateBMIAnalytics(response, weightEntries);
+      
       // After successful update, update user context with new goalId
-      if (response && response.user && response.user.goalId) {
-        setUserProfile(response.user);
+      if (response && response.goalId) {
         if (setCurrentUser) {
-          setCurrentUser(prev => ({ ...prev, goalId: response.user.goalId }));
+          setCurrentUser(prev => ({ ...prev, goalId: response.goalId }));
         }
       }
       
@@ -243,38 +282,68 @@ const Profile = () => {
 
   const handleDiscardGoal = async () => {
     try {
-      console.log('[PROFILE] Discarding goal for user:', userProfile.id);
-      await userAPI.discardGoal(userProfile.id);
+      // Check if user has valid authentication
+      if (!currentUser?.token && userProfile.id !== 'demo') {
+        toast.error('Authentication required. Please log in again.');
+        // Redirect to login
+        window.location.href = '/?login=true';
+        return;
+      }
+      
+      const response = await userAPI.discardGoal(userProfile.id);
+      
+      // Update the local state immediately with the response
+      setUserProfile(response);
+      calculateBMIAnalytics(response);
+      
       toast.success('Goal discarded');
-      await loadUserProfile();
+      
     } catch (err) {
       console.error('[PROFILE] Error discarding goal:', err);
-      toast.error('Failed to discard goal');
+      
+      // Handle authentication errors specifically
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        toast.error('Session expired. Please log in again.');
+        // Clear invalid user data and redirect to login
+        localStorage.removeItem('currentUser');
+        window.location.href = '/?login=true';
+      } else {
+        toast.error('Failed to discard goal');
+      }
     }
   };
 
   const handleAchieveGoal = async () => {
     try {
-      console.log('[PROFILE] Achieving goal for user:', userProfile.id);
-      await userAPI.achieveGoal(userProfile.id);
+      // Check if user has valid authentication
+      if (!currentUser?.token && userProfile.id !== 'demo') {
+        toast.error('Authentication required. Please log in again.');
+        // Redirect to login
+        window.location.href = '/?login=true';
+        return;
+      }
+      
+      const response = await userAPI.achieveGoal(userProfile.id);
+      
+      // Update the local state immediately with the response
+      setUserProfile(response);
+      calculateBMIAnalytics(response);
+      
       toast.success('Goal marked as achieved!');
-      await loadUserProfile();
+      
     } catch (err) {
       console.error('[PROFILE] Error achieving goal:', err);
-      toast.error('Failed to mark goal as achieved');
+      
+      // Handle authentication errors specifically
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        toast.error('Session expired. Please log in again.');
+        // Clear invalid user data and redirect to login
+        localStorage.removeItem('currentUser');
+        window.location.href = '/?login=true';
+      } else {
+        toast.error('Failed to mark goal as achieved');
+      }
     }
-  };
-
-  const handleCreateGoal = () => {
-    console.log('[PROFILE] handleCreateGoal called, resetting modalLoading to false');
-    setModalLoading(false);
-    reset({
-      height: userProfile.height,
-      currentWeight: userProfile.currentWeight,
-      targetWeight: '',
-      targetDate: ''
-    });
-    setIsCreatingGoal(true);
   };
 
   const onSubmitGoal = async (data) => {
@@ -299,11 +368,26 @@ const Profile = () => {
       const response = await userAPI.updateUser(currentUser.id, goalPayload);
       console.log('[PROFILE] Goal creation response:', response);
       
+      // Update the local state immediately with the response
       setUserProfile(response);
       calculateBMIAnalytics(response);
-      toast.success('Goal created successfully!');
+      
+      // Close the modal and show success message
       setIsCreatingGoal(false);
-      await loadUserProfile();
+      toast.success('Goal created successfully!');
+      
+      // Force a fresh reload of the profile to ensure all data is up to date
+      setTimeout(async () => {
+        try {
+          setLoading(false); // Reset loading state to allow fresh load
+          const freshProfile = await userAPI.getUser(currentUser.id);
+          setUserProfile(freshProfile);
+          calculateBMIAnalytics(freshProfile);
+        } catch (error) {
+          console.error('Error refreshing profile after goal creation:', error);
+        }
+      }, 100);
+      
     } catch (error) {
       console.error('Goal creation error:', error);
       toast.error('Failed to create goal');
@@ -316,14 +400,31 @@ const Profile = () => {
   const handleReopenGoal = async (goal) => {
     try {
       // Copy goal data to active fields and set goalStatus to 'active'
-      await userAPI.updateUser(userProfile.id, {
+      const response = await userAPI.updateUser(userProfile.id, {
         currentWeight: goal.currentWeight,
         targetWeight: goal.targetWeight,
         targetDate: goal.targetDate,
         goalStatus: 'active'
       });
+      
+      // Update the local state immediately with the response
+      setUserProfile(response);
+      calculateBMIAnalytics(response);
+      
       toast.success('Goal reopened!');
-      await loadUserProfile();
+      
+      // Force a fresh reload of the profile to ensure all data is up to date
+      setTimeout(async () => {
+        try {
+          setLoading(false); // Reset loading state to allow fresh load
+          const freshProfile = await userAPI.getUser(currentUser.id);
+          setUserProfile(freshProfile);
+          calculateBMIAnalytics(freshProfile);
+        } catch (error) {
+          console.error('Error refreshing profile after reopening goal:', error);
+        }
+      }, 100);
+      
     } catch (err) {
       toast.error('Failed to reopen goal');
     }
@@ -331,12 +432,21 @@ const Profile = () => {
 
   const onSubmitEditGoal = async (data) => {
     try {
+      console.log('[PROFILE] Editing goal for user:', currentUser.id);
+      console.log('[PROFILE] Current user token:', currentUser?.token ? 'Present' : 'Missing');
+      console.log('[PROFILE] Current user:', currentUser);
+      
+      // Check if user has valid authentication
+      if (!currentUser?.token && currentUser.id !== 'demo') {
+        toast.error('Authentication required. Please log in again.');
+        // Redirect to login
+        window.location.href = '/?login=true';
+        return;
+      }
+      
       setModalLoading(true);
       
-      // First, ensure the goal status is active
-      await userAPI.updateUser(currentUser.id, { goalStatus: 'active' });
-      
-      // Then, update the goal fields
+      // Update the goal fields (goalStatus will remain as is)
       const goalPayload = {
         height: parseFloat(data.height),
         currentWeight: parseFloat(data.currentWeight),
@@ -346,20 +456,37 @@ const Profile = () => {
       };
       
       const response = await userAPI.updateUser(currentUser.id, goalPayload);
+      
+      // Update the local state immediately with the response
       setUserProfile(response);
       calculateBMIAnalytics(response);
-      toast.success('Goal updated successfully!');
+      
+      // Close the modal and show success message
       setIsEditingGoal(false);
-      await loadUserProfile();
+      toast.success('Goal updated successfully!');
+      
     } catch (error) {
       console.error('Goal update error:', error);
+      console.error('[PROFILE] Error details:', error.response?.data);
+      
+      // Handle authentication errors specifically
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        toast.error('Session expired. Please log in again.');
+        // Clear invalid user data and redirect to login
+        localStorage.removeItem('currentUser');
+        window.location.href = '/?login=true';
+      } else {
       toast.error('Failed to update goal');
+      }
     } finally {
       setModalLoading(false);
     }
   };
 
+  // console.log('[PROFILE] Render check - loading:', loading, 'userProfile:', !!userProfile, 'isCreatingGoal:', isCreatingGoal, 'isEditingGoal:', isEditingGoal);
+  
   if (loading && !userProfile) {
+    console.log('[PROFILE] Showing loading spinner');
     return (
       <div className="flex items-center justify-center min-h-96">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
@@ -372,6 +499,7 @@ const Profile = () => {
       <div className="text-center py-12">
         <User className="w-16 h-16 text-gray-400 mx-auto mb-4" />
         <p className="text-gray-600">No profile data available.</p>
+
       </div>
     );
   }
@@ -382,6 +510,46 @@ const Profile = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Authentication Status Alert */}
+      {currentUser && currentUser.id !== 'demo' && !currentUser.token && (
+        <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3 flex-1">
+              <h3 className="text-sm font-medium text-yellow-800">
+                Authentication Required
+              </h3>
+              <div className="mt-2 text-sm text-yellow-700">
+                <p>
+                  Your session has expired. You can either log in again or try the demo mode.
+                </p>
+                <div className="mt-3 flex space-x-3">
+                  <button 
+                    onClick={() => window.location.href = '/?login=true'}
+                    className="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1 rounded-md text-xs font-medium transition-colors"
+                  >
+                    Log in now
+                  </button>
+                  <button 
+                    onClick={() => {
+                      localStorage.removeItem('currentUser');
+                      window.location.href = '/';
+                    }}
+                    className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded-md text-xs font-medium transition-colors"
+                  >
+                    Go to Homepage
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column - Personal Info and Goals */}
         <div className="lg:col-span-2 space-y-6">
@@ -470,7 +638,7 @@ const Profile = () => {
                       step="0.1"
                       {...register('height', { required: 'Height is required', min: { value: 100, message: 'Height must be at least 100 cm' }, max: { value: 250, message: 'Height cannot exceed 250 cm' } })}
                       className="input-field"
-                        defaultValue={userProfile.height}
+                        defaultValue={userProfile?.height || ''}
                     />
                     {errors.height && <p className="text-sm text-red-600">{errors.height.message}</p>}
                   </div>
@@ -521,11 +689,11 @@ const Profile = () => {
                   </div>
                   <div className="space-y-1">
                     <span className="text-sm text-gray-500">Height (cm)</span>
-                    <div className="font-semibold text-gray-900">{userProfile.height || '-'}</div>
+                    <div className="font-semibold text-gray-900">{userProfile?.height || '-'}</div>
                   </div>
                   <div className="space-y-1">
                     <span className="text-sm text-gray-500">Current Weight (kg)</span>
-                    <div className="font-semibold text-gray-900">{userProfile.currentWeight || '-'}</div>
+                    <div className="font-semibold text-gray-900">{getCurrentWeight() || '-'}</div>
                   </div>
                   <div className="space-y-1">
                     <span className="text-sm text-gray-500">Target Weight (kg)</span>
@@ -547,6 +715,7 @@ const Profile = () => {
                         </div>
                           </div>
             <div className="p-6">
+              {/* console.log('[PROFILE] Goal status check - goalStatus:', userProfile.goalStatus, 'targetWeight:', userProfile.targetWeight, 'targetDate:', userProfile.targetDate) */}
               {userProfile.goalStatus === 'active' ? (
                 <div className="space-y-4">
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4">
@@ -561,25 +730,49 @@ const Profile = () => {
                           </div>
                       <div>
                         <span className="text-sm text-gray-500">Current Weight</span>
-                        <div className="font-bold text-lg text-gray-900">{userProfile.currentWeight} kg</div>
+                        <div className="font-bold text-lg text-gray-900">{getCurrentWeight()} kg</div>
                         </div>
                       <div>
                         <span className="text-sm text-gray-500">Progress</span>
                         <div className="font-bold text-lg text-gray-900">
-                          {userProfile.currentWeight && userProfile.targetWeight && userProfile.goalInitialWeight
-                            ? `${Math.round(((userProfile.goalInitialWeight - userProfile.currentWeight) / (userProfile.goalInitialWeight - userProfile.targetWeight)) * 100)}%`
+                          {getCurrentWeight() && userProfile.targetWeight && userProfile.goalInitialWeight
+                            ? `${Math.round(((userProfile.goalInitialWeight - getCurrentWeight()) / (userProfile.goalInitialWeight - userProfile.targetWeight)) * 100)}%`
                             : '0%'}
                 </div>
                       </div>
                     </div>
                     <div className="mt-4 flex space-x-3">
-                      <button onClick={() => setIsEditingGoal(true)} className="btn-secondary">
+                  <button 
+                    onClick={() => {
+                      console.log('[PROFILE] Modify goal button clicked!');
+                      reset({
+                            height: userProfile?.height || 0,
+                            currentWeight: getCurrentWeight() || 0,
+                            targetWeight: userProfile?.targetWeight || 0,
+                            targetDate: userProfile?.targetDate ? userProfile.targetDate.split('T')[0] : ''
+                      });
+                      setIsEditingGoal(true);
+                        }} 
+                    className="btn-secondary"
+                  >
                         Modify Goal
                       </button>
-                      <button onClick={handleDiscardGoal} className="btn-danger">
+                      <button 
+                        onClick={() => {
+                          console.log('[PROFILE] Discard goal button clicked!');
+                          handleDiscardGoal();
+                        }} 
+                        className="btn-danger"
+                      >
                         Discard Goal
                       </button>
-                      <button onClick={handleAchieveGoal} className="btn-success">
+                      <button 
+                        onClick={() => {
+                          console.log('[PROFILE] Achieve goal button clicked!');
+                          handleAchieveGoal();
+                        }} 
+                        className="btn-success"
+                      >
                         Achieve Goal
                       </button>
                     </div>

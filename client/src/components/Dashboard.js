@@ -61,14 +61,6 @@ const Dashboard = () => {
     const sortedEntries = [...goalEntries].sort((a, b) => new Date(b.date) - new Date(a.date));
     const latestWeight = sortedEntries[0]?.weight || 0;
     
-    console.log('[DEBUG] getLatestWeight:', {
-      totalEntries: goalEntries.length,
-      sortedEntries: sortedEntries.map(e => ({ date: e.date, weight: e.weight })),
-      latestWeight,
-      fallbackWeight: userProfile?.currentWeight,
-      goalInitialWeight: userProfile?.goalInitialWeight
-    });
-    
     return latestWeight;
   };
 
@@ -99,7 +91,9 @@ const Dashboard = () => {
     initialWeight: getInitialWeight()
   };
   
-  // Debug logging for weight progress
+  // Debug logging for weight progress - moved to useEffect to prevent excessive logging
+  useEffect(() => {
+    if (userProfile && goalEntries.length > 0) {
   console.log('[WEIGHT PROGRESS DEBUG]', {
     userProfile: {
       goalInitialWeight: userProfile?.goalInitialWeight,
@@ -120,6 +114,8 @@ const Dashboard = () => {
     weightLost: stats.initialWeight - stats.currentWeight,
     totalWeightToLose: stats.initialWeight - stats.targetWeight
   });
+    }
+  }, [userProfile, goalEntries, stats.initialWeight, stats.currentWeight, stats.targetWeight]);
 
   // Helper: check if today's weight is logged (local date comparison)
   function isSameDay(dateA, dateB) {
@@ -150,8 +146,8 @@ const Dashboard = () => {
     }
     
     // Debug: print all entries and grid days
-    console.log('[DEBUG] Entries for grid mapping:', entries);
-    console.log('[DEBUG] Grid days:', days.map(day => day.date));
+    // console.log('[DEBUG] Entries for grid mapping:', entries);
+    // console.log('[DEBUG] Grid days:', days.map(day => day.date));
     
     // Map entries to days using robust UTC date comparison
     entries.forEach(entry => {
@@ -162,7 +158,7 @@ const Dashboard = () => {
           day.notes = entry.notes || '';
           day.entry = entry; // Store the full entry object for the pencil icon
           // Debug: print mapping
-          console.log(`[DEBUG] Mapped entry ${entry.weight} to day ${day.date}`);
+          // console.log(`[DEBUG] Mapped entry ${entry.weight} to day ${day.date}`);
         }
       });
     });
@@ -183,7 +179,7 @@ const Dashboard = () => {
           notes: 'Goal start weight',
           goalId: userProfile.goalId
         };
-        console.log(`[DEBUG] Added goal start weight ${userProfile.currentWeight} to day ${goalDateStr}`);
+          // console.log(`[DEBUG] Added goal start weight ${userProfile.currentWeight} to day ${goalDateStr}`);
       }
     }
     
@@ -350,46 +346,56 @@ const Dashboard = () => {
       setUserProfile(demoProfile);
       setGoalEntries(demoEntries);
       setIsLoading(false);
-    } else {
-      // Real user - load data from backend
+    } else if (currentUser && currentUser.id && currentUser.id !== 'demo' && !userProfile) {
+      // Real user - load data from backend (only if we don't have data yet)
       console.log('[DASHBOARD] Real user - loading actual data from backend');
       
-      const loadData = async () => {
+      const loadData = async (retryCount = 0) => {
         try {
           setIsLoading(true);
           
           // Load user profile first
           console.log('[DASHBOARD] Loading user profile for user:', currentUser.id);
-          const profile = await userAPI.getUser(currentUser.id);
+      const profile = await userAPI.getUser(currentUser.id);
           console.log('[DASHBOARD] User profile response:', profile);
-          setUserProfile(profile);
+      setUserProfile(profile);
           
           // Then load goal entries if we have a goalId
           if (profile && profile.goalId) {
             console.log('[DASHBOARD] User profile loaded, now loading goal entries');
             console.log('[DASHBOARD] UserProfile goalId:', profile.goalId);
             
-            const response = await weightEntryAPI.getAnalytics(currentUser.id, { 
-              all: true,
+      const response = await weightEntryAPI.getAnalytics(currentUser.id, { 
+        all: true,
               goalId: profile.goalId 
-            });
+      });
             
             console.log('[DASHBOARD] Goal entries response:', response);
-            if (response.analytics) {
+      if (response.analytics) {
               const entries = (response.analytics.entries || []).map(entry => ({
-                id: entry.id || entry._id,
-                date: entry.date,
-                weight: entry.weight,
-                notes: entry.notes || '',
-                goalId: entry.goalId
+          id: entry.id || entry._id,
+          date: entry.date,
+          weight: entry.weight,
+          notes: entry.notes || '',
+          goalId: entry.goalId
               }));
               console.log('[DASHBOARD] Setting goal entries:', entries);
               setGoalEntries(entries);
               console.log('[DASHBOARD] Goal entries state set successfully');
             }
-          }
-        } catch (error) {
+      }
+    } catch (error) {
           console.error('Error loading data:', error);
+          
+          // Retry logic for network errors
+          if (retryCount < 2 && (error.message === 'Network Error' || error.code === 'ECONNABORTED')) {
+            console.log(`[DASHBOARD] Retrying data load (attempt ${retryCount + 1})...`);
+            setTimeout(() => loadData(retryCount + 1), 2000); // Retry after 2 seconds
+            return;
+          }
+          
+          // Set error state for user feedback
+          setError(error.message || 'Failed to load data');
         } finally {
           setIsLoading(false);
         }
@@ -405,6 +411,18 @@ const Dashboard = () => {
       console.log('[DASHBOARD] Goal entries updated, recalculating stats');
     }
   }, [goalEntries.length]);
+
+  // Add timeout to prevent infinite loading
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (isLoading) {
+        console.log('[DASHBOARD] Loading timeout reached, setting loading to false');
+        setIsLoading(false);
+      }
+    }, 10000); // 10 second timeout
+
+    return () => clearTimeout(timeoutId);
+  }, [isLoading]);
 
   // Force refresh data when component becomes visible (for cases where data might be stale)
   useEffect(() => {
@@ -497,7 +515,7 @@ const Dashboard = () => {
     if (currentUser && currentUser.id) {
       // Trigger a page reload to get fresh data
       window.location.reload();
-    }
+              }
   };
 
   const refreshData = () => {
@@ -511,7 +529,48 @@ const Dashboard = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard...</p>
+          <p className="text-sm text-gray-500 mt-2">This may take a few seconds</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-96">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Failed to Load Dashboard</h3>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button 
+            onClick={() => {
+              setError(null);
+              window.location.reload();
+            }}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Check if userProfile is loaded
+  if (!userProfile) {
+    return (
+      <div className="flex items-center justify-center min-h-96">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading user profile...</p>
+        </div>
       </div>
     );
   }
@@ -519,12 +578,194 @@ const Dashboard = () => {
   // Check if user has no active goal
   const hasNoActiveGoal = !userProfile || userProfile.goalStatus !== 'active';
   
-  // Don't show preview for demo user
+  // Show helpful message for real users without active goals
+  if (hasNoActiveGoal && currentUser && currentUser.id !== 'demo') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-orange-100">
+        {/* Header Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex items-center justify-between bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 mx-4 mt-4"
+        >
+          <div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
+              Dashboard
+            </h1>
+            <p className="text-gray-600 text-lg">
+              Your weight management overview
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Goal Achieved Banner */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="mx-4 mt-6 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-6 shadow-xl border border-orange-200/20"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                <Target className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white mb-1">
+                  {userProfile?.goalStatus === 'achieved' ? 'Goal Achieved!' : 'No Active Goal Found'}
+                </h3>
+                <p className="text-orange-100 text-lg">
+                  {userProfile?.goalStatus === 'achieved' 
+                    ? "Congratulations! You've reached your target. Set a new goal to continue your journey!"
+                    : "Create a weight loss goal to unlock your beautiful dashboard and track your progress!"
+                  }
+                </p>
+              </div>
+            </div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => window.location.href = '/profile'}
+              className="bg-white text-orange-600 px-6 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              {userProfile?.goalStatus === 'achieved' ? 'Set New Goal' : 'Create Goal'}
+            </motion.button>
+          </div>
+        </motion.div>
+
+        {/* Quick Stats Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mx-4 mt-6 bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20"
+        >
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+              <TrendingUp className="w-5 h-5 text-white" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900">Quick Overview</h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {/* Current Weight */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              whileHover={{ scale: 1.02, y: -2 }}
+              className="backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-blue-50 to-cyan-50"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-gray-600 mb-1">Current Weight</p>
+                  <p className="text-2xl font-bold text-gray-900">{userProfile?.currentWeight || 0} kg</p>
+                </div>
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center shadow-md">
+                  <TrendingUp className="w-5 h-5 text-white" />
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Height */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              whileHover={{ scale: 1.02, y: -2 }}
+              className="backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-green-50 to-emerald-50"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-gray-600 mb-1">Height</p>
+                  <p className="text-2xl font-bold text-gray-900">{userProfile?.height || 0} cm</p>
+                </div>
+                <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center shadow-md">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* BMI */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              whileHover={{ scale: 1.02, y: -2 }}
+              className="backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-purple-50 to-indigo-50"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-gray-600 mb-1">BMI</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {userProfile?.height && userProfile?.currentWeight 
+                      ? ((userProfile.currentWeight / Math.pow(userProfile.height / 100, 2)).toFixed(1))
+                      : '0.0'
+                    }
+                  </p>
+                </div>
+                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center shadow-md">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Goal Status */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              whileHover={{ scale: 1.02, y: -2 }}
+              className="backdrop-blur-sm rounded-xl p-4 shadow-md border hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-orange-50 to-red-50"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-gray-600 mb-1">Status</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {userProfile?.goalStatus === 'achieved' ? '🎉 Achieved' : 'No Goal'}
+                  </p>
+                </div>
+                <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center shadow-md">
+                  <Target className="w-5 h-5 text-white" />
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+
+        {/* Call to Action */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.7 }}
+          className="mx-4 mt-6 text-center"
+        >
+          <p className="text-gray-600 mb-4">
+            {userProfile?.goalStatus === 'achieved' 
+              ? "Ready for your next fitness challenge? Set a new goal and continue your amazing journey!"
+              : "Start your weight management journey today by creating your first goal!"
+            }
+          </p>
+          {userProfile?.goalStatus === 'achieved' && (
+            <p className="text-sm text-gray-500 mb-4">
+              🎉 You've successfully reached your target weight! Keep up the great work!
+            </p>
+          )}
+        </motion.div>
+      </div>
+    );
+  }
+  
+  // Don't show preview for demo user without goal
   if (hasNoActiveGoal && currentUser && currentUser.id === 'demo') {
       return null;
     }
 
-  const currentBMI = calculateBMI(getLatestWeight(), userProfile.height);
+  const currentBMI = calculateBMI(getLatestWeight(), userProfile?.height || 0);
   const targetBMI = calculateBMI(stats.targetWeight, stats.height);
   const weightDifference = getLatestWeight() - stats.targetWeight;
   const daysRemaining = Math.max(0, Math.ceil((stats.targetDate - new Date()) / (1000 * 60 * 60 * 24)));
@@ -1113,8 +1354,8 @@ const Dashboard = () => {
         <div className="grid grid-cols-6 gap-2">
           {(() => {
             const days = getLast30DaysGrid(goalEntriesFiltered).reverse();
-            console.log('DAYS GRID FINAL:', days);
-            console.log('RECENT ENTRIES DEBUG:', goalEntriesFiltered);
+            // console.log('DAYS GRID FINAL:', days);
+            // console.log('RECENT ENTRIES DEBUG:', goalEntriesFiltered);
             let prevWeight = null;
             return days.map((day, idx) => {
               let pct = null;
@@ -1144,9 +1385,9 @@ const Dashboard = () => {
               const canEdit = isRecent7 && !isBeforeGoalCreation;
               
               // Debug logging for the first few days
-              if (idx < 3) {
-                console.log(`Day ${day.date}: weight=${day.weight}, hasEntry=${!!entryForDay}, canEdit=${canEdit}, isBeforeGoal=${isBeforeGoalCreation}`);
-              }
+              // if (idx < 3) {
+              //   console.log(`Day ${day.date}: weight=${day.weight}, hasEntry=${!!entryForDay}, canEdit=${canEdit}, isBeforeGoal=${isBeforeGoalCreation}`);
+              // }
               
               return (
                 <div
@@ -1507,7 +1748,8 @@ function EditWeightEntryForm({ entry, onClose, userProfile, goalEntries, onEntry
   const [weight, setWeight] = useState(entry.weight);
   const [notes, setNotes] = useState(entry.notes || '');
   const [loading, setLoading] = useState(false);
-  const isNew = !entry.id;
+  // Fix: Check for both _id (MongoDB) and id (frontend) fields
+  const isNew = !(entry._id || entry.id);
   
   function findEntryByDate(entries, date) {
     return entries?.find(e => {
@@ -1521,28 +1763,34 @@ function EditWeightEntryForm({ entry, onClose, userProfile, goalEntries, onEntry
     e.preventDefault();
     setLoading(true);
     try {
-      let existing = entry.id ? entry : findEntryByDate(goalEntries, entry.date);
+      // Fix: Use _id (MongoDB) or id (frontend) field
+      const entryId = entry._id || entry.id;
+      let existing = entryId ? entry : findEntryByDate(goalEntries, entry.date);
+      
       // Always send date as 'YYYY-MM-DD'
       const dateStr = typeof entry.date === 'string' ? entry.date : new Date(entry.date).toISOString().slice(0, 10);
       
-      if (existing && existing.id) {
-        // Get the goalId from the userProfile context or from the entry itself
-        const goalId = userProfile?.goalId || entry.goalId;
+      // Fix: Use _id (MongoDB) or id (frontend) field for existing entry
+      const existingId = existing._id || existing.id;
+      
+      if (existing && existingId) {
+        // Always use the current user's active goalId from userProfile
+        const goalId = userProfile?.goalId;
         
         console.log('Edit entry data:', { 
-          entryId: existing.id, 
+          entryId: existingId, 
           weight, 
           notes, 
           userId: currentUser.id, 
           date: dateStr, 
           goalId,
           userProfile: userProfile?.goalId,
-          isValidObjectId: isValidObjectId(existing.id)
+          isValidObjectId: isValidObjectId(existingId)
         });
         
         // Check if the entry ID is valid
-        if (!existing.id || (existing.id !== 'demo' && !isValidObjectId(existing.id))) {
-          console.error('Invalid entry ID:', existing.id);
+        if (!existingId || (existingId !== 'demo' && !isValidObjectId(existingId))) {
+          console.error('Invalid entry ID:', existingId);
           alert('Cannot update: Invalid entry ID. Please try refreshing the page.');
           return;
         }
@@ -1552,7 +1800,7 @@ function EditWeightEntryForm({ entry, onClose, userProfile, goalEntries, onEntry
           return;
         }
         
-        await weightEntryAPI.updateEntry(existing.id, { weight, notes, userId: currentUser.id, date: dateStr, goalId });
+        await weightEntryAPI.updateEntry(existingId, { weight, notes, userId: currentUser.id, date: dateStr, goalId });
         // Refresh the dashboard data after updating
         if (onEntryUpdated) {
           onEntryUpdated();

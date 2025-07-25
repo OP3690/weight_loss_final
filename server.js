@@ -19,12 +19,12 @@ const corsOptions = {
     if (!origin) return callback(null, true);
     
             const allowedOrigins = [
-          'https://gooofit.com',
-          'https://www.gooofit.com',
-          'https://weight-loss-lac.vercel.app',
-          'https://client-9jm305kpo-omprakash-utahas-projects.vercel.app',
-          'https://weight-management-frontend.vercel.app',
-          'https://weight-management-client.vercel.app',
+        'https://gooofit.com',
+        'https://www.gooofit.com',
+        'https://weight-loss-lac.vercel.app',
+        'https://client-9jm305kpo-omprakash-utahas-projects.vercel.app',
+        'https://weight-management-frontend.vercel.app',
+        'https://weight-management-client.vercel.app',
           'http://localhost:3000',
           'http://localhost:3002',
           'http://localhost:3003'
@@ -67,11 +67,13 @@ mongoose.connect(MONGODB_URI, {
 const userRoutes = require('./routes/users');
 const weightEntryRoutes = require('./routes/weightEntries');
 const careersRoutes = require('./routes/careers');
+const userSuccessRoutes = require('./routes/userSuccess');
 
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/weight-entries', weightEntryRoutes);
 app.use('/api/careers', careersRoutes);
+app.use('/api/user-success', userSuccessRoutes);
 
 // Import ping service
 const PingService = require('./services/pingService');

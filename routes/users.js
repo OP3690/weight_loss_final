@@ -14,6 +14,13 @@ const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
+  // Special handling for demo users only
+  if (req.params.id === 'demo') {
+    // Allow demo users to bypass authentication
+    req.user = { id: req.params.id, email: 'demo@example.com' };
+    return next();
+  }
+
   if (!token) {
     return res.status(401).json({ message: 'Access token required' });
   }
@@ -371,8 +378,9 @@ router.post('/login', [
         id: user._id,
         name: user.name,
         email: user.email,
-        mobile: user.mobile,
+        mobileNumber: user.mobileNumber,
         gender: user.gender,
+        age: user.age,
         height: user.height,
         currentWeight: user.currentWeight,
         targetWeight: user.targetWeight,
@@ -578,36 +586,103 @@ router.post('/test-registration-notification', async (req, res) => {
   }
 });
 
-// Get user by ID
+// Demo user route (no authentication required)
+router.get('/demo', async (req, res) => {
+  try {
+    return res.json({
+      id: 'demo',
+      name: 'Demo User',
+      email: 'demo@example.com',
+      mobileNumber: '+1234567890',
+      gender: 'male',
+      age: 30,
+      height: 170,
+      currentWeight: 74.2,
+      targetWeight: 70,
+      targetDate: new Date(Date.now() + 83 * 24 * 60 * 60 * 1000),
+      goalStatus: 'active',
+      goalCreatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      goalId: 'demo-goal-123',
+      pastGoals: [],
+      goals: [],
+      createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+      updatedAt: new Date()
+    });
+  } catch (error) {
+    console.error('Error fetching demo user:', error);
+    res.status(500).json({ message: 'Error fetching demo user' });
+  }
+});
+
+// Get user by ID (requires authentication for real users)
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
     // Handle demo user
     if (req.params.id === 'demo') {
       return res.json({
-        id: 'demo',
+        id: req.params.id,
         name: 'Demo User',
         email: 'demo@example.com',
         mobileNumber: '+1234567890',
         gender: 'male',
-        age: 30,
-        height: 170,
-        currentWeight: 74.2,
-        targetWeight: 70,
-        targetDate: new Date(Date.now() + 83 * 24 * 60 * 60 * 1000),
+        age: 32,
+        height: 165,
+        currentWeight: 78.5,
+        targetWeight: 65,
+        targetDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         goalStatus: 'active',
         goalCreatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
         goalId: 'demo-goal-123',
-        pastGoals: [],
+        pastGoals: [
+          {
+            goalId: 'demo-goal-1',
+            currentWeight: 78.5,
+            targetWeight: 64,
+            targetDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            startedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+            endedAt: new Date(),
+            status: 'achieved'
+          },
+          {
+            goalId: 'demo-goal-2',
+            currentWeight: 78.5,
+            targetWeight: 64,
+            targetDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            startedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+            endedAt: new Date(),
+            status: 'discarded'
+          },
+          {
+            goalId: 'demo-goal-3',
+            currentWeight: 78.5,
+            targetWeight: 64,
+            targetDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            startedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+            endedAt: new Date(),
+            status: 'achieved'
+          }
+        ],
         goals: [],
         createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
         updatedAt: new Date()
       });
     }
     
+    console.log('[DEBUG] Looking up real user in database:', req.params.id);
     const user = await User.findById(req.params.id).select('-__v');
     if (!user) {
+      console.log('[DEBUG] User not found in database:', req.params.id);
       return res.status(404).json({ message: 'User not found' });
     }
+    
+    console.log('[DEBUG] Found user in database:', {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      goalStatus: user.goalStatus,
+      pastGoals: user.pastGoals?.length || 0
+    });
+    
     // Return a consistent user object including goalCreatedAt
     res.json({
       id: user._id,
@@ -635,31 +710,34 @@ router.get('/:id', authenticateToken, async (req, res) => {
 });
 
 // Update user profile
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', authenticateToken, async (req, res, next) => {
   // Handle demo user
   if (req.params.id === 'demo') {
     // Return a realistic demo user object, matching the GET /users/:id response
+    // Update the demo user based on the request body
+    const demoUser = {
+      id: 'demo',
+      name: 'Demo User',
+      email: 'demo@example.com',
+      mobileNumber: '+1234567890',
+      gender: 'male',
+      age: 30,
+      height: req.body.height || 170,
+      currentWeight: req.body.currentWeight || 74.2,
+      targetWeight: req.body.targetWeight || 70,
+      targetDate: req.body.targetDate ? new Date(req.body.targetDate) : new Date(Date.now() + 83 * 24 * 60 * 60 * 1000),
+      goalStatus: req.body.goalStatus || 'active',
+      goalCreatedAt: req.body.goalCreatedAt ? new Date(req.body.goalCreatedAt) : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      goalId: req.body.goalId || 'demo-goal-123',
+      pastGoals: [],
+      goals: [],
+      createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+      updatedAt: new Date()
+    };
+    
     return res.json({
       message: 'Demo user profile updated successfully',
-      user: {
-        id: 'demo',
-        name: 'Demo User',
-        email: 'demo@example.com',
-        mobileNumber: '+1234567890',
-        gender: 'male',
-        age: 30,
-        height: 170,
-        currentWeight: 74.2,
-        targetWeight: 70,
-        targetDate: new Date(Date.now() + 83 * 24 * 60 * 60 * 1000),
-        goalStatus: 'active',
-        goalCreatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-        goalId: 'demo-goal-123',
-        pastGoals: [],
-        goals: [],
-        createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-        updatedAt: new Date()
-      }
+      user: demoUser
     });
   }
   
@@ -743,6 +821,26 @@ router.put('/:id', async (req, res, next) => {
             }
           } else {
             console.log('[AUTO-WEIGHT-ENTRY] Entry already exists for date:', entryDate);
+            // Update the existing entry to use the new goalId
+            try {
+              await WeightEntry.findByIdAndUpdate(existingEntry._id, {
+                goalId: user.goalId
+              });
+              console.log('[AUTO-WEIGHT-ENTRY] Updated existing entry goalId to:', user.goalId);
+            } catch (updateError) {
+              console.error('[AUTO-WEIGHT-ENTRY] Failed to update existing entry:', updateError.message);
+            }
+          }
+          
+          // Update ALL existing weight entries for this user to use the new goalId
+          try {
+            const updateResult = await WeightEntry.updateMany(
+              { userId: user._id },
+              { goalId: user.goalId }
+            );
+            console.log('[GOAL-SYNC] Updated', updateResult.modifiedCount, 'weight entries to use new goalId:', user.goalId);
+          } catch (syncError) {
+            console.error('[GOAL-SYNC] Failed to sync weight entries:', syncError.message);
           }
         }
       } else if (req.body.targetWeight || req.body.targetDate) {
@@ -894,28 +992,107 @@ async function migrateGoalIds(user) {
   }
 }
 
-// Discard current goal
-router.post('/:id/discard-goal', async (req, res) => {
+// Create goal for existing user
+router.post('/:id/create-goal', authenticateToken, async (req, res) => {
   try {
-    // Handle demo user
+    const { targetWeight, targetDate } = req.body;
+    
+    if (!targetWeight || !targetDate) {
+      return res.status(400).json({ message: 'Target weight and target date are required' });
+    }
+    
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Create a new goal ID
+    const goalId = new mongoose.Types.ObjectId();
+    
+    // Update user with new goal
+    user.targetWeight = Number(targetWeight);
+    user.targetDate = new Date(targetDate);
+    user.goalId = goalId;
+    user.goalInitialWeight = user.currentWeight;
+    user.goalCreatedAt = new Date();
+    user.goalStatus = 'active';
+    
+    await user.save();
+    
+    // Create initial weight entry for the goal
+    try {
+      const WeightEntry = require('../models/WeightEntry');
+      const entryDate = new Date(user.goalCreatedAt);
+      entryDate.setUTCHours(0, 0, 0, 0);
+      
+      const existingEntry = await WeightEntry.findOne({
+        userId: user._id,
+        goalId: user.goalId,
+        date: { $gte: entryDate, $lt: new Date(entryDate.getTime() + 24 * 60 * 60 * 1000) }
+      });
+      
+      if (!existingEntry) {
+        await WeightEntry.create({
+          userId: user._id,
+          weight: user.currentWeight,
+          date: entryDate,
+          goalId: user.goalId,
+          notes: 'Auto-created for goal start'
+        });
+      }
+    } catch (weightEntryError) {
+      console.error('Failed to create initial weight entry:', weightEntryError);
+    }
+    
+    res.json({ 
+      message: 'Goal created successfully',
+      user: {
+        id: user._id,
+        targetWeight: user.targetWeight,
+        targetDate: user.targetDate,
+        goalStatus: user.goalStatus,
+        goalId: user.goalId
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error creating goal:', error);
+    res.status(500).json({ message: 'Failed to create goal' });
+  }
+});
+
+// Discard current goal
+router.post('/:id/discard-goal', authenticateToken, async (req, res) => {
+  try {
+    // Handle demo user only
     if (req.params.id === 'demo') {
       return res.json({
         message: 'Goal discarded successfully',
         user: {
-          id: 'demo',
-          name: 'Demo User',
-          email: 'demo@example.com',
-          mobile: '+1234567890',
+          id: req.params.id,
+          name: req.params.id === 'demo' ? 'Demo User' : 'Omprakash Utaha',
+          email: req.params.id === 'demo' ? 'demo@example.com' : 'omprakashutaha@gmail.com',
+          mobileNumber: req.params.id === 'demo' ? '+1234567890' : '+919723231499',
           gender: 'male',
-          age: 30,
-          height: 170,
-          currentWeight: 74.2,
+          age: 32,
+          height: 165,
+          currentWeight: 78.5,
           targetWeight: undefined,
           targetDate: undefined,
           goalStatus: 'discarded',
           goalCreatedAt: undefined,
           goalId: undefined,
-          pastGoals: [],
+          pastGoals: [
+            {
+              goalId: 'demo-goal-1',
+              currentWeight: 78.5,
+              targetWeight: 65,
+              targetDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+              startedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+              endedAt: new Date(),
+              status: 'discarded'
+            }
+          ],
           goals: [],
           createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
           updatedAt: new Date()
@@ -946,12 +1123,16 @@ router.post('/:id/discard-goal', async (req, res) => {
     user.targetDate = undefined;
     user.goalStatus = 'discarded';
     user.goalCreatedAt = undefined;
-    user.goalId = undefined;
+    user.goalId = undefined; // Set to undefined instead of using $unset
     
+    // Save the user directly
     await user.save();
+    
+    // Refresh user data after update
+    const updatedUser = await User.findById(user._id);
     res.json({ 
       message: 'Goal discarded successfully', 
-      user: { ...user.toObject(), goalId: user.goalId?.toString(), goalInitialWeight: user.goalInitialWeight }
+      user: { ...updatedUser.toObject(), goalId: updatedUser.goalId?.toString(), goalInitialWeight: updatedUser.goalInitialWeight }
     });
   } catch (error) {
     console.error('Error discarding goal:', error);
@@ -960,27 +1141,37 @@ router.post('/:id/discard-goal', async (req, res) => {
 });
 
 // Achieve current goal
-router.post('/:id/achieve-goal', async (req, res) => {
+router.post('/:id/achieve-goal', authenticateToken, async (req, res) => {
   try {
-    // Handle demo user
+    // Handle demo user only
     if (req.params.id === 'demo') {
       return res.json({
         message: 'Goal marked as achieved successfully',
         user: {
-          id: 'demo',
-          name: 'Demo User',
-          email: 'demo@example.com',
-          mobile: '+1234567890',
+          id: req.params.id,
+          name: req.params.id === 'demo' ? 'Demo User' : 'Omprakash Utaha',
+          email: req.params.id === 'demo' ? 'demo@example.com' : 'omprakashutaha@gmail.com',
+          mobileNumber: req.params.id === 'demo' ? '+1234567890' : '+919723231499',
           gender: 'male',
-          age: 30,
-          height: 170,
-          currentWeight: 74.2,
+          age: 32,
+          height: 165,
+          currentWeight: 78.5,
           targetWeight: undefined,
           targetDate: undefined,
           goalStatus: 'achieved',
           goalCreatedAt: undefined,
           goalId: undefined,
-          pastGoals: [],
+          pastGoals: [
+            {
+              goalId: 'demo-goal-1',
+              currentWeight: 78.5,
+              targetWeight: 65,
+              targetDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+              startedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+              endedAt: new Date(),
+              status: 'achieved'
+            }
+          ],
           goals: [],
           createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
           updatedAt: new Date()
@@ -1011,12 +1202,16 @@ router.post('/:id/achieve-goal', async (req, res) => {
     user.targetDate = undefined;
     user.goalStatus = 'achieved';
     user.goalCreatedAt = undefined;
-    user.goalId = undefined;
+    user.goalId = undefined; // Set to undefined instead of using $unset
     
+    // Save the user directly
     await user.save();
+    
+    // Refresh user data after update
+    const updatedUser = await User.findById(user._id);
     res.json({ 
       message: 'Goal marked as achieved successfully', 
-      user: { ...user.toObject(), goalId: user.goalId?.toString(), goalInitialWeight: user.goalInitialWeight }
+      user: { ...updatedUser.toObject(), goalId: updatedUser.goalId?.toString(), goalInitialWeight: updatedUser.goalInitialWeight }
     });
   } catch (error) {
     console.error('Error achieving goal:', error);
@@ -1043,8 +1238,9 @@ async function checkAndExpireGoal(user) {
     user.targetDate = undefined;
     user.goalStatus = 'expired';
     user.goalCreatedAt = undefined;
-    user.goalId = undefined;
+    user.goalId = undefined; // Set to undefined instead of using $unset
     
+    // Save the user directly
     await user.save();
   }
 }

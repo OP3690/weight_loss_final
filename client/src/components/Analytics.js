@@ -25,7 +25,7 @@ const Analytics = () => {
   const [hasAttemptedLoad, setHasAttemptedLoad] = useState(false);
 
   // ENABLED: For real user data loading
-  const loadUserProfileAndAnalytics = useCallback(async () => {
+  const loadUserProfileAndAnalytics = async () => {
     if (!currentUser?.id) return;
     
     try {
@@ -33,12 +33,16 @@ const Analytics = () => {
       
       // For demo users, we'll get analytics from backend but set a demo profile
       if (currentUser.id === 'demo') {
+        console.log('🔍 Loading analytics for demo user...');
         // Load analytics data from backend (which has consistent demo data)
         const analyticsResponse = await weightEntryAPI.getAnalytics(currentUser.id, {
           period: selectedPeriod
         });
         
+        console.log('📊 Demo analytics response:', analyticsResponse);
+        
         if (analyticsResponse.analytics) {
+          console.log('✅ Setting analytics data for demo user');
           setAnalytics(analyticsResponse.analytics);
           
           // Set demo user profile
@@ -78,12 +82,13 @@ const Analytics = () => {
         }
       }
     } catch (error) {
-      console.error('Error loading analytics:', error);
+      console.error('❌ Error loading analytics:', error);
+      console.error('Error details:', error.response?.data || error.message);
       // Don't show toast error for data loading
     } finally {
     setLoading(false);
     }
-  }, [currentUser?.id, selectedPeriod]);
+  };
 
   useEffect(() => {
     if (!currentUser?.id) return;
@@ -91,7 +96,7 @@ const Analytics = () => {
     // For both demo and real users, load data from backend
     // This ensures consistency in data structure and behavior
     console.log('Loading analytics data from backend for user:', currentUser.id);
-      loadUserProfileAndAnalytics();
+    loadUserProfileAndAnalytics();
   }, [currentUser?.id, selectedPeriod]);
 
   // Reset attempt flag when user changes
@@ -172,7 +177,9 @@ const Analytics = () => {
       <div className="text-center py-12">
         <BarChart3 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
         <p className="text-gray-600">No analytics data available</p>
-        <p className="text-sm text-gray-500 mt-2">Try refreshing the page or check your connection</p>
+        <p className="text-sm text-gray-500 mt-2">
+          Try refreshing the page or check your connection
+        </p>
       </div>
     );
   }
@@ -234,9 +241,14 @@ const Analytics = () => {
                 <BarChart3 className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white mb-1">No Active Goal Found</h3>
+                <h3 className="text-xl font-bold text-white mb-1">
+                  {userProfile?.goalStatus === 'achieved' ? 'Goal Achieved!' : 'No Active Goal Found'}
+                </h3>
                 <p className="text-orange-100 text-lg">
-                  Create a weight loss goal to unlock detailed analytics and progress insights!
+                  {userProfile?.goalStatus === 'achieved' 
+                    ? "Congratulations! You've reached your target. Set a new goal to continue your journey!"
+                    : "Create a weight loss goal to unlock detailed analytics and progress insights!"
+                  }
                 </p>
               </div>
             </div>
@@ -246,7 +258,7 @@ const Analytics = () => {
               onClick={() => window.location.href = '/profile'}
               className="bg-white text-orange-600 px-6 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
-              Create Goal
+              {userProfile?.goalStatus === 'achieved' ? 'Set New Goal' : 'Create Goal'}
             </motion.button>
           </div>
         </motion.div>

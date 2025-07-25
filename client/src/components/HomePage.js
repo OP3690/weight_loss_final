@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { 
   ChartBarIcon, 
   FlagIcon, 
@@ -12,14 +13,20 @@ import {
   BoltIcon,
   TrophyIcon,
   FireIcon,
-  SparklesIcon
+  SparklesIcon,
+  CalculatorIcon,
+  ScaleIcon,
+  BeakerIcon,
+  HeartIcon as HeartIconSolid
 } from '@heroicons/react/24/outline';
 import ForgotPasswordPopup from './ForgotPasswordPopup';
+import UserSuccessCards from './UserSuccessCards';
 import { trackPageViewConversion } from './GoogleAnalytics';
 
 const HomePage = ({ onStartDemo, onRegister, onLogin }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const navigate = useNavigate();
 
   // Wrapper functions with conversion tracking
   const handleRegister = () => {
@@ -98,6 +105,65 @@ const HomePage = ({ onStartDemo, onRegister, onLogin }) => {
     { number: "73.28%", label: "Users Updates Daily Weight", icon: HeartIcon, color: "text-red-600" }
   ];
 
+  const healthCalculators = [
+    {
+      icon: ScaleIcon,
+      title: "BMI Calculator",
+      description: "Calculate your Body Mass Index to assess your weight status and health risks.",
+      color: "from-blue-500 to-cyan-500",
+      features: ["Instant BMI calculation", "Weight category assessment", "Health risk evaluation"]
+    },
+    {
+      icon: FireIcon,
+      title: "Calorie Calculator",
+      description: "Determine your daily calorie needs based on activity level and weight goals.",
+      color: "from-orange-500 to-red-500",
+      features: ["BMR calculation", "Activity level adjustment", "Weight goal planning"]
+    },
+    {
+      icon: HeartIconSolid,
+      title: "Body Fat Calculator",
+      description: "Estimate your body fat percentage using proven measurement methods.",
+      color: "from-purple-500 to-pink-500",
+      features: ["Navy method calculation", "BMI method alternative", "Body composition analysis"]
+    },
+    {
+      icon: CalculatorIcon,
+      title: "BMR Calculator",
+      description: "Calculate your Basal Metabolic Rate to understand your body's energy needs.",
+      color: "from-green-500 to-emerald-500",
+      features: ["Multiple formula options", "Activity level multipliers", "Daily calorie planning"]
+    },
+    {
+      icon: BeakerIcon,
+      title: "Carbohydrate Calculator",
+      description: "Calculate your daily carbohydrate needs for optimal energy and health.",
+      color: "from-indigo-500 to-blue-500",
+      features: ["Carb calculations", "Energy planning", "Dietary recommendations"]
+    },
+    {
+      icon: FireIcon,
+      title: "Protein Calculator",
+      description: "Determine your protein needs for muscle building and weight management.",
+      color: "from-green-500 to-emerald-500",
+      features: ["Protein calculations", "Muscle building", "Weight management"]
+    },
+    {
+      icon: HeartIcon,
+      title: "Fat Intake Calculator",
+      description: "Calculate your daily fat intake for optimal health and nutrition.",
+      color: "from-purple-500 to-pink-500",
+      features: ["Fat calculations", "Health optimization", "Nutrition planning"]
+    },
+    {
+      icon: SparklesIcon,
+      title: "Vitamin Calculator",
+      description: "Get personalized vitamin recommendations based on age and gender.",
+      color: "from-yellow-500 to-orange-500",
+      features: ["RDA calculations", "Vitamin information", "Health recommendations"]
+    }
+  ];
+
   // Fitness Logo Component - Goal Achieved
   const FitnessLogo = () => (
     <div className="flex items-center space-x-2">
@@ -171,6 +237,13 @@ const HomePage = ({ onStartDemo, onRegister, onLogin }) => {
                 Features
               </motion.a>
               <motion.a 
+                href="#health-calculators" 
+                className="text-gray-600 hover:text-orange-500 transition-colors font-medium"
+                whileHover={{ scale: 1.05 }}
+              >
+                Health Tools
+              </motion.a>
+              <motion.a 
                 href="#testimonials" 
                 className="text-gray-600 hover:text-orange-500 transition-colors font-medium"
                 whileHover={{ scale: 1.05 }}
@@ -220,15 +293,15 @@ const HomePage = ({ onStartDemo, onRegister, onLogin }) => {
           <div className="absolute -bottom-8 left-20 w-72 h-72 bg-gradient-to-br from-yellow-200 to-orange-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
           <div className="text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="mb-8"
+              className="mb-6"
             >
-              <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-orange-100 to-red-100 border border-orange-200 text-orange-700 font-medium text-sm mb-6">
+              <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-orange-100 to-red-100 border border-orange-200 text-orange-700 font-medium text-sm mb-4">
                 <FireIcon className="w-4 h-4 mr-2" />
                 Transform Your Life from Today
               </div>
@@ -238,7 +311,7 @@ const HomePage = ({ onStartDemo, onRegister, onLogin }) => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-6xl md:text-8xl font-bold text-gray-900 mb-6 leading-tight"
+              className="text-4xl md:text-6xl font-bold text-gray-900 mb-4 leading-tight"
             >
               Transform Your
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-red-500 to-purple-600"> Weight Loss Journey</span>
@@ -248,17 +321,34 @@ const HomePage = ({ onStartDemo, onRegister, onLogin }) => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed"
+              className="text-lg text-gray-600 mb-6 max-w-4xl mx-auto leading-relaxed"
             >
               Join thousands of users who are achieving their weight loss goals with confidence. 
               Track, analyze, and celebrate your progress with our intelligent weight management platform.
             </motion.p>
 
+            {/* --- Success Stories Section (IN HERO) --- */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="flex flex-col items-center justify-center mb-6"
+            >
+              <span className="inline-flex items-center px-3 py-1 mb-3 rounded-full bg-gradient-to-r from-orange-100 to-red-100 border border-orange-200 text-orange-700 font-semibold text-xs uppercase tracking-wider shadow-sm">
+                <TrophyIcon className="w-4 h-4 mr-2" /> Success Stories
+              </span>
+              <div className="w-full max-w-3xl">
+                <UserSuccessCards />
+              </div>
+            </motion.div>
+
+            {/* --- END Success Stories Section --- */}
+
             <motion.div 
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8"
             >
               <motion.button
                 onClick={handleRegister}
@@ -286,28 +376,28 @@ const HomePage = ({ onStartDemo, onRegister, onLogin }) => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8 }}
-              className="flex flex-wrap justify-center items-center gap-8 text-sm text-gray-600"
+              className="flex flex-wrap justify-center items-center gap-6 text-xs text-gray-600"
             >
               <motion.div 
-                className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm"
+                className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm"
                 whileHover={{ scale: 1.05 }}
               >
-                <ShieldCheckIcon className="h-5 w-5 text-green-500" />
+                <ShieldCheckIcon className="h-4 w-4 text-green-500" />
                 <span className="font-medium">Secure & Private</span>
               </motion.div>
               <motion.div 
-                className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm"
+                className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm"
                 whileHover={{ scale: 1.05 }}
               >
-                <StarIcon className="h-5 w-5 text-yellow-500" />
+                <StarIcon className="h-4 w-4 text-yellow-500" />
                 <span className="font-medium">Free at the Moment</span>
               </motion.div>
               <motion.div 
-                className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm"
+                className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm"
                 whileHover={{ scale: 1.05 }}
               >
-                <UserGroupIcon className="h-5 w-5 text-blue-500" />
-                <span className="font-medium">100+ Happy Users</span>
+                <UserGroupIcon className="h-4 w-4 text-blue-500" />
+                <span className="font-medium">1000+ Happy Users</span>
               </motion.div>
             </motion.div>
           </div>
@@ -386,6 +476,123 @@ const HomePage = ({ onStartDemo, onRegister, onLogin }) => {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Health Calculator Section */}
+      <section id="health-calculators" className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 border border-blue-200 text-blue-700 font-medium text-sm mb-4">
+              <CalculatorIcon className="w-4 h-4 mr-2" />
+              Free Health Tools
+            </div>
+            <h2 className="text-5xl font-bold text-gray-900 mb-6">
+              Professional Health Calculators
+            </h2>
+            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-4">
+              Access our comprehensive suite of health and fitness calculators designed by experts. 
+              Get accurate calculations for BMI, calories, body fat, BMR, nutrition, and vitamins.
+            </p>
+            <p className="text-sm text-gray-500 max-w-3xl mx-auto">
+              All calculations are based on scientific research and public domain information. 
+              For personalized medical advice, please consult healthcare professionals.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {healthCalculators.map((calculator, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="group"
+                whileHover={{ scale: 1.02, y: -5 }}
+              >
+                <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 h-full">
+                  <div className="flex items-center mb-4">
+                    <div className={`p-3 rounded-xl bg-gradient-to-br ${calculator.color} shadow-lg group-hover:shadow-xl transition-all duration-300 mr-4`}>
+                      <calculator.icon className="h-8 w-8 text-white" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-900">{calculator.title}</h3>
+                  </div>
+                  <p className="text-gray-600 mb-4 leading-relaxed">{calculator.description}</p>
+                  <ul className="space-y-2 mb-6">
+                    {calculator.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-center text-sm text-gray-600">
+                        <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-3"></div>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-auto">
+                    <motion.button
+                      onClick={() => navigate(
+                        calculator.title === 'BMI Calculator' ? '/bmi-calculator-page' : 
+                        calculator.title === 'Calorie Calculator' ? '/calorie-calculator-page' : 
+                        calculator.title === 'Body Fat Calculator' ? '/body-fat-calculator-page' : 
+                        calculator.title === 'BMR Calculator' ? '/bmr-calculator-page' : 
+                        calculator.title === 'Carbohydrate Calculator' ? '/carbohydrate-calculator-page' : 
+                        calculator.title === 'Protein Calculator' ? '/protein-calculator-page' : 
+                        calculator.title === 'Fat Intake Calculator' ? '/fat-intake-calculator-page' : 
+                        calculator.title === 'Vitamin Calculator' ? '/vitamin-calculator-page' : 
+                        '/health-calculator'
+                      )}
+                      className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-4 rounded-xl font-medium hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg group-hover:shadow-xl"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      Try Calculator
+                    </motion.button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* SEO-Friendly Content */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100"
+          >
+            <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+              Why Use Our Health Calculators?
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ShieldCheckIcon className="h-6 w-6 text-white" />
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2">Scientifically Accurate</h4>
+                <p className="text-sm text-gray-600">Based on peer-reviewed research and established medical formulas</p>
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <BoltIcon className="h-6 w-6 text-white" />
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2">Instant Results</h4>
+                <p className="text-sm text-gray-600">Get accurate calculations instantly with our optimized algorithms</p>
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <UserGroupIcon className="h-6 w-6 text-white" />
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2">User-Friendly</h4>
+                <p className="text-sm text-gray-600">Designed for everyone, from fitness beginners to health professionals</p>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 

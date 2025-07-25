@@ -8,19 +8,36 @@ import {
   ArrowRightOnRectangleIcon,
   Bars3Icon,
   XMarkIcon,
-  DocumentTextIcon
+  DocumentTextIcon,
+  ChevronDownIcon
 } from '@heroicons/react/24/outline';
 
 const Navigation = ({ currentUser, onLogout }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isHealthCalculatorOpen, setIsHealthCalculatorOpen] = useState(false);
   const location = useLocation();
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: HomeIcon },
     { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
-    { name: 'BMI Calculator', href: '/bmi-calculator', icon: CalculatorIcon },
     { name: 'Blog', href: '/blog', icon: DocumentTextIcon },
     { name: 'Profile', href: '/profile', icon: UserIcon },
+  ];
+
+  const healthCalculators = [
+    { name: 'BMI Calculator', href: '/health-calculator?calc=bmi' },
+    { name: 'Calorie Calculator', href: '/health-calculator?calc=calorie' },
+    { name: 'Body Fat Calculator', href: '/health-calculator?calc=body-fat' },
+    { name: 'BMR Calculator', href: '/health-calculator?calc=bmr' },
+    { name: 'Carbohydrate Calculator', href: '/health-calculator?calc=carbohydrate' },
+    { name: 'Protein Calculator', href: '/health-calculator?calc=protein' },
+    { name: 'Fat Intake Calculator', href: '/health-calculator?calc=fat-intake' },
+    { name: 'Vitamin Calculator', href: '/health-calculator?calc=vitamin' },
+    { name: 'Vitamin A Calculator', href: '/health-calculator?calc=vitamin-a' },
+    { name: 'Vitamin D Calculator', href: '/health-calculator?calc=vitamin-d' },
+    { name: 'Weight Gain Calculator', href: '/health-calculator?calc=weight-gain' },
+    { name: 'Weight Watchers Points', href: '/health-calculator?calc=weight-watchers' },
+    { name: 'Keto Calculator', href: '/health-calculator?calc=keto' },
   ];
 
   const isActive = (path) => {
@@ -28,6 +45,10 @@ const Navigation = ({ currentUser, onLogout }) => {
       return location.pathname === '/';
     }
     return location.pathname === path;
+  };
+
+  const isHealthCalculatorActive = () => {
+    return location.pathname === '/health-calculator';
   };
 
   return (
@@ -110,8 +131,53 @@ const Navigation = ({ currentUser, onLogout }) => {
                   )}
                 </Link>
               ))}
-              
 
+              {/* Health Calculator Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setIsHealthCalculatorOpen(!isHealthCalculatorOpen)}
+                  className={`group relative inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                    isHealthCalculatorActive()
+                      ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/25'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  }`}
+                >
+                  <CalculatorIcon className={`h-5 w-5 mr-2 transition-all duration-300 ${
+                    isHealthCalculatorActive() ? 'text-white' : 'text-gray-500 group-hover:text-gray-700'
+                  }`} />
+                  Health Calculator
+                  <ChevronDownIcon className={`h-4 w-4 ml-1 transition-transform duration-300 ${
+                    isHealthCalculatorOpen ? 'rotate-180' : ''
+                  }`} />
+                  
+                  {/* Active indicator */}
+                  {isHealthCalculatorActive() && (
+                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>
+                  )}
+                </button>
+
+                {/* Dropdown Menu */}
+                {isHealthCalculatorOpen && (
+                  <div className="absolute top-full left-0 mt-1 w-80 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <h3 className="text-sm font-semibold text-gray-900">Health Calculators</h3>
+                      <p className="text-xs text-gray-500">Choose a calculator to get started</p>
+                    </div>
+                    <div className="max-h-96 overflow-y-auto">
+                      {healthCalculators.map((calc) => (
+                        <Link
+                          key={calc.name}
+                          to={calc.href}
+                          onClick={() => setIsHealthCalculatorOpen(false)}
+                          className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-200"
+                        >
+                          {calc.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* User Info */}
@@ -119,6 +185,19 @@ const Navigation = ({ currentUser, onLogout }) => {
               <div className="text-sm text-gray-700 bg-gray-50 px-3 py-2 rounded-lg">
                 Welcome, <span className="font-semibold text-gray-900">{currentUser?.name}</span>
               </div>
+              {currentUser?.id !== 'demo' && !currentUser?.token && (
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('currentUser');
+                    window.location.reload();
+                  }}
+                  className="inline-flex items-center px-3 py-2 border border-yellow-200 text-sm font-medium rounded-lg text-yellow-600 bg-yellow-50 hover:text-yellow-700 hover:bg-yellow-100 transition-all duration-300"
+                >
+                  <span className="mr-2">🔄</span>
+                  Refresh Session
+                </button>
+              )}
+
               <button
                 onClick={onLogout}
                 className="inline-flex items-center px-4 py-2 border border-gray-200 text-sm font-medium rounded-lg text-gray-600 bg-white hover:text-gray-900 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all duration-300 shadow-sm hover:shadow-md"
@@ -169,6 +248,46 @@ const Navigation = ({ currentUser, onLogout }) => {
                 </div>
               </Link>
             ))}
+
+            {/* Mobile Health Calculator Section */}
+            <div className="mx-3">
+              <div className={`block rounded-lg px-4 py-3 text-base font-medium transition-all duration-300 ${
+                isHealthCalculatorActive()
+                  ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/25'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <CalculatorIcon className={`h-5 w-5 mr-3 transition-all duration-300 ${
+                      isHealthCalculatorActive() ? 'text-white' : 'text-gray-500'
+                    }`} />
+                    Health Calculator
+                  </div>
+                  <ChevronDownIcon className={`h-4 w-4 transition-transform duration-300 ${
+                    isHealthCalculatorOpen ? 'rotate-180' : ''
+                  }`} />
+                </div>
+              </div>
+              
+              {/* Mobile Health Calculator Dropdown */}
+              {isHealthCalculatorOpen && (
+                <div className="mt-2 ml-8 space-y-1">
+                  {healthCalculators.map((calc) => (
+                    <Link
+                      key={calc.name}
+                      to={calc.href}
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        setIsHealthCalculatorOpen(false);
+                      }}
+                      className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors duration-200"
+                    >
+                      {calc.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
             
             {/* Mobile User Info and Logout */}
             <div className="pt-4 pb-3 border-t border-gray-100 mx-3">
@@ -183,7 +302,22 @@ const Navigation = ({ currentUser, onLogout }) => {
                   <div className="text-sm font-medium text-gray-500">{currentUser?.email}</div>
                 </div>
               </div>
-              <div className="mt-3">
+              <div className="mt-3 space-y-2">
+                {currentUser?.id !== 'demo' && !currentUser?.token && (
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem('currentUser');
+                      setIsMobileMenuOpen(false);
+                      window.location.reload();
+                    }}
+                    className="block w-full text-left px-4 py-3 text-base font-medium text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50 rounded-lg transition-all duration-300"
+                  >
+                    <div className="flex items-center">
+                      <span className="mr-3">🔄</span>
+                      Refresh Session
+                    </div>
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     onLogout();
@@ -200,6 +334,14 @@ const Navigation = ({ currentUser, onLogout }) => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Click outside to close dropdown */}
+      {isHealthCalculatorOpen && (
+        <div 
+          className="fixed inset-0 z-45" 
+          onClick={() => setIsHealthCalculatorOpen(false)}
+        />
       )}
     </nav>
   );
