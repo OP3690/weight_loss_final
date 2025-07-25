@@ -236,7 +236,8 @@ router.post('/register', [
     
     // Send registration notification email to admin
     try {
-      await sendRegistrationNotificationEmail({
+      console.log('📧 Attempting to send registration notification email to admin...');
+      console.log('📧 User data being passed:', {
         name: user.name,
         email: user.email,
         mobileNumber: user.mobileNumber,
@@ -245,30 +246,67 @@ router.post('/register', [
         height: user.height,
         currentWeight: user.currentWeight,
         goalWeight: user.goalWeight,
+        gender: user.gender,
         targetDate: user.targetDate,
         daysToTarget: user.daysToTarget
       });
-      console.log('Registration notification email sent successfully to admin');
+      
+      const notificationResult = await sendRegistrationNotificationEmail({
+        name: user.name,
+        email: user.email,
+        mobileNumber: user.mobileNumber,
+        country: user.country,
+        age: user.age,
+        height: user.height,
+        currentWeight: user.currentWeight,
+        goalWeight: user.goalWeight,
+        gender: user.gender,
+        targetDate: user.targetDate,
+        daysToTarget: user.daysToTarget
+      });
+      
+      console.log('✅ Registration notification email sent to admin!');
+      console.log('📧 Notification result:', notificationResult);
+      
+      // Store result for debugging
+      res.locals.registrationNotificationResult = notificationResult;
+      res.locals.registrationNotificationError = null;
+      
     } catch (notificationError) {
-      console.error('Failed to send registration notification email:', notificationError);
-      // Don't fail registration if notification email fails
+      console.error('❌ Failed to send registration notification email:', notificationError);
+      console.error('❌ Error stack:', notificationError.stack);
+      
+      // Store error for debugging
+      res.locals.registrationNotificationResult = null;
+      res.locals.registrationNotificationError = {
+        message: notificationError.message,
+        stack: notificationError.stack
+      };
+      
+      // Don't fail registration if email fails
     }
     
     console.log('✅ Registration completed successfully!');
     
-    res.status(201).json({ 
-      message: 'Registration successful', 
-      user: { 
-        id: user._id, 
-        name: user.name, 
-        email: user.email, 
+    // In the registration response, include the notification result for debugging (TEMPORARY)
+    return res.status(201).json({
+      message: 'User registered successfully',
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
         mobileNumber: user.mobileNumber,
         country: user.country,
-        goalId: user.goalId?.toString(), 
-        goalInitialWeight: user.goalInitialWeight,
+        age: user.age,
+        height: user.height,
+        currentWeight: user.currentWeight,
+        goalWeight: user.goalWeight,
+        gender: user.gender,
         targetDate: user.targetDate,
         daysToTarget: user.daysToTarget
-      } 
+      },
+      registrationNotificationResult: res.locals.registrationNotificationResult,
+      registrationNotificationError: res.locals.registrationNotificationError
     });
   } catch (error) {
     console.error('❌ Registration error:', error);
@@ -357,6 +395,46 @@ router.post('/test-registration-email', async (req, res) => {
       success: false, 
       message: 'Registration notification email test failed',
       error: error.message 
+    });
+  }
+});
+
+// Test endpoint for registration notification email
+router.post('/test-registration-notification', async (req, res) => {
+  try {
+    const testUserData = {
+      name: 'Test User',
+      email: 'testuser@example.com',
+      mobileNumber: '+911234567890',
+      country: 'India',
+      age: 30,
+      height: 170,
+      currentWeight: 70,
+      goalWeight: 65,
+      gender: 'male',
+      targetDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+      daysToTarget: 30
+    };
+    
+    console.log('🧪 TEST: Attempting to send registration notification email to admin...');
+    console.log('🧪 TEST: Test user data:', testUserData);
+    
+    const result = await sendRegistrationNotificationEmail(testUserData);
+    
+    console.log('🧪 TEST: Registration notification email result:', result);
+    res.json({ 
+      success: true, 
+      message: 'Test registration notification email sent successfully', 
+      result 
+    });
+  } catch (error) {
+    console.error('🧪 TEST: Failed to send registration notification email:', error);
+    console.error('🧪 TEST: Error stack:', error.stack);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Test registration notification email failed', 
+      error: error.message,
+      stack: error.stack
     });
   }
 });
