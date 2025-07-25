@@ -150,11 +150,17 @@ router.post('/register', [
     
     console.log('✅ Validation passed, checking for existing user...');
     
-    // Check for existing user
-    const existingUser = await User.findOne({ $or: [{ email }, { mobileNumber }] });
-    if (existingUser) {
-      console.log('❌ User already exists:', existingUser.email);
-      return res.status(400).json({ message: 'Email or mobile number already registered' });
+    // Check for existing user with more specific error messages
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      console.log('❌ Email already exists:', existingEmail.email);
+      return res.status(400).json({ message: 'Email address is already registered' });
+    }
+    
+    const existingMobile = await User.findOne({ mobileNumber });
+    if (existingMobile) {
+      console.log('❌ Mobile number already exists:', existingMobile.mobileNumber);
+      return res.status(400).json({ message: 'Mobile number is already registered' });
     }
     
     console.log('✅ No existing user found, creating new user...');
