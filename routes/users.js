@@ -400,6 +400,45 @@ router.post('/test-registration-email', async (req, res) => {
 });
 
 // Test endpoint for registration notification email
+router.get('/test-registration-notification', async (req, res) => {
+  try {
+    const testUserData = {
+      name: 'Test User',
+      email: 'testuser@example.com',
+      mobileNumber: '+911234567890',
+      country: 'India',
+      age: 30,
+      height: 170,
+      currentWeight: 70,
+      goalWeight: 65,
+      gender: 'male',
+      targetDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+      daysToTarget: 30
+    };
+    
+    console.log('🧪 TEST: Attempting to send registration notification email to admin...');
+    console.log('🧪 TEST: Test user data:', testUserData);
+    
+    const result = await sendRegistrationNotificationEmail(testUserData);
+    
+    console.log('🧪 TEST: Registration notification email result:', result);
+    res.json({ 
+      success: true, 
+      message: 'Test registration notification email sent successfully', 
+      result 
+    });
+  } catch (error) {
+    console.error('🧪 TEST: Failed to send registration notification email:', error);
+    console.error('🧪 TEST: Error stack:', error.stack);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Test registration notification email failed', 
+      error: error.message,
+      stack: error.stack
+    });
+  }
+});
+
 router.post('/test-registration-notification', async (req, res) => {
   try {
     const testUserData = {
