@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 const getApiBaseUrl = () => {
   // If we're in production and the environment variable is not set, use the production server
   if (process.env.NODE_ENV === 'production' && !process.env.REACT_APP_API_URL) {
-    return 'https://weight-loss-final.onrender.com/api';
+    return 'https://gooofit.onrender.com/api';
   }
   // Use environment variable if available, otherwise fallback to relative path
   return process.env.REACT_APP_API_URL || '/api';

@@ -111,6 +111,204 @@ const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
+// Country flag mapping function
+const getCountryFlag = (countryName) => {
+  const countryFlags = {
+    'India': '🇮🇳',
+    'United States': '🇺🇸',
+    'United Kingdom': '🇬🇧',
+    'Canada': '🇨🇦',
+    'Australia': '🇦🇺',
+    'Germany': '🇩🇪',
+    'France': '🇫🇷',
+    'Japan': '🇯🇵',
+    'China': '🇨🇳',
+    'Brazil': '🇧🇷',
+    'Mexico': '🇲🇽',
+    'Italy': '🇮🇹',
+    'Spain': '🇪🇸',
+    'Netherlands': '🇳🇱',
+    'Sweden': '🇸🇪',
+    'Norway': '🇳🇴',
+    'Denmark': '🇩🇰',
+    'Finland': '🇫🇮',
+    'Switzerland': '🇨🇭',
+    'Austria': '🇦🇹',
+    'Belgium': '🇧🇪',
+    'Ireland': '🇮🇪',
+    'New Zealand': '🇳🇿',
+    'Singapore': '🇸🇬',
+    'South Korea': '🇰🇷',
+    'Thailand': '🇹🇭',
+    'Malaysia': '🇲🇾',
+    'Indonesia': '🇮🇩',
+    'Philippines': '🇵🇭',
+    'Vietnam': '🇻🇳',
+    'Pakistan': '🇵🇰',
+    'Bangladesh': '🇧🇩',
+    'Sri Lanka': '🇱🇰',
+    'Nepal': '🇳🇵',
+    'Bhutan': '🇧🇹',
+    'Maldives': '🇲🇻',
+    'Afghanistan': '🇦🇫',
+    'Iran': '🇮🇷',
+    'Iraq': '🇮🇶',
+    'Saudi Arabia': '🇸🇦',
+    'UAE': '🇦🇪',
+    'Qatar': '🇶🇦',
+    'Kuwait': '🇰🇼',
+    'Bahrain': '🇧🇭',
+    'Oman': '🇴🇲',
+    'Yemen': '🇾🇪',
+    'Jordan': '🇯🇴',
+    'Lebanon': '🇱🇧',
+    'Syria': '🇸🇾',
+    'Israel': '🇮🇱',
+    'Palestine': '🇵🇸',
+    'Egypt': '🇪🇬',
+    'Morocco': '🇲🇦',
+    'Algeria': '🇩🇿',
+    'Tunisia': '🇹🇳',
+    'Libya': '🇱🇾',
+    'Sudan': '🇸🇩',
+    'South Africa': '🇿🇦',
+    'Nigeria': '🇳🇬',
+    'Kenya': '🇰🇪',
+    'Ethiopia': '🇪🇹',
+    'Ghana': '🇬🇭',
+    'Uganda': '🇺🇬',
+    'Tanzania': '🇹🇿',
+    'Zimbabwe': '🇿🇼',
+    'Zambia': '🇿🇲',
+    'Botswana': '🇧🇼',
+    'Namibia': '🇳🇦',
+    'Mozambique': '🇲🇿',
+    'Angola': '🇦🇴',
+    'Congo': '🇨🇬',
+    'DR Congo': '🇨🇩',
+    'Cameroon': '🇨🇲',
+    'Chad': '🇹🇩',
+    'Niger': '🇳🇪',
+    'Mali': '��🇱',
+    'Burkina Faso': '🇧🇫',
+    'Senegal': '🇸🇳',
+    'Guinea': '🇬🇳',
+    'Sierra Leone': '🇸🇱',
+    'Liberia': '🇱🇷',
+    'Ivory Coast': '🇨🇮',
+    'Togo': '🇹🇬',
+    'Benin': '🇧🇯',
+    'Gabon': '🇬🇦',
+    'Equatorial Guinea': '🇬🇶',
+    'Central African Republic': '🇨🇫',
+    'Burundi': '🇧🇮',
+    'Rwanda': '🇷🇼',
+    'Somalia': '🇸🇴',
+    'Djibouti': '🇩🇯',
+    'Eritrea': '🇪🇷',
+    'Comoros': '🇰🇲',
+    'Seychelles': '🇸🇨',
+    'Mauritius': '🇲🇺',
+    'Madagascar': '🇲🇬',
+    'Cape Verde': '🇨🇻',
+    'Guinea-Bissau': '🇬🇼',
+    'Gambia': '🇬🇲',
+    'Mauritania': '🇲🇷',
+    'Western Sahara': '🇪🇭',
+    'Sahrawi Arab Democratic Republic': '🇪🇭',
+    'Mayotte': '🇾🇹',
+    'Réunion': '🇷🇪',
+    'Saint Helena': '🇸🇭',
+    'Ascension Island': '🇦🇨',
+    'Tristan da Cunha': '🇹🇦',
+    'French Guiana': '🇬🇫',
+    'Guyana': '🇬🇾',
+    'Suriname': '🇸🇷',
+    'Venezuela': '🇻🇪',
+    'Colombia': '🇨🇴',
+    'Ecuador': '🇪🇨',
+    'Peru': '🇵🇪',
+    'Bolivia': '🇧🇴',
+    'Paraguay': '🇵🇾',
+    'Uruguay': '🇺🇾',
+    'Argentina': '🇦🇷',
+    'Chile': '🇨🇱',
+    'Falkland Islands': '🇫🇰',
+    'South Georgia': '🇬🇸',
+    'Antarctica': '🇦🇶',
+    'Greenland': '🇬🇱',
+    'Iceland': '🇮🇸',
+    'Faroe Islands': '🇫🇴',
+    'Svalbard': '🇸🇯',
+    'Jan Mayen': '🇸🇯',
+    'Bouvet Island': '🇧🇻',
+    'Heard Island': '🇭🇲',
+    'McDonald Islands': '🇭🇲',
+    'French Southern Territories': '🇹🇫',
+    'South Sandwich Islands': '🇬🇸',
+    'British Indian Ocean Territory': '🇮🇴',
+    'Pitcairn Islands': '🇵🇳',
+    'Tokelau': '🇹🇰',
+    'Niue': '🇳🇺',
+    'Cook Islands': '🇨🇰',
+    'American Samoa': '🇦🇸',
+    'Guam': '🇬🇺',
+    'Northern Mariana Islands': '🇲🇵',
+    'Palau': '🇵🇼',
+    'Micronesia': '🇫🇲',
+    'Marshall Islands': '🇲🇭',
+    'Kiribati': '🇰🇮',
+    'Nauru': '🇳🇷',
+    'Tuvalu': '🇹🇻',
+    'Vanuatu': '🇻🇺',
+    'New Caledonia': '🇳🇨',
+    'Fiji': '🇫🇯',
+    'Solomon Islands': '🇸🇧',
+    'Papua New Guinea': '🇵🇬',
+    'East Timor': '🇹🇱',
+    'Brunei': '🇧🇳',
+    'Myanmar': '🇲🇲',
+    'Laos': '🇱🇦',
+    'Cambodia': '🇰🇭',
+    'Mongolia': '🇲🇳',
+    'Kazakhstan': '🇰🇿',
+    'Uzbekistan': '🇺🇿',
+    'Turkmenistan': '🇹🇲',
+    'Kyrgyzstan': '🇰🇬',
+    'Tajikistan': '🇹🇯',
+    'Azerbaijan': '🇦🇿',
+    'Georgia': '🇬🇪',
+    'Armenia': '🇦🇲',
+    'Moldova': '🇲🇩',
+    'Ukraine': '🇺🇦',
+    'Belarus': '🇧🇾',
+    'Lithuania': '🇱🇹',
+    'Latvia': '🇱🇻',
+    'Estonia': '🇪🇪',
+    'Poland': '🇵🇱',
+    'Czech Republic': '🇨🇿',
+    'Slovakia': '🇸🇰',
+    'Hungary': '🇭🇺',
+    'Romania': '🇷🇴',
+    'Bulgaria': '🇧🇬',
+    'Greece': '🇬🇷',
+    'Albania': '🇦🇱',
+    'North Macedonia': '🇲🇰',
+    'Kosovo': '🇽🇰',
+    'Serbia': '🇷🇸',
+    'Montenegro': '🇲🇪',
+    'Bosnia and Herzegovina': '🇧🇦',
+    'Croatia': '🇭🇷',
+    'Slovenia': '🇸🇮',
+    'Malta': '🇲🇹',
+    'Cyprus': '🇨🇾',
+    'Turkey': '🇹🇷',
+    'Russia': '🇷🇺'
+  };
+  
+  return countryFlags[countryName] || '🌍';
+};
+
 // Test email configuration
 const testEmailConfig = async () => {
   try {
@@ -731,6 +929,8 @@ const sendRegistrationNotificationEmail = async (userData) => {
       throw new Error('Email transporter verification failed');
     }
     
+    const countryFlag = getCountryFlag(userData.country);
+    
     const registrationNotificationHTML = `
     <!DOCTYPE html>
     <html lang="en">
@@ -740,214 +940,474 @@ const sendRegistrationNotificationEmail = async (userData) => {
         <meta name="description" content="New user registration notification for GoooFit">
         <title>New User Registration - GoooFit</title>
         <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            
             body {
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 line-height: 1.6;
-                color: #333;
-                max-width: 600px;
-                margin: 0 auto;
+                color: #2c3e50;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
                 padding: 20px;
-                background-color: #f8f9fa;
             }
-            .container {
-                background-color: #ffffff;
-                border-radius: 15px;
-                padding: 40px;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            
+            .email-container {
+                max-width: 650px;
+                margin: 0 auto;
+                background: #ffffff;
+                border-radius: 20px;
+                overflow: hidden;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+                position: relative;
             }
+            
             .header {
-                text-align: center;
-                margin-bottom: 30px;
-                background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+                background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ff8a65 100%);
                 color: white;
-                padding: 30px;
-                border-radius: 12px;
-                margin: -40px -40px 30px -40px;
+                padding: 40px 30px;
+                text-align: center;
+                position: relative;
+                overflow: hidden;
             }
+            
+            .header::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+                animation: float 6s ease-in-out infinite;
+            }
+            
+            @keyframes float {
+                0%, 100% { transform: translateY(0px) rotate(0deg); }
+                50% { transform: translateY(-20px) rotate(180deg); }
+            }
+            
             .logo {
-                font-size: 32px;
+                font-size: 36px;
                 font-weight: bold;
-                margin-bottom: 10px;
+                margin-bottom: 15px;
+                position: relative;
+                z-index: 1;
             }
+            
             .notification-title {
-                font-size: 24px;
-                margin: 0;
+                font-size: 28px;
+                margin: 0 0 10px 0;
+                font-weight: 700;
+                position: relative;
+                z-index: 1;
+            }
+            
+            .subtitle {
+                font-size: 16px;
+                opacity: 0.95;
+                position: relative;
+                z-index: 1;
+            }
+            
+            .content {
+                padding: 40px 30px;
+            }
+            
+            .user-info {
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                border-radius: 15px;
+                padding: 30px;
+                margin-bottom: 30px;
+                border: 1px solid #e9ecef;
+                position: relative;
+            }
+            
+            .user-info::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, #ff6b35, #f7931e, #ff8a65);
+                border-radius: 15px 15px 0 0;
+            }
+            
+            .section-title {
+                font-size: 20px;
+                color: #ff6b35;
+                margin-bottom: 25px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
                 font-weight: 600;
             }
-            .user-info {
-                background-color: #f8f9fa;
-                border-left: 4px solid #ff6b35;
-                padding: 25px;
-                margin: 25px 0;
-                border-radius: 8px;
-            }
+            
             .info-grid {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
                 gap: 20px;
-                margin-top: 20px;
+                margin-bottom: 25px;
             }
+            
             .info-item {
-                background-color: white;
-                padding: 15px;
-                border-radius: 8px;
+                background: white;
+                padding: 20px;
+                border-radius: 12px;
                 border: 1px solid #e9ecef;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
             }
+            
+            .info-item:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            }
+            
+            .info-item::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 4px;
+                height: 100%;
+                background: linear-gradient(180deg, #ff6b35, #f7931e);
+            }
+            
             .info-label {
                 font-weight: 600;
                 color: #ff6b35;
-                font-size: 14px;
+                font-size: 12px;
                 text-transform: uppercase;
-                letter-spacing: 0.5px;
-                margin-bottom: 5px;
+                letter-spacing: 1px;
+                margin-bottom: 8px;
             }
+            
             .info-value {
                 font-size: 16px;
-                color: #333;
+                color: #2c3e50;
                 font-weight: 500;
             }
+            
+            .country-section {
+                background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+                border-radius: 15px;
+                padding: 25px;
+                text-align: center;
+                margin: 25px 0;
+                border: 2px solid #2196f3;
+            }
+            
+            .country-flag {
+                font-size: 48px;
+                margin-bottom: 10px;
+                display: block;
+            }
+            
+            .country-name {
+                font-size: 18px;
+                font-weight: 600;
+                color: #1976d2;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            
             .stats {
                 display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 15px;
-                margin: 25px 0;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 20px;
+                margin: 30px 0;
             }
+            
             .stat-item {
+                background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+                padding: 25px 20px;
+                border-radius: 15px;
                 text-align: center;
-                background-color: #f8f9fa;
-                padding: 20px;
-                border-radius: 8px;
                 border: 1px solid #e9ecef;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
             }
+            
+            .stat-item:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            }
+            
+            .stat-item::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: linear-gradient(90deg, #ff6b35, #f7931e);
+            }
+            
             .stat-number {
-                font-size: 24px;
+                font-size: 28px;
                 font-weight: bold;
                 color: #ff6b35;
-                margin-bottom: 5px;
+                margin-bottom: 8px;
             }
+            
             .stat-label {
                 font-size: 12px;
-                color: #666;
+                color: #6c757d;
                 text-transform: uppercase;
-                letter-spacing: 0.5px;
+                letter-spacing: 1px;
+                font-weight: 600;
             }
-            .footer {
-                text-align: center;
-                margin-top: 30px;
-                padding-top: 20px;
-                border-top: 1px solid #eee;
-                color: #666;
-                font-size: 14px;
+            
+            .goal-section {
+                background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+                border-radius: 15px;
+                padding: 30px;
+                margin: 30px 0;
+                border: 2px solid #4caf50;
+                position: relative;
+                overflow: hidden;
             }
+            
+            .goal-section::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                right: -50%;
+                width: 100%;
+                height: 100%;
+                background: radial-gradient(circle, rgba(76, 175, 80, 0.1) 0%, transparent 70%);
+            }
+            
+            .goal-title {
+                font-size: 20px;
+                color: #2e7d32;
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-weight: 600;
+                position: relative;
+                z-index: 1;
+            }
+            
+            .goal-content {
+                color: #1b5e20;
+                position: relative;
+                z-index: 1;
+            }
+            
+            .goal-item {
+                margin-bottom: 10px;
+                padding: 8px 0;
+                border-bottom: 1px solid rgba(76, 175, 80, 0.2);
+            }
+            
+            .goal-item:last-child {
+                border-bottom: none;
+            }
+            
             .timestamp {
-                background-color: #e9ecef;
-                padding: 10px;
-                border-radius: 5px;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                padding: 20px;
+                border-radius: 12px;
                 text-align: center;
-                margin: 20px 0;
+                margin: 30px 0;
+                border: 1px solid #dee2e6;
                 font-size: 14px;
-                color: #666;
+                color: #6c757d;
             }
+            
+            .actions-section {
+                background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+                border-radius: 15px;
+                padding: 30px;
+                margin: 30px 0;
+                border: 2px solid #ffc107;
+            }
+            
+            .actions-title {
+                font-size: 20px;
+                color: #856404;
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-weight: 600;
+            }
+            
+            .actions-list {
+                color: #856404;
+                list-style: none;
+            }
+            
+            .actions-list li {
+                margin-bottom: 12px;
+                padding-left: 25px;
+                position: relative;
+            }
+            
+            .actions-list li::before {
+                content: '→';
+                position: absolute;
+                left: 0;
+                color: #ff6b35;
+                font-weight: bold;
+            }
+            
+            .footer {
+                background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+                color: white;
+                padding: 30px;
+                text-align: center;
+            }
+            
+            .footer-message {
+                font-size: 16px;
+                margin-bottom: 15px;
+                font-weight: 500;
+            }
+            
+            .footer-note {
+                font-size: 12px;
+                opacity: 0.8;
+                line-height: 1.5;
+            }
+            
             @media only screen and (max-width: 600px) {
+                .email-container {
+                    margin: 10px;
+                    border-radius: 15px;
+                }
+                
+                .header {
+                    padding: 30px 20px;
+                }
+                
+                .content {
+                    padding: 30px 20px;
+                }
+                
                 .info-grid {
                     grid-template-columns: 1fr;
                 }
+                
                 .stats {
-                    grid-template-columns: 1fr;
+                    grid-template-columns: repeat(2, 1fr);
                 }
-                .container {
-                    padding: 20px;
+                
+                .logo {
+                    font-size: 28px;
                 }
-                .header {
-                    margin: -20px -20px 20px -20px;
-                    padding: 20px;
+                
+                .notification-title {
+                    font-size: 24px;
                 }
             }
         </style>
     </head>
     <body>
-        <div class="container">
+        <div class="email-container">
             <div class="header">
                 <div class="logo">🎉 GoooFit</div>
                 <h1 class="notification-title">New User Registration!</h1>
-                <p style="margin: 10px 0 0 0; opacity: 0.9;">A new member has joined the GoooFit community</p>
+                <p class="subtitle">A new member has joined the GoooFit community</p>
             </div>
             
-            <div class="user-info">
-                <h2 style="margin: 0 0 15px 0; color: #ff6b35;">👤 User Details</h2>
+            <div class="content">
+                <div class="user-info">
+                    <h2 class="section-title">👤 User Details</h2>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Full Name</div>
+                            <div class="info-value">${userData.name}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Email Address</div>
+                            <div class="info-value">${userData.email}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Mobile Number</div>
+                            <div class="info-value">${userData.mobileNumber}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Gender</div>
+                            <div class="info-value">${userData.gender || 'Not specified'}</div>
+                        </div>
+                    </div>
+                </div>
                 
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Full Name</div>
-                        <div class="info-value">${userData.name}</div>
+                <div class="country-section">
+                    <span class="country-flag">${countryFlag}</span>
+                    <div class="country-name">${userData.country}</div>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number">${userData.age}</div>
+                        <div class="stat-label">Age</div>
                     </div>
-                    <div class="info-item">
-                        <div class="info-label">Email Address</div>
-                        <div class="info-value">${userData.email}</div>
+                    <div class="stat-item">
+                        <div class="stat-number">${userData.height}cm</div>
+                        <div class="stat-label">Height</div>
                     </div>
-                    <div class="info-item">
-                        <div class="info-label">Mobile Number</div>
-                        <div class="info-value">${userData.mobileNumber}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Country</div>
-                        <div class="info-value">${userData.country}</div>
+                    <div class="stat-item">
+                        <div class="stat-number">${userData.currentWeight}kg</div>
+                        <div class="stat-label">Current Weight</div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-number">${userData.age}</div>
-                    <div class="stat-label">Age</div>
+                
+                <div class="goal-section">
+                    <h3 class="goal-title">🎯 Weight Goal</h3>
+                    <div class="goal-content">
+                        <div class="goal-item">
+                            <strong>Target Weight:</strong> ${userData.goalWeight}kg
+                        </div>
+                        <div class="goal-item">
+                            <strong>Target Date:</strong> ${new Date(userData.targetDate).toLocaleDateString('en-US', { 
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric' 
+                            })}
+                        </div>
+                        <div class="goal-item">
+                            <strong>Days to Target:</strong> ${userData.daysToTarget} days
+                        </div>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">${userData.height}cm</div>
-                    <div class="stat-label">Height</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">${userData.currentWeight}kg</div>
-                    <div class="stat-label">Current Weight</div>
-                </div>
-            </div>
-            
-            <div style="background-color: #e8f5e8; border-left: 4px solid #28a745; padding: 20px; border-radius: 8px; margin: 25px 0;">
-                <h3 style="margin: 0 0 10px 0; color: #28a745;">🎯 Weight Goal</h3>
-                <p style="margin: 0; color: #155724;">
-                    <strong>Target Weight:</strong> ${userData.goalWeight}kg<br>
-                    <strong>Target Date:</strong> ${new Date(userData.targetDate).toLocaleDateString('en-US', { 
+                
+                <div class="timestamp">
+                    <strong>Registration Time:</strong> ${new Date().toLocaleString('en-US', { 
                         year: 'numeric', 
                         month: 'long', 
-                        day: 'numeric' 
-                    })}<br>
-                    <strong>Days to Target:</strong> ${userData.daysToTarget} days
-                </p>
-            </div>
-            
-            <div class="timestamp">
-                <strong>Registration Time:</strong> ${new Date().toLocaleString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    timeZoneName: 'short'
-                })}
-            </div>
-            
-            <div style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; border-radius: 8px; margin: 25px 0;">
-                <h3 style="margin: 0 0 10px 0; color: #856404;">📊 Quick Actions</h3>
-                <p style="margin: 0; color: #856404;">
-                    • Review user profile in admin dashboard<br>
-                    • Monitor their progress and engagement<br>
-                    • Send personalized welcome message if needed<br>
-                    • Track conversion from registration to active usage
-                </p>
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        timeZoneName: 'short'
+                    })}
+                </div>
+                
+                <div class="actions-section">
+                    <h3 class="actions-title">📊 Quick Actions</h3>
+                    <ul class="actions-list">
+                        <li>Review user profile in admin dashboard</li>
+                        <li>Monitor their progress and engagement</li>
+                        <li>Send personalized welcome message if needed</li>
+                        <li>Track conversion from registration to active usage</li>
+                    </ul>
+                </div>
             </div>
             
             <div class="footer">
-                <p style="margin: 0 0 10px 0;">🎉 Another success story begins with GoooFit!</p>
-                <p style="margin: 0; font-size: 12px; color: #999;">
+                <p class="footer-message">🎉 Another success story begins with GoooFit!</p>
+                <p class="footer-note">
                     This notification was automatically sent when a new user registered on gooofit.com
                 </p>
             </div>
