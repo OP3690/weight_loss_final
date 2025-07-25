@@ -327,6 +327,40 @@ router.post('/login', [
   }
 });
 
+// Test registration notification email
+router.post('/test-registration-email', async (req, res) => {
+  try {
+    const testUserData = {
+      name: 'Test User',
+      email: 'test@example.com',
+      mobileNumber: '+911234567890',
+      country: 'India',
+      age: 25,
+      height: 170,
+      currentWeight: 70,
+      goalWeight: 65,
+      targetDate: '2025-12-31',
+      daysToTarget: 180
+    };
+
+    console.log('🧪 Testing registration notification email...');
+    await sendRegistrationNotificationEmail(testUserData);
+    
+    res.json({ 
+      success: true, 
+      message: 'Registration notification email test sent successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('❌ Registration notification email test failed:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Registration notification email test failed',
+      error: error.message 
+    });
+  }
+});
+
 // Create new user profile
 router.post('/', validateUserData, async (req, res) => {
   try {
