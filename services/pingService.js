@@ -6,9 +6,7 @@ class PingService {
     this.pingInterval = null;
     this.serverUrl = process.env.SERVER_URL || 'https://weight-loss-final.onrender.com';
     this.pingEndpoints = [
-      '/api/health',
-      '/api/users/health',
-      '/api/weight-entries/health'
+      '/api/health'
     ];
   }
 
