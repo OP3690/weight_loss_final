@@ -447,6 +447,28 @@ const Blog = () => {
           ))}
         </div>
 
+        {/* CTA Section */}
+        <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-8 mt-12 text-center text-white">
+          <h2 className="text-3xl font-bold mb-4">Ready to Start Your Weight Loss Journey?</h2>
+          <p className="text-xl mb-8 text-orange-100">
+            Join thousands of users who have transformed their lives with GoooFit
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              to="/onboarding"
+              className="bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200 shadow-lg"
+            >
+              Start Your Journey
+            </Link>
+            <Link
+              to="/dashboard"
+              className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition-colors duration-200"
+            >
+              Try Demo
+            </Link>
+          </div>
+        </div>
+
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex justify-center items-center mt-12 space-x-2">

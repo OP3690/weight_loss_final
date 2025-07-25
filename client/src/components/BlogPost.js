@@ -2946,6 +2946,33 @@ const BlogPost = () => {
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
 
+            {/* CTA Section */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-8 mt-12 text-center text-white"
+            >
+              <h2 className="text-3xl font-bold mb-4">Ready to Start Your Weight Loss Journey?</h2>
+              <p className="text-xl mb-8 text-orange-100">
+                Join thousands of users who have transformed their lives with GoooFit
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  to="/onboarding"
+                  className="bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200 shadow-lg"
+                >
+                  Start Your Journey
+                </Link>
+                <Link
+                  to="/dashboard"
+                  className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition-colors duration-200"
+                >
+                  Try Demo
+                </Link>
+              </div>
+            </motion.div>
+
             {/* Tags */}
             <div className="mt-12 pt-8 border-t">
               <h3 className="text-lg font-semibold mb-4">Tags:</h3>
