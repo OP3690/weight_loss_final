@@ -139,7 +139,7 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log('MongoDB connected successfully');
-  console.log("🚀 Server started and latest code is running");
+  console.log("🚀 Server started and latest code is running - " + new Date().toISOString());
   
   // Start ping service to keep server awake on Render free tier
   if (process.env.NODE_ENV === 'production') {
