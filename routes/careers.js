@@ -37,6 +37,10 @@ const upload = multer({
 // Apply for job
 router.post('/apply', upload.single('cv'), async (req, res) => {
   try {
+    console.log('📝 Processing job application...');
+    console.log('📋 Request body:', req.body);
+    console.log('📎 File:', req.file);
+
     const {
       firstName,
       lastName,
@@ -51,8 +55,13 @@ router.post('/apply', upload.single('cv'), async (req, res) => {
     const cvFile = req.file;
 
     if (!cvFile) {
+      console.log('❌ No CV file uploaded');
       return res.status(400).json({ error: 'CV file is required' });
     }
+
+    console.log('📧 Sending email to:', 'omprakashutaha@gmail.com');
+    console.log('📧 From:', 'onboarding.gooofit@gmail.com');
+    console.log('📧 Subject:', `New Job Application: ${jobTitle} - ${firstName} ${lastName}`);
 
     // Create beautiful email template
     const emailTemplate = `
@@ -265,17 +274,28 @@ router.post('/apply', upload.single('cv'), async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error processing job application:', error);
+    console.error('❌ Error processing job application:', error);
+    console.error('❌ Error details:', {
+      message: error.message,
+      code: error.code,
+      command: error.command,
+      responseCode: error.responseCode,
+      response: error.response,
+      stack: error.stack
+    });
     
     // Clean up uploaded file if email fails
     if (req.file) {
+      console.log('🧹 Cleaning up uploaded file:', req.file.path);
       fs.unlink(req.file.path, (err) => {
-        if (err) console.error('Error deleting uploaded file:', err);
+        if (err) console.error('❌ Error deleting uploaded file:', err);
+        else console.log('✅ Uploaded file cleaned up successfully');
       });
     }
 
     res.status(500).json({ 
-      error: 'Failed to submit application. Please try again.' 
+      error: 'Failed to submit application. Please try again.',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
