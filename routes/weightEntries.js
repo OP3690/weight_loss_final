@@ -3,7 +3,26 @@ const { body, validationResult } = require('express-validator');
 const WeightEntry = require('../models/WeightEntry');
 const User = require('../models/User');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
+
+// Authentication middleware
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+
+  if (!token) {
+    return res.status(401).json({ message: 'Access token required' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET || 'secretkey', (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: 'Invalid or expired token' });
+    }
+    req.user = user;
+    next();
+  });
+};
 
 // Helper function to calculate BMI
 function calculateBMI(weight, height) {
@@ -130,7 +149,7 @@ router.post('/', validateWeightEntry, async (req, res) => {
 });
 
 // Get all weight entries for a user
-router.get('/user/:userId', async (req, res, next) => {
+router.get('/user/:userId', authenticateToken, async (req, res, next) => {
   try {
     const { userId } = req.params;
     const { goalId } = req.query;
@@ -302,7 +321,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // Get weight analytics for a user
-router.get('/user/:userId/analytics', async (req, res) => {
+router.get('/user/:userId/analytics', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.params;
     const { period = '90', startDate, goalId } = req.query; // days, optional startDate, and goalId

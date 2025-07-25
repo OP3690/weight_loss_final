@@ -9,6 +9,24 @@ const WeightEntry = require('../models/WeightEntry');
 const { sendWelcomeEmail, sendPasswordResetEmail, sendRegistrationNotificationEmail, generateOTP } = require('../services/emailService');
 const PasswordReset = require('../models/PasswordReset');
 
+// Authentication middleware
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+
+  if (!token) {
+    return res.status(401).json({ message: 'Access token required' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET || 'secretkey', (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: 'Invalid or expired token' });
+    }
+    req.user = user;
+    next();
+  });
+};
+
 // Validation middleware for full user updates
 const validateUserData = [
   body('name')
@@ -561,7 +579,7 @@ router.post('/test-registration-notification', async (req, res) => {
 });
 
 // Get user by ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
   try {
     // Handle demo user
     if (req.params.id === 'demo') {

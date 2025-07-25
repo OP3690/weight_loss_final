@@ -55,7 +55,18 @@ export const validateApiParams = (params) => {
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
-    // Add any auth tokens here if needed
+    // Add authentication token from localStorage
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser) {
+      try {
+        const user = JSON.parse(currentUser);
+        if (user.token) {
+          config.headers.Authorization = `Bearer ${user.token}`;
+        }
+      } catch (error) {
+        console.error('Error parsing currentUser from localStorage:', error);
+      }
+    }
     return config;
   },
   (error) => {
