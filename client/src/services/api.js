@@ -224,6 +224,18 @@ export const weightEntryAPI = {
   }
 };
 
+// Careers API calls
+export const careersAPI = {
+  applyForJob: async (formData) => {
+    const response = await api.post('/careers/apply', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+};
+
 // Utility functions
 export const calculateBMI = (weight, height) => {
   if (!weight || !height) return null;

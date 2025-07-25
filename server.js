@@ -26,7 +26,8 @@ const corsOptions = {
           'https://weight-management-frontend.vercel.app',
           'https://weight-management-client.vercel.app',
           'http://localhost:3000',
-          'http://localhost:3002'
+          'http://localhost:3002',
+          'http://localhost:3003'
         ];
     
     console.log('CORS request from origin:', origin);

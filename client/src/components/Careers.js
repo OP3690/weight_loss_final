@@ -11,6 +11,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
+import { careersAPI } from '../services/api';
 
 // Import career images
 import careerImg1 from '../assets/austin-chan-ukzHlkoz1IE-unsplash.jpg';
@@ -210,12 +211,9 @@ const Careers = () => {
         }
       });
 
-      const response = await fetch('/api/careers/apply', {
-        method: 'POST',
-        body: formDataToSend
-      });
+      const response = await careersAPI.applyForJob(formDataToSend);
 
-      if (response.ok) {
+      if (response.success) {
         setSubmitStatus('success');
         setFormData({
           firstName: '',
