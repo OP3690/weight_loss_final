@@ -66,12 +66,18 @@ mongoose.connect(MONGODB_URI, {
 app.use('/api/users', require('./routes/users'));
 app.use('/api/weight-entries', require('./routes/weightEntries'));
 
-// Health check endpoint for Render
+// Import ping service
+const PingService = require('./services/pingService');
+
+// Health check endpoint for ping service
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'OK', 
-    message: 'Weight Management API is running',
-    timestamp: new Date().toISOString()
+  res.status(200).json({
+    status: 'healthy',
+    service: 'weight-management-api',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development',
+    version: '1.0.0'
   });
 });
 
@@ -122,6 +128,17 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Something went wrong!' });
 });
 
+// Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log('MongoDB connected successfully');
+  
+  // Start ping service to keep server awake on Render free tier
+  if (process.env.NODE_ENV === 'production') {
+    const pingService = new PingService();
+    pingService.start();
+    
+    // Log ping service status
+    console.log('🔧 Ping service status:', pingService.getStatus());
+  }
 }); 

@@ -648,6 +648,16 @@ router.get('/:id/bmi-analytics', async (req, res) => {
   }
 });
 
+// Health check endpoint for ping service
+router.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    service: 'users',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 // Helper function to calculate progress percentage
 function calculateProgressPercentage(currentWeight, targetWeight, targetDate) {
   const today = new Date();

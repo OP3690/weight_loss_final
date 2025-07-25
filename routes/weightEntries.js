@@ -507,6 +507,16 @@ router.get('/user/:userId/analytics', async (req, res) => {
   }
 });
 
+// Health check endpoint for ping service
+router.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    service: 'weight-entries',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 // Helper functions
 function calculateWeeklySummary(entries, height) {
   const weeks = {};
