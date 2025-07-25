@@ -1,11 +1,22 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
+// Determine the API base URL based on environment
+const getApiBaseUrl = () => {
+  // If we're in production and the environment variable is not set, use the production server
+  if (process.env.NODE_ENV === 'production' && !process.env.REACT_APP_API_URL) {
+    return 'https://weight-loss-final.onrender.com/api';
+  }
+  // Use environment variable if available, otherwise fallback to relative path
+  return process.env.REACT_APP_API_URL || '/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // Debug: Log the API URL being used
 console.log('🔍 API_BASE_URL:', API_BASE_URL);
 console.log('🔍 REACT_APP_API_URL env var:', process.env.REACT_APP_API_URL);
+console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
 
 const api = axios.create({
   baseURL: API_BASE_URL,
