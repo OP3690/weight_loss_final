@@ -6,6 +6,11 @@ console.log('   Transactional Emails: Gmail SMTP (Temporary)');
 console.log('   Marketing Emails: SendMails.io API');
 console.log('   Status: Ready for instant transactional email delivery');
 
+// Generate OTP function
+const generateOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
 // Gmail SMTP Configuration (Temporary for production)
 const createGmailTransporter = () => {
   return nodemailer.createTransport({
@@ -286,5 +291,6 @@ module.exports = {
   sendPasswordResetEmail,
   sendRegistrationNotificationEmail,
   sendEmail,
-  testEmailService
+  testEmailService,
+  generateOTP
 }; 
