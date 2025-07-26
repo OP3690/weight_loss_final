@@ -2,44 +2,37 @@ const nodemailer = require('nodemailer');
 
 // Log email configuration
 console.log('📧 Email Configuration:');
-console.log('   Transactional Emails: GoDaddy SMTP (Direct)');
+console.log('   Transactional Emails: Gmail SMTP (Temporary)');
 console.log('   Marketing Emails: SendMails.io API');
 console.log('   Status: Ready for instant transactional email delivery');
 
-// GoDaddy SMTP Configuration (Primary for transactional emails)
-const createGoDaddyTransporter = () => {
+// Gmail SMTP Configuration (Temporary for production)
+const createGmailTransporter = () => {
   return nodemailer.createTransport({
-    host: 'smtpout.secureserver.net',
-    port: 465,
-    secure: true,
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
     auth: {
-      user: process.env.EMAIL_USER || 'support@gooofit.com',
-      pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
+      user: process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com',
+      pass: process.env.EMAIL_PASSWORD || 'yabi ffau orlt lguq'
     },
     tls: {
-      rejectUnauthorized: false,
-      ciphers: 'SSLv3'
-    },
-    debug: true,
-    logger: true,
-    requireTLS: true,
-    connectionTimeout: 60000,
-    greetingTimeout: 30000,
-    socketTimeout: 60000
+      rejectUnauthorized: false
+    }
   });
 };
 
 /**
- * Send welcome email using direct GoDaddy SMTP for instant delivery
+ * Send welcome email using Gmail SMTP for instant delivery
  * @param {string} to - Recipient email address
  * @param {string} name - Recipient name
  * @returns {Promise<Object>} API response
  */
 async function sendWelcomeEmail(to, name) {
   try {
-    console.log('📧 Sending welcome email via GoDaddy SMTP...');
+    console.log('📧 Sending welcome email via Gmail SMTP...');
     
-    const transporter = createGoDaddyTransporter();
+    const transporter = createGmailTransporter();
     
     const html = `
       <!DOCTYPE html>
@@ -68,20 +61,20 @@ async function sendWelcomeEmail(to, name) {
     `;
     
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'support@gooofit.com',
+      from: process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com',
       to: to,
       subject: 'Welcome to GoooFit! 🎉',
       html: html
     };
     
     const info = await transporter.sendMail(mailOptions);
-    console.log('✅ Welcome email sent successfully via GoDaddy SMTP');
+    console.log('✅ Welcome email sent successfully via Gmail SMTP');
     console.log('   Message ID:', info.messageId);
     
     return {
       success: true,
       messageId: info.messageId,
-      method: 'GoDaddy SMTP (Direct)'
+      method: 'Gmail SMTP (Temporary)'
     };
     
   } catch (error) {
@@ -94,7 +87,7 @@ async function sendWelcomeEmail(to, name) {
 }
 
 /**
- * Send password reset email using direct GoDaddy SMTP for instant delivery
+ * Send password reset email using Gmail SMTP for instant delivery
  * @param {string} to - Recipient email address
  * @param {string} resetToken - Password reset token
  * @param {string} name - Recipient name (optional)
@@ -102,9 +95,9 @@ async function sendWelcomeEmail(to, name) {
  */
 async function sendPasswordResetEmail(to, resetToken, name = 'User') {
   try {
-    console.log('📧 Sending password reset email via GoDaddy SMTP...');
+    console.log('📧 Sending password reset email via Gmail SMTP...');
     
-    const transporter = createGoDaddyTransporter();
+    const transporter = createGmailTransporter();
     
     const resetUrl = `${process.env.CLIENT_URL || 'https://gooofit.com'}/reset-password?token=${resetToken}`;
     
@@ -135,20 +128,20 @@ async function sendPasswordResetEmail(to, resetToken, name = 'User') {
     `;
     
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'support@gooofit.com',
+      from: process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com',
       to: to,
       subject: 'Password Reset Request - GoooFit',
       html: html
     };
     
     const info = await transporter.sendMail(mailOptions);
-    console.log('✅ Password reset email sent successfully via GoDaddy SMTP');
+    console.log('✅ Password reset email sent successfully via Gmail SMTP');
     console.log('   Message ID:', info.messageId);
     
     return {
       success: true,
       messageId: info.messageId,
-      method: 'GoDaddy SMTP (Direct)'
+      method: 'Gmail SMTP (Temporary)'
     };
     
   } catch (error) {
@@ -161,16 +154,16 @@ async function sendPasswordResetEmail(to, resetToken, name = 'User') {
 }
 
 /**
- * Send registration notification email using direct GoDaddy SMTP for instant delivery
+ * Send registration notification email using Gmail SMTP for instant delivery
  * @param {string} to - Recipient email address
  * @param {string} name - Recipient name
  * @returns {Promise<Object>} API response
  */
 async function sendRegistrationNotificationEmail(to, name) {
   try {
-    console.log('📧 Sending registration notification email via GoDaddy SMTP...');
+    console.log('📧 Sending registration notification email via Gmail SMTP...');
     
-    const transporter = createGoDaddyTransporter();
+    const transporter = createGmailTransporter();
     
     const html = `
       <!DOCTYPE html>
@@ -196,20 +189,20 @@ async function sendRegistrationNotificationEmail(to, name) {
     `;
     
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'support@gooofit.com',
+      from: process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com',
       to: to,
       subject: 'New User Registration - GoooFit',
       html: html
     };
     
     const info = await transporter.sendMail(mailOptions);
-    console.log('✅ Registration notification email sent successfully via GoDaddy SMTP');
+    console.log('✅ Registration notification email sent successfully via Gmail SMTP');
     console.log('   Message ID:', info.messageId);
     
     return {
       success: true,
       messageId: info.messageId,
-      method: 'GoDaddy SMTP (Direct)'
+      method: 'Gmail SMTP (Temporary)'
     };
     
   } catch (error) {
@@ -222,18 +215,18 @@ async function sendRegistrationNotificationEmail(to, name) {
 }
 
 /**
- * Send generic email using direct GoDaddy SMTP for instant delivery
+ * Send generic email using Gmail SMTP for instant delivery
  * @param {Object} emailData - Email data object
  * @returns {Promise<Object>} API response
  */
 async function sendEmail(emailData) {
   try {
-    console.log('📧 Sending generic email via GoDaddy SMTP...');
+    console.log('📧 Sending generic email via Gmail SMTP...');
     
-    const transporter = createGoDaddyTransporter();
+    const transporter = createGmailTransporter();
     
     const mailOptions = {
-      from: emailData.from || process.env.EMAIL_USER || 'support@gooofit.com',
+      from: emailData.from || process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com',
       to: emailData.to,
       subject: emailData.subject,
       html: emailData.html,
@@ -241,13 +234,13 @@ async function sendEmail(emailData) {
     };
     
     const info = await transporter.sendMail(mailOptions);
-    console.log('✅ Generic email sent successfully via GoDaddy SMTP');
+    console.log('✅ Generic email sent successfully via Gmail SMTP');
     console.log('   Message ID:', info.messageId);
     
     return {
       success: true,
       messageId: info.messageId,
-      method: 'GoDaddy SMTP (Direct)'
+      method: 'Gmail SMTP (Temporary)'
     };
     
   } catch (error) {
@@ -260,23 +253,23 @@ async function sendEmail(emailData) {
 }
 
 /**
- * Test email service (GoDaddy SMTP only)
+ * Test email service (Gmail SMTP only)
  * @returns {Promise<Object>} Test result
  */
 async function testEmailService() {
   try {
-    console.log('🧪 Testing email service (GoDaddy SMTP)...');
+    console.log('🧪 Testing email service (Gmail SMTP)...');
     
-    // Test GoDaddy SMTP
-    console.log('1️⃣ Testing GoDaddy SMTP...');
-    const transporter = createGoDaddyTransporter();
+    // Test Gmail SMTP
+    console.log('1️⃣ Testing Gmail SMTP...');
+    const transporter = createGmailTransporter();
     const smtpTest = await transporter.verify();
     console.log('   SMTP Test:', smtpTest ? '✅ SUCCESS' : '❌ FAILED');
     
     return {
       success: smtpTest,
       smtp: { success: smtpTest },
-      message: 'Email service test completed (GoDaddy SMTP only)'
+      message: 'Email service test completed (Gmail SMTP only)'
     };
     
   } catch (error) {
