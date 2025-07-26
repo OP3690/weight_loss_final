@@ -12,6 +12,148 @@ const generateOTP = () => {
 };
 
 // Get country flag emoji
+// Convert country code to country name
+const getCountryName = (countryCode) => {
+  const countryMap = {
+    'IN': 'India',
+    'US': 'United States',
+    'UK': 'United Kingdom',
+    'CA': 'Canada',
+    'AU': 'Australia',
+    'DE': 'Germany',
+    'FR': 'France',
+    'JP': 'Japan',
+    'CN': 'China',
+    'BR': 'Brazil',
+    'MX': 'Mexico',
+    'ES': 'Spain',
+    'IT': 'Italy',
+    'NL': 'Netherlands',
+    'SE': 'Sweden',
+    'NO': 'Norway',
+    'DK': 'Denmark',
+    'FI': 'Finland',
+    'CH': 'Switzerland',
+    'AT': 'Austria',
+    'BE': 'Belgium',
+    'PT': 'Portugal',
+    'GR': 'Greece',
+    'PL': 'Poland',
+    'CZ': 'Czech Republic',
+    'HU': 'Hungary',
+    'RO': 'Romania',
+    'BG': 'Bulgaria',
+    'HR': 'Croatia',
+    'SI': 'Slovenia',
+    'SK': 'Slovakia',
+    'EE': 'Estonia',
+    'LV': 'Latvia',
+    'LT': 'Lithuania',
+    'IE': 'Ireland',
+    'NZ': 'New Zealand',
+    'ZA': 'South Africa',
+    'AR': 'Argentina',
+    'CL': 'Chile',
+    'CO': 'Colombia',
+    'PE': 'Peru',
+    'VE': 'Venezuela',
+    'UY': 'Uruguay',
+    'PY': 'Paraguay',
+    'EC': 'Ecuador',
+    'BO': 'Bolivia',
+    'GY': 'Guyana',
+    'SR': 'Suriname',
+    'KR': 'South Korea',
+    'KP': 'North Korea',
+    'VN': 'Vietnam',
+    'TH': 'Thailand',
+    'MY': 'Malaysia',
+    'SG': 'Singapore',
+    'ID': 'Indonesia',
+    'PH': 'Philippines',
+    'TW': 'Taiwan',
+    'HK': 'Hong Kong',
+    'MO': 'Macau',
+    'MN': 'Mongolia',
+    'KZ': 'Kazakhstan',
+    'UZ': 'Uzbekistan',
+    'KG': 'Kyrgyzstan',
+    'TJ': 'Tajikistan',
+    'TM': 'Turkmenistan',
+    'AF': 'Afghanistan',
+    'PK': 'Pakistan',
+    'BD': 'Bangladesh',
+    'LK': 'Sri Lanka',
+    'NP': 'Nepal',
+    'BT': 'Bhutan',
+    'MV': 'Maldives',
+    'MM': 'Myanmar',
+    'LA': 'Laos',
+    'KH': 'Cambodia',
+    'BN': 'Brunei',
+    'TL': 'East Timor',
+    'PG': 'Papua New Guinea',
+    'FJ': 'Fiji',
+    'WS': 'Samoa',
+    'TO': 'Tonga',
+    'VU': 'Vanuatu',
+    'SB': 'Solomon Islands',
+    'KI': 'Kiribati',
+    'TV': 'Tuvalu',
+    'NR': 'Nauru',
+    'PW': 'Palau',
+    'MH': 'Marshall Islands',
+    'FM': 'Micronesia',
+    'CK': 'Cook Islands',
+    'NU': 'Niue',
+    'TK': 'Tokelau',
+    'AS': 'American Samoa',
+    'GU': 'Guam',
+    'MP': 'Northern Mariana Islands',
+    'PF': 'French Polynesia',
+    'NC': 'New Caledonia',
+    'WF': 'Wallis and Futuna',
+    'PN': 'Pitcairn',
+    'BM': 'Bermuda',
+    'KY': 'Cayman Islands',
+    'TC': 'Turks and Caicos',
+    'VG': 'British Virgin Islands',
+    'VI': 'US Virgin Islands',
+    'PR': 'Puerto Rico',
+    'DO': 'Dominican Republic',
+    'HT': 'Haiti',
+    'JM': 'Jamaica',
+    'CU': 'Cuba',
+    'BS': 'Bahamas',
+    'BB': 'Barbados',
+    'TT': 'Trinidad and Tobago',
+    'GD': 'Grenada',
+    'VC': 'Saint Vincent',
+    'LC': 'Saint Lucia',
+    'AG': 'Antigua and Barbuda',
+    'KN': 'Saint Kitts',
+    'DM': 'Dominica',
+    'MS': 'Montserrat',
+    'AI': 'Anguilla',
+    'AW': 'Aruba',
+    'CW': 'Curacao',
+    'SX': 'Sint Maarten',
+    'BQ': 'Bonaire',
+    'GL': 'Greenland',
+    'IS': 'Iceland',
+    'FO': 'Faroe Islands',
+    'GS': 'South Georgia',
+    'FK': 'Falkland Islands',
+    'BV': 'Bouvet Island',
+    'HM': 'Heard Island',
+    'TF': 'French Southern Territories',
+    'AQ': 'Antarctica',
+    'Unknown': 'Unknown'
+  };
+  
+  return countryMap[countryCode] || countryCode;
+};
+
 const getCountryFlag = (countryName) => {
   const countryFlags = {
     'India': '🇮🇳',
@@ -430,7 +572,7 @@ async function sendPasswordResetEmail(to, resetToken, name = 'User') {
  * @param {string} name - Recipient name
  * @returns {Promise<Object>} API response
  */
-async function sendRegistrationNotificationEmail(to, name, country = 'Unknown') {
+async function sendRegistrationNotificationEmail(adminEmail, userName, userEmail, country = 'Unknown') {
   try {
     console.log('📧 Sending registration notification email via Gmail SMTP...');
     
@@ -467,9 +609,9 @@ async function sendRegistrationNotificationEmail(to, name, country = 'Unknown') 
             <div style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border-radius: 12px; padding: 30px; margin: 30px 0;">
               <h3 style="color: #ea580c; margin: 0 0 20px 0; font-size: 20px; font-weight: 600;">👤 New User Details:</h3>
               <div style="color: #b45309; font-size: 16px;">
-                <p style="margin: 10px 0;"><strong>📝 Name:</strong> ${name}</p>
-                <p style="margin: 10px 0;"><strong>📧 Email:</strong> ${to}</p>
-                <p style="margin: 10px 0;"><strong>🌍 Country:</strong> ${getCountryFlag(country)} ${country}</p>
+                <p style="margin: 10px 0;"><strong>📝 Name:</strong> ${userName}</p>
+                <p style="margin: 10px 0;"><strong>📧 Email:</strong> ${userEmail}</p>
+                <p style="margin: 10px 0;"><strong>🌍 Country:</strong> ${getCountryFlag(getCountryName(country))} ${getCountryName(country)}</p>
                 <p style="margin: 10px 0;"><strong>📅 Registration Date:</strong> ${new Date().toLocaleDateString()}</p>
                 <p style="margin: 10px 0;"><strong>⏰ Registration Time:</strong> ${new Date().toLocaleTimeString()}</p>
               </div>
@@ -500,7 +642,7 @@ async function sendRegistrationNotificationEmail(to, name, country = 'Unknown') 
     
     const mailOptions = {
       from: `"GoooFit Admin" <${process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com'}>`,
-      to: to,
+      to: adminEmail,
       subject: 'New User Registration - GoooFit',
       html: html
     };

@@ -285,6 +285,7 @@ router.post('/register', [
       const notificationResult = await sendRegistrationNotificationEmail(
         'omprakashutaha@gmail.com', // Admin email
         user.name,
+        user.email,
         user.country
       );
       
