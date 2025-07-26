@@ -8,14 +8,17 @@ const UserSuccessCards = () => {
   const [error, setError] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const intervalRef = useRef(null);
+  const batchIntervalRef = useRef(null);
 
   // Fetch user success stories from API
   const fetchUserSuccessStories = async () => {
     try {
-      // Fetch all stories to have maximum variety
-      const response = await api.get('/user-success?limit=500');
+      console.log('🔄 Fetching new batch of user success stories...');
+      // Fetch a random batch of stories (limit=50 for variety but not too heavy)
+      const response = await api.get('/user-success?limit=50');
       
       if (response.data.success) {
+        console.log(`✅ Fetched ${response.data.data.length} new stories`);
         setCurrentStories(response.data.data);
         setError(null);
       } else {
@@ -104,6 +107,7 @@ const UserSuccessCards = () => {
       }
     }, 5000); // 5 second timeout
 
+    // Initial fetch
     fetchUserSuccessStories();
     
     // Set up interval for rotating stories every 4 seconds
@@ -112,10 +116,19 @@ const UserSuccessCards = () => {
       setCurrentIndex(prevIndex => prevIndex + 1);
     }, 4000);
 
+    // Set up interval for fetching new batch every 3 minutes (180 seconds)
+    batchIntervalRef.current = setInterval(() => {
+      console.log('⏰ Time to fetch new batch of stories...');
+      fetchUserSuccessStories();
+    }, 180000); // 3 minutes
+
     return () => {
       clearTimeout(timeoutId);
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
+      }
+      if (batchIntervalRef.current) {
+        clearInterval(batchIntervalRef.current);
       }
     };
   }, []); // Remove dependency on currentStories.length

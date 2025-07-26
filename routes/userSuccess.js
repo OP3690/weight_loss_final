@@ -7,12 +7,16 @@ router.get('/', async (req, res) => {
   try {
     const { limit = 10 } = req.query;
     
-    // Get random active user success stories
+    // Get random active user success stories with better randomization
     const userSuccessStories = await UserSuccess.aggregate([
       { $match: { isActive: true } },
-      { $sample: { size: parseInt(limit) } },
-      { $sort: { createdAt: -1 } }
+      { $addFields: { randomSort: { $rand: {} } } }, // Add random field for better randomization
+      { $sort: { randomSort: 1 } }, // Sort by random field
+      { $limit: parseInt(limit) }, // Limit the results
+      { $project: { randomSort: 0 } } // Remove the random field from output
     ]);
+
+    console.log(`📊 Fetched ${userSuccessStories.length} random user success stories`);
 
     res.json({
       success: true,
