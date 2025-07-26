@@ -1,10 +1,10 @@
 const nodemailer = require('nodemailer');
 
-// Create transporter with environment variables (using GoDaddy SMTP with LOGIN auth)
+// Create transporter with environment variables (using GoDaddy SMTP with port 25)
 const transporter = nodemailer.createTransport({
   host: 'smtpout.secureserver.net', // GoDaddy SMTP server
-  port: 587,
-  secure: false, // Use STARTTLS for port 587
+  port: 25,
+  secure: false, // No encryption for port 25
   auth: {
     user: process.env.EMAIL_USER || 'support@gooofit.com',
     pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
@@ -15,18 +15,18 @@ const transporter = nodemailer.createTransport({
   },
   debug: true, // Enable debug output
   logger: true, // Log to console
-  requireTLS: true,
+  requireTLS: false,
   connectionTimeout: 60000,
   greetingTimeout: 30000,
   socketTimeout: 60000
 });
 
-// Alternative GoDaddy SMTP configuration (port 465 SSL with PLAIN auth)
+// Alternative GoDaddy SMTP configuration (port 587 with STARTTLS)
 const createAlternativeGoDaddyTransporter = () => {
   return nodemailer.createTransport({
     host: 'smtpout.secureserver.net',
-    port: 465,
-    secure: true, // Use SSL for port 465
+    port: 587,
+    secure: false, // Use STARTTLS for port 587
     auth: {
       user: process.env.EMAIL_USER || 'support@gooofit.com',
       pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
