@@ -1424,4 +1424,27 @@ router.post('/verify-otp', [
   }
 });
 
+// Add test endpoint for SendMails.io API
+router.get('/test-sendmails', async (req, res) => {
+  try {
+    const emailService = require('../services/emailService');
+    const result = await emailService.testEmailService();
+    
+    res.json({
+      success: result.success,
+      message: result.success ? 'SendMails.io API test successful' : 'SendMails.io API test failed',
+      timestamp: new Date().toISOString(),
+      details: result
+    });
+  } catch (error) {
+    console.error('❌ Error testing SendMails.io API:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to test SendMails.io API',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router; 
