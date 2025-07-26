@@ -24,7 +24,54 @@ async function sendWelcomeEmail(to, name) {
   try {
     console.log('📧 SendMails.io: Sending welcome email to', to);
     
-    // Create a simple campaign for welcome email
+    // First, create or get a list
+    console.log('   Creating/getting list...');
+    const listData = {
+      api_token: SENDMAILS_API_TOKEN,
+      name: 'GoooFit Users',
+      description: 'GoooFit application users',
+      from_email: 'support@gooofit.com',
+      from_name: 'GoooFit Team'
+    };
+    
+    let listResponse;
+    try {
+      listResponse = await sendMailsAPI.post('/lists', listData);
+      console.log('   List created:', listResponse.data);
+    } catch (error) {
+      console.log('   List creation failed, trying to get existing lists...');
+      // If list creation fails, try to get existing lists
+      const listsResponse = await sendMailsAPI.get('/lists', {
+        params: { api_token: SENDMAILS_API_TOKEN }
+      });
+      
+      if (listsResponse.data && listsResponse.data.length > 0) {
+        listResponse = { data: listsResponse.data[0] };
+        console.log('   Using existing list:', listResponse.data);
+      } else {
+        throw new Error('Failed to create or find a list');
+      }
+    }
+    
+    const listUid = listResponse.data.uid;
+    console.log('   List UID:', listUid);
+    
+    // Add subscriber to the list
+    console.log('   Adding subscriber...');
+    const subscriberData = {
+      api_token: SENDMAILS_API_TOKEN,
+      EMAIL: to,
+      first_name: name,
+      last_name: '',
+      status: 'subscribed',
+      list_uid: listUid
+    };
+    
+    const subscriberResponse = await sendMailsAPI.post('/subscribers', subscriberData);
+    console.log('   Subscriber added:', subscriberResponse.data);
+    
+    // Create campaign
+    console.log('   Creating campaign...');
     const campaignData = {
       api_token: SENDMAILS_API_TOKEN,
       name: `Welcome Email - ${name}`,
@@ -57,7 +104,7 @@ async function sendWelcomeEmail(to, name) {
       from_name: 'GoooFit Team',
       from_email: 'support@gooofit.com',
       reply_to: 'support@gooofit.com',
-      recipients: [to]
+      list_uid: listUid
     };
     
     const response = await sendMailsAPI.post('/campaigns', campaignData);
