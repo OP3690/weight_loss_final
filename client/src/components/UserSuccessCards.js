@@ -12,7 +12,8 @@ const UserSuccessCards = () => {
   // Fetch user success stories from API
   const fetchUserSuccessStories = async () => {
     try {
-      const response = await api.get('/user-success?limit=10');
+      // Fetch more stories to have better variety
+      const response = await api.get('/user-success?limit=50');
       
       if (response.data.success) {
         setCurrentStories(response.data.data);
@@ -105,9 +106,10 @@ const UserSuccessCards = () => {
 
     fetchUserSuccessStories();
     
-    // Set up interval for rotating stories
+    // Set up interval for rotating stories every 4 seconds
     intervalRef.current = setInterval(() => {
-      setCurrentIndex(prevIndex => (prevIndex + 1) % Math.max(currentStories.length, 1));
+      // Force re-render to show new random stories
+      setCurrentIndex(prevIndex => prevIndex + 1);
     }, 4000);
 
     return () => {
@@ -116,7 +118,7 @@ const UserSuccessCards = () => {
         clearInterval(intervalRef.current);
       }
     };
-  }, [currentStories.length]);
+  }, []); // Remove dependency on currentStories.length
 
   // Loading state
   if (isLoading) {
@@ -211,11 +213,13 @@ const UserSuccessCards = () => {
     return 'bg-green-400';
   };
 
-  // Get current stories to display (2 at a time)
+  // Get current stories to display (2 at a time) with random selection
   const getCurrentStories = () => {
-    const story1 = currentStories[currentIndex];
-    const story2 = currentStories[(currentIndex + 1) % currentStories.length];
-    return [story1, story2].filter(Boolean);
+    if (currentStories.length === 0) return [];
+    
+    // Get 2 random stories from the available pool
+    const shuffled = [...currentStories].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 2);
   };
 
   const currentDisplayStories = getCurrentStories();
@@ -224,7 +228,7 @@ const UserSuccessCards = () => {
     <div className="relative w-full max-w-6xl mx-auto">
       <AnimatePresence mode="wait">
         <motion.div
-          key={currentIndex}
+          key={`stories-${currentIndex}`}
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -308,19 +312,13 @@ const UserSuccessCards = () => {
         </motion.div>
       </AnimatePresence>
 
-      {/* Navigation Dots */}
-      <div className="flex justify-center mt-6 space-x-2">
-        {currentStories.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => setCurrentIndex(idx)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              idx === currentIndex 
-                ? 'bg-orange-500 scale-125' 
-                : 'bg-gray-300 hover:bg-gray-400'
-            }`}
-          />
-        ))}
+      {/* Auto-rotating indicator */}
+      <div className="flex justify-center mt-6">
+        <div className="flex items-center space-x-2">
+          <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+          <span className="text-sm text-gray-600">Auto-rotating success stories</span>
+          <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+        </div>
       </div>
     </div>
   );
