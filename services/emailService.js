@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-// Create transporter with environment variables (using GoDaddy SMTP)
+// Create transporter with environment variables (using GoDaddy SMTP with enhanced settings)
 const transporter = nodemailer.createTransport({
   host: 'smtpout.secureserver.net', // GoDaddy SMTP server
   port: 465,
@@ -10,13 +10,18 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
   },
   tls: {
-    rejectUnauthorized: false
+    rejectUnauthorized: false,
+    ciphers: 'SSLv3'
   },
   debug: true, // Enable debug output
-  logger: true // Log to console
+  logger: true, // Log to console
+  requireTLS: true,
+  connectionTimeout: 60000,
+  greetingTimeout: 30000,
+  socketTimeout: 60000
 });
 
-// Alternative GoDaddy SMTP configuration (port 587)
+// Alternative GoDaddy SMTP configuration (port 587 with STARTTLS)
 const createAlternativeGoDaddyTransporter = () => {
   return nodemailer.createTransport({
     host: 'smtpout.secureserver.net',
@@ -27,14 +32,19 @@ const createAlternativeGoDaddyTransporter = () => {
       pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
     },
     tls: {
-      rejectUnauthorized: false
+      rejectUnauthorized: false,
+      ciphers: 'SSLv3'
     },
     debug: true,
-    logger: true
+    logger: true,
+    requireTLS: true,
+    connectionTimeout: 60000,
+    greetingTimeout: 30000,
+    socketTimeout: 60000
   });
 };
 
-// Alternative GoDaddy SMTP server
+// Alternative GoDaddy SMTP server with different settings
 const createAlternativeGoDaddyServer = () => {
   return nodemailer.createTransport({
     host: 'smtp.secureserver.net', // Alternative GoDaddy server
@@ -45,25 +55,24 @@ const createAlternativeGoDaddyServer = () => {
       pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
     },
     tls: {
-      rejectUnauthorized: false
+      rejectUnauthorized: false,
+      ciphers: 'SSLv3'
     },
     debug: true,
-    logger: true
+    logger: true,
+    requireTLS: true,
+    connectionTimeout: 60000,
+    greetingTimeout: 30000,
+    socketTimeout: 60000
   });
 };
 
-// Log email configuration (without password)
-console.log('📧 Email Configuration:');
-console.log('   Host:', 'smtpout.secureserver.net');
-console.log('   User:', process.env.EMAIL_USER || 'support@gooofit.com');
-console.log('   Password:', process.env.EMAIL_PASSWORD ? '***SET***' : '***NOT SET***');
-
-// Alternative transporter for testing different configurations (port 587 as backup)
+// Alternative configuration with different authentication method
 const createAlternativeTransporter = () => {
   return nodemailer.createTransport({
     host: 'smtpout.secureserver.net',
-    port: 587,
-    secure: false, // Use STARTTLS for port 587
+    port: 465,
+    secure: true,
     auth: {
       user: process.env.EMAIL_USER || 'support@gooofit.com',
       pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
@@ -73,9 +82,18 @@ const createAlternativeTransporter = () => {
     },
     debug: true,
     logger: true,
-    authMethod: 'LOGIN' // Try LOGIN method for port 587
+    requireTLS: false,
+    connectionTimeout: 60000,
+    greetingTimeout: 30000,
+    socketTimeout: 60000
   });
 };
+
+// Log email configuration (without password)
+console.log('📧 Email Configuration:');
+console.log('   Host:', 'smtpout.secureserver.net');
+console.log('   User:', process.env.EMAIL_USER || 'support@gooofit.com');
+console.log('   Password:', process.env.EMAIL_PASSWORD ? '***SET***' : '***NOT SET***');
 
 // Create transporter with different authentication methods
 const createTransporterWithAuth = (authMethod) => {
@@ -304,7 +322,7 @@ const getCountryFlag = (countryName) => {
     'Estonia': '🇪🇪',
     'Poland': '🇵🇱',
     'Czech Republic': '🇨🇿',
-    'Slovakia': '🇸🇰',
+    'Slovakia': '🇸��',
     'Hungary': '🇭🇺',
     'Romania': '🇷🇴',
     'Bulgaria': '🇧🇬',
