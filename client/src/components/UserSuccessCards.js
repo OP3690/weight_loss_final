@@ -12,8 +12,8 @@ const UserSuccessCards = () => {
   // Fetch user success stories from API
   const fetchUserSuccessStories = async () => {
     try {
-      // Fetch more stories to have better variety
-      const response = await api.get('/user-success?limit=50');
+      // Fetch all stories to have maximum variety
+      const response = await api.get('/user-success?limit=500');
       
       if (response.data.success) {
         setCurrentStories(response.data.data);
@@ -218,7 +218,12 @@ const UserSuccessCards = () => {
     if (currentStories.length === 0) return [];
     
     // Get 2 random stories from the available pool
-    const shuffled = [...currentStories].sort(() => 0.5 - Math.random());
+    // Use currentIndex to ensure different stories each time
+    const randomSeed = currentIndex + Date.now();
+    const shuffled = [...currentStories].sort(() => {
+      // Use a more random approach with multiple factors
+      return Math.sin(randomSeed + Math.random()) * Math.cos(randomSeed + Math.random());
+    });
     return shuffled.slice(0, 2);
   };
 
@@ -312,11 +317,10 @@ const UserSuccessCards = () => {
         </motion.div>
       </AnimatePresence>
 
-      {/* Auto-rotating indicator */}
+      {/* Simple indicator */}
       <div className="flex justify-center mt-6">
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
-          <span className="text-sm text-gray-600">Auto-rotating success stories</span>
           <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
         </div>
       </div>
