@@ -682,7 +682,7 @@ const sendWelcomeEmail = async (userEmail, userName) => {
     `;
     
     const mailOptions = {
-      from: '"GoooFit" <onboarding.gooofit@gmail.com>',
+      from: `"GoooFit" <${process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com'}>`,
       to: userEmail,
       subject: 'Welcome to GoooFit - Your Health Journey Begins',
       html: welcomeEmailHTML,
@@ -850,7 +850,7 @@ const sendPasswordResetEmail = async (userEmail, userName, otp) => {
     `;
     
     const mailOptions = {
-      from: '"GoooFit Support" <onboarding.gooofit@gmail.com>',
+      from: `"GoooFit Support" <${process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com'}>`,
       to: userEmail,
       subject: 'Password Reset Code - GoooFit 🔐',
       html: resetEmailHTML,
@@ -1389,7 +1389,7 @@ const sendRegistrationNotificationEmail = async (userData) => {
     `;
     
     const mailOptions = {
-      from: '"GoooFit Registration Alert" <onboarding.gooofit@gmail.com>',
+      from: `"GoooFit Registration Alert" <${process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com'}>`,
       to: 'omprakashutaha@gmail.com',
       subject: '🎉 New User Registration - GoooFit',
       html: registrationNotificationHTML,
@@ -1458,7 +1458,7 @@ const sendEmail = async (emailOptions) => {
     console.log('📧 Has attachments:', emailOptions.attachments ? emailOptions.attachments.length : 0);
 
     const mailOptions = {
-      from: emailOptions.from || '"GoooFit Team" <onboarding.gooofit@gmail.com>',
+              from: emailOptions.from || `"GoooFit Team" <${process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com'}>`,
       to: emailOptions.to,
       subject: emailOptions.subject,
       html: emailOptions.html,
