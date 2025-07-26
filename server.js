@@ -93,28 +93,46 @@ app.get('/api/health', (req, res) => {
 // Email test endpoint
 app.get('/api/test-email', async (req, res) => {
   try {
-    const { testEmailConfig } = require('./services/emailService');
-    const result = await testEmailConfig();
+    const { testEmailService } = require('./services/emailService');
+    const result = await testEmailService();
     res.json({
-      success: result,
-      message: result ? 'Email configuration is working' : 'Email configuration failed',
-      timestamp: new Date().toISOString(),
-      troubleshooting: result ? null : {
-        steps: [
-          '1. Check GoDaddy email password in Render environment variables',
-          '2. Verify email account is active and not suspended',
-          '3. Try using an app-specific password if available',
-          '4. Check if SMTP is enabled in GoDaddy email settings',
-          '5. Contact GoDaddy support if authentication continues to fail'
-        ]
-      }
+      success: result.success,
+      message: result.message,
+      api: result.api,
+      smtp: result.smtp
     });
   } catch (error) {
+    console.error('❌ Email service test error:', error);
     res.status(500).json({
       success: false,
-      message: 'Email test failed',
-      error: error.message,
-      timestamp: new Date().toISOString()
+      message: 'Email service test failed',
+      error: error.message
+    });
+  }
+});
+
+// SendMails.io API test endpoint
+app.get('/api/test-sendmails', async (req, res) => {
+  try {
+    console.log('🧪 Testing SendMails.io API...');
+    
+    const { testSendMailsConnection } = require('./services/sendMailsService');
+    const result = await testSendMailsConnection();
+    
+    console.log('📊 SendMails.io API test result:', result);
+    
+    res.json({
+      success: result.success,
+      message: result.message,
+      data: result.data
+    });
+    
+  } catch (error) {
+    console.error('❌ SendMails.io API test error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'SendMails.io API test failed',
+      error: error.message
     });
   }
 });

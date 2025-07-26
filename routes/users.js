@@ -1424,7 +1424,7 @@ router.post('/verify-otp', [
   }
 });
 
-// Test email service endpoint
+// Test email service endpoint (no authentication required)
 router.get('/test-email', async (req, res) => {
   try {
     console.log('🧪 Testing email service...');
@@ -1451,7 +1451,7 @@ router.get('/test-email', async (req, res) => {
   }
 });
 
-// Test SendMails.io API endpoint
+// Test SendMails.io API endpoint (no authentication required)
 router.get('/test-sendmails', async (req, res) => {
   try {
     console.log('🧪 Testing SendMails.io API...');
