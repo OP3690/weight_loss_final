@@ -11,8 +11,197 @@ const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
+// Get country flag emoji
+const getCountryFlag = (countryName) => {
+  const countryFlags = {
+    'India': '🇮🇳',
+    'United States': '🇺🇸',
+    'United Kingdom': '🇬🇧',
+    'Canada': '🇨🇦',
+    'Australia': '🇦🇺',
+    'Germany': '🇩🇪',
+    'France': '🇫🇷',
+    'Japan': '🇯🇵',
+    'China': '🇨🇳',
+    'Brazil': '🇧🇷',
+    'Mexico': '🇲🇽',
+    'Spain': '🇪🇸',
+    'Italy': '🇮🇹',
+    'Netherlands': '🇳🇱',
+    'Sweden': '🇸🇪',
+    'Norway': '🇳🇴',
+    'Denmark': '🇩🇰',
+    'Finland': '🇫🇮',
+    'Switzerland': '🇨🇭',
+    'Austria': '🇦🇹',
+    'Belgium': '🇧🇪',
+    'Portugal': '🇵🇹',
+    'Greece': '🇬🇷',
+    'Poland': '🇵🇱',
+    'Czech Republic': '🇨🇿',
+    'Hungary': '🇭🇺',
+    'Romania': '🇷🇴',
+    'Bulgaria': '🇧🇬',
+    'Croatia': '🇭🇷',
+    'Slovenia': '🇸🇮',
+    'Slovakia': '🇸🇰',
+    'Estonia': '🇪🇪',
+    'Latvia': '🇱🇻',
+    'Lithuania': '🇱🇹',
+    'Ireland': '🇮🇪',
+    'New Zealand': '🇳🇿',
+    'South Africa': '🇿🇦',
+    'Argentina': '🇦🇷',
+    'Chile': '🇨🇱',
+    'Colombia': '🇨🇴',
+    'Peru': '🇵🇪',
+    'Venezuela': '🇻🇪',
+    'Uruguay': '🇺🇾',
+    'Paraguay': '🇵🇾',
+    'Ecuador': '🇪🇨',
+    'Bolivia': '🇧🇴',
+    'Guyana': '🇬🇾',
+    'Suriname': '🇸🇷',
+    'French Guiana': '🇬🇫',
+    'Falkland Islands': '🇫🇰',
+    'South Korea': '🇰🇷',
+    'North Korea': '🇰🇵',
+    'Vietnam': '🇻🇳',
+    'Thailand': '🇹🇭',
+    'Malaysia': '🇲🇾',
+    'Singapore': '🇸🇬',
+    'Indonesia': '🇮🇩',
+    'Philippines': '🇵🇭',
+    'Taiwan': '🇹🇼',
+    'Hong Kong': '🇭🇰',
+    'Macau': '🇲🇴',
+    'Mongolia': '🇲🇳',
+    'Kazakhstan': '🇰🇿',
+    'Uzbekistan': '🇺🇿',
+    'Kyrgyzstan': '🇰🇬',
+    'Tajikistan': '🇹🇯',
+    'Turkmenistan': '🇹🇲',
+    'Afghanistan': '🇦🇫',
+    'Pakistan': '🇵🇰',
+    'Bangladesh': '🇧🇩',
+    'Sri Lanka': '🇱🇰',
+    'Nepal': '🇳🇵',
+    'Bhutan': '🇧🇹',
+    'Maldives': '🇲🇻',
+    'Myanmar': '🇲🇲',
+    'Laos': '🇱🇦',
+    'Cambodia': '🇰🇭',
+    'Brunei': '🇧🇳',
+    'East Timor': '🇹🇱',
+    'Papua New Guinea': '🇵🇬',
+    'Fiji': '🇫🇯',
+    'Samoa': '🇼🇸',
+    'Tonga': '🇹🇴',
+    'Vanuatu': '🇻🇺',
+    'Solomon Islands': '🇸🇧',
+    'Kiribati': '🇰🇮',
+    'Tuvalu': '🇹🇻',
+    'Nauru': '🇳🇷',
+    'Palau': '🇵🇼',
+    'Marshall Islands': '🇲🇭',
+    'Micronesia': '🇫🇲',
+    'Cook Islands': '🇨🇰',
+    'Niue': '🇳🇺',
+    'Tokelau': '🇹🇰',
+    'American Samoa': '🇦🇸',
+    'Guam': '🇬🇺',
+    'Northern Mariana Islands': '🇲🇵',
+    'French Polynesia': '🇵🇫',
+    'New Caledonia': '🇳🇨',
+    'Wallis and Futuna': '🇼🇫',
+    'Pitcairn': '🇵🇳',
+    'Easter Island': '🇨🇱',
+    'Galapagos': '🇪🇨',
+    'Bermuda': '🇧🇲',
+    'Cayman Islands': '🇰🇾',
+    'Turks and Caicos': '🇹🇨',
+    'British Virgin Islands': '🇻🇬',
+    'US Virgin Islands': '🇻🇮',
+    'Puerto Rico': '🇵🇷',
+    'Dominican Republic': '🇩🇴',
+    'Haiti': '🇭🇹',
+    'Jamaica': '🇯🇲',
+    'Cuba': '🇨🇺',
+    'Bahamas': '🇧🇸',
+    'Barbados': '🇧🇧',
+    'Trinidad and Tobago': '🇹🇹',
+    'Grenada': '🇬🇩',
+    'Saint Vincent': '🇻🇨',
+    'Saint Lucia': '🇱🇨',
+    'Antigua and Barbuda': '🇦🇬',
+    'Saint Kitts': '🇰🇳',
+    'Dominica': '🇩🇲',
+    'Montserrat': '🇲🇸',
+    'Anguilla': '🇦🇮',
+    'Aruba': '🇦🇼',
+    'Curacao': '🇨🇼',
+    'Sint Maarten': '🇸🇽',
+    'Bonaire': '🇧🇶',
+    'Saba': '🇧🇶',
+    'Saint Eustatius': '🇧🇶',
+    'Greenland': '🇬🇱',
+    'Iceland': '🇮🇸',
+    'Faroe Islands': '🇫🇴',
+    'Svalbard': '🇳🇴',
+    'Jan Mayen': '🇳🇴',
+    'Bouvet Island': '🇳🇴',
+    'Peter I Island': '🇳🇴',
+    'Queen Maud Land': '🇳🇴',
+    'Antarctica': '🇦🇶',
+    'South Georgia': '🇬🇸',
+    'South Sandwich Islands': '🇬🇸',
+    'Falkland Islands': '🇫🇰',
+    'Bouvet Island': '🇧🇻',
+    'Heard Island': '🇭🇲',
+    'McDonald Islands': '🇭🇲',
+    'French Southern Territories': '🇹🇫',
+    'Kerguelen': '🇹🇫',
+    'Crozet Islands': '🇹🇫',
+    'Amsterdam Island': '🇹🇫',
+    'Saint Paul Island': '🇹🇫',
+    'Adelie Land': '🇹🇫',
+    'Wilkes Land': '🇦🇶',
+    'Victoria Land': '🇦🇶',
+    'Ross Dependency': '🇳🇿',
+    'Australian Antarctic Territory': '🇦🇺',
+    'Chilean Antarctic Territory': '🇨🇱',
+    'Argentine Antarctica': '🇦🇷',
+    'British Antarctic Territory': '🇬🇧',
+    'Queen Maud Land': '🇳🇴',
+    'Peter I Island': '🇳🇴',
+    'Bouvet Island': '🇳🇴',
+    'South Orkney Islands': '🇬🇧',
+    'South Shetland Islands': '🇬🇧',
+    'Graham Land': '🇬🇧',
+    'Palmer Land': '🇬🇧',
+    'Ellsworth Land': '🇺🇸',
+    'Marie Byrd Land': '🇺🇸',
+    'Ross Sea': '🇳🇿',
+    'Weddell Sea': '🇦🇶',
+    'Amundsen Sea': '🇦🇶',
+    'Bellingshausen Sea': '🇦🇶',
+    'Davis Sea': '🇦🇺',
+    'Mawson Sea': '🇦🇺',
+    'Dumont d\'Urville Sea': '🇫🇷',
+    'Cosmonauts Sea': '🇷🇺',
+    'Lazarev Sea': '🇷🇺',
+    'Riser-Larsen Sea': '🇷🇺',
+    'Cooperation Sea': '🇷🇺',
+    'Somov Sea': '🇷🇺',
+    'Commonwealth Sea': '🇦🇺',
+    'Unknown': '🌍'
+  };
+  
+  return countryFlags[countryName] || '🌍';
+};
+
 // Gmail SMTP Configuration (Temporary for production)
-const createGmailTransporter = () => {
+const createGmailTransporter = (fromName = 'GoooFit') => {
   return nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
@@ -49,27 +238,27 @@ async function sendWelcomeEmail(to, name) {
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         </style>
       </head>
-      <body style="font-family: 'Inter', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f8fafc;">
-        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-          <!-- Header with gradient -->
-          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;">
-            <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.5px;">🎉 Welcome to GoooFit!</h1>
-            <p style="color: rgba(255, 255, 255, 0.9); margin: 10px 0 0 0; font-size: 16px;">Your Health Journey Starts Here</p>
+      <body style="font-family: 'Inter', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #fff7ed;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07);">
+          <!-- Header with orange gradient -->
+          <div style="background: linear-gradient(135deg, #ffb347 0%, #ffcc80 100%); padding: 40px 30px; text-align: center;">
+            <h1 style="color: #fff; margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.5px;">🎉 Welcome to GoooFit!</h1>
+            <p style="color: rgba(255,255,255,0.95); margin: 10px 0 0 0; font-size: 16px;">Your Health Journey Starts Here</p>
           </div>
           
           <!-- Content -->
           <div style="padding: 40px 30px;">
-            <h2 style="color: #1f2937; margin: 0 0 20px 0; font-size: 24px; font-weight: 600;">Hi ${name || 'there'}! 👋</h2>
+            <h2 style="color: #b45309; margin: 0 0 20px 0; font-size: 24px; font-weight: 600;">Hi ${name || 'there'}! 👋</h2>
             
-            <p style="color: #4b5563; margin: 0 0 20px 0; font-size: 16px;">
+            <p style="color: #b45309; margin: 0 0 20px 0; font-size: 16px;">
               Thank you for joining GoooFit! We're excited to be part of your health and fitness journey. 
               Get ready to transform your life with our comprehensive health tools and personalized insights.
             </p>
             
             <!-- Features -->
-            <div style="background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border-radius: 12px; padding: 30px; margin: 30px 0;">
-              <h3 style="color: #1f2937; margin: 0 0 20px 0; font-size: 20px; font-weight: 600;">🚀 What you can do with GoooFit:</h3>
-              <ul style="color: #4b5563; margin: 0; padding-left: 20px; font-size: 16px;">
+            <div style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border-radius: 12px; padding: 30px; margin: 30px 0;">
+              <h3 style="color: #ea580c; margin: 0 0 20px 0; font-size: 20px; font-weight: 600;">🚀 What you can do with GoooFit:</h3>
+              <ul style="color: #b45309; margin: 0; padding-left: 20px; font-size: 16px;">
                 <li style="margin-bottom: 10px;"><strong>📊 Track Progress:</strong> Monitor your weight and health metrics</li>
                 <li style="margin-bottom: 10px;"><strong>🧮 Health Calculators:</strong> BMI, Calories, Body Fat, BMR, and more</li>
                 <li style="margin-bottom: 10px;"><strong>💡 Smart Insights:</strong> Get personalized recommendations</li>
@@ -80,20 +269,20 @@ async function sendWelcomeEmail(to, name) {
             
             <!-- Action Button -->
             <div style="text-align: center; margin: 30px 0;">
-              <a href="https://gooofit.com" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 32px; text-decoration: none; border-radius: 12px; display: inline-block; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px -1px rgba(102, 126, 234, 0.3); transition: all 0.3s ease;">Start Your Journey</a>
+              <a href="https://gooofit.com" style="background: linear-gradient(135deg, #ffb347 0%, #ffcc80 100%); color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 12px; display: inline-block; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px -1px rgba(255,179,71,0.15); transition: all 0.3s ease;">Start Your Journey</a>
             </div>
             
-            <p style="color: #6b7280; margin: 30px 0 0 0; font-size: 14px;">
+            <p style="color: #b45309; margin: 30px 0 0 0; font-size: 14px;">
               Ready to transform your health? Start by exploring our health calculators and tracking your progress!
             </p>
           </div>
           
           <!-- Footer -->
-          <div style="background: #f9fafb; padding: 30px; text-align: center; border-top: 1px solid #e5e7eb;">
-            <p style="color: #6b7280; margin: 0 0 10px 0; font-size: 14px; font-weight: 600;">Best regards,</p>
-            <p style="color: #6b7280; margin: 0; font-size: 14px;">The GoooFit Team 💪</p>
+          <div style="background: #fff3e0; padding: 30px; text-align: center; border-top: 1px solid #ffe0b2;">
+            <p style="color: #b45309; margin: 0 0 10px 0; font-size: 14px; font-weight: 600;">Best regards,</p>
+            <p style="color: #b45309; margin: 0; font-size: 14px;">The GoooFit Team 💪</p>
             <div style="margin-top: 20px;">
-              <a href="https://gooofit.com" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 500;">gooofit.com</a>
+              <a href="https://gooofit.com" style="color: #fb923c; text-decoration: none; font-size: 14px; font-weight: 500;">gooofit.com</a>
             </div>
           </div>
         </div>
@@ -102,7 +291,7 @@ async function sendWelcomeEmail(to, name) {
     `;
     
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com',
+      from: `"GoooFit Team" <${process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com'}>`,
       to: to,
       subject: 'Welcome to GoooFit! 🎉',
       html: html
@@ -153,55 +342,55 @@ async function sendPasswordResetEmail(to, resetToken, name = 'User') {
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         </style>
       </head>
-      <body style="font-family: 'Inter', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f8fafc;">
-        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-          <!-- Header with gradient -->
-          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;">
-            <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.5px;">🔐 Password Reset</h1>
-            <p style="color: rgba(255, 255, 255, 0.9); margin: 10px 0 0 0; font-size: 16px;">GoooFit - Your Health Journey</p>
+      <body style="font-family: 'Inter', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #fff7ed;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07);">
+          <!-- Header with orange gradient -->
+          <div style="background: linear-gradient(135deg, #ffb347 0%, #ffcc80 100%); padding: 40px 30px; text-align: center;">
+            <h1 style="color: #fff; margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.5px;">🔐 Password Reset</h1>
+            <p style="color: rgba(255,255,255,0.95); margin: 10px 0 0 0; font-size: 16px;">GoooFit - Your Health Journey</p>
           </div>
           
           <!-- Content -->
           <div style="padding: 40px 30px;">
-            <h2 style="color: #1f2937; margin: 0 0 20px 0; font-size: 24px; font-weight: 600;">Hi ${name || 'there'}! 👋</h2>
+            <h2 style="color: #b45309; margin: 0 0 20px 0; font-size: 24px; font-weight: 600;">Hi ${name || 'there'}! 👋</h2>
             
-            <p style="color: #4b5563; margin: 0 0 20px 0; font-size: 16px;">
-              We received a request to reset your password for your GoooFit account. 
+            <p style="color: #b45309; margin: 0 0 20px 0; font-size: 16px;">
+              We received a request to reset your password for your GoooFit account.<br>
               To keep your account secure, we've generated a verification code for you.
             </p>
             
             <!-- OTP Display -->
-            <div style="background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0;">
-              <p style="color: #6b7280; margin: 0 0 15px 0; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px;">Your Verification Code</p>
-              <div style="background: white; border-radius: 8px; padding: 20px; display: inline-block; border: 2px solid #e5e7eb;">
-                <span style="font-size: 32px; font-weight: 700; color: #1f2937; letter-spacing: 4px; font-family: 'Courier New', monospace;">${resetToken}</span>
+            <div style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0;">
+              <p style="color: #fb923c; margin: 0 0 15px 0; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px;">Your Verification Code</p>
+              <div style="background: #fff; border-radius: 8px; padding: 20px; display: inline-block; border: 2px solid #ffb347;">
+                <span style="font-size: 32px; font-weight: 700; color: #ea580c; letter-spacing: 4px; font-family: 'Courier New', monospace;">${resetToken}</span>
               </div>
             </div>
             
             <!-- Action Button -->
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${resetUrl}" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 32px; text-decoration: none; border-radius: 12px; display: inline-block; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px -1px rgba(102, 126, 234, 0.3); transition: all 0.3s ease;">Reset Password Now</a>
+              <a href="${resetUrl}" style="background: linear-gradient(135deg, #ffb347 0%, #ffcc80 100%); color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 12px; display: inline-block; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px -1px rgba(255,179,71,0.15); transition: all 0.3s ease;">Reset Password Now</a>
             </div>
             
             <!-- Security Notice -->
-            <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; border-radius: 0 8px 8px 0; margin: 30px 0;">
-              <p style="color: #92400e; margin: 0; font-size: 14px; font-weight: 500;">
+            <div style="background: #fff7ed; border-left: 4px solid #fb923c; padding: 16px; border-radius: 0 8px 8px 0; margin: 30px 0;">
+              <p style="color: #b45309; margin: 0; font-size: 14px; font-weight: 500;">
                 🔒 <strong>Security Notice:</strong> This verification code will expire in 1 hour for your security.
               </p>
             </div>
             
-            <p style="color: #6b7280; margin: 30px 0 0 0; font-size: 14px;">
-              If you didn't request this password reset, please ignore this email. 
+            <p style="color: #b45309; margin: 30px 0 0 0; font-size: 14px;">
+              If you didn't request this password reset, please ignore this email.<br>
               Your account security is important to us.
             </p>
           </div>
           
           <!-- Footer -->
-          <div style="background: #f9fafb; padding: 30px; text-align: center; border-top: 1px solid #e5e7eb;">
-            <p style="color: #6b7280; margin: 0 0 10px 0; font-size: 14px; font-weight: 600;">Best regards,</p>
-            <p style="color: #6b7280; margin: 0; font-size: 14px;">The GoooFit Team 💪</p>
+          <div style="background: #fff3e0; padding: 30px; text-align: center; border-top: 1px solid #ffe0b2;">
+            <p style="color: #b45309; margin: 0 0 10px 0; font-size: 14px; font-weight: 600;">Best regards,</p>
+            <p style="color: #b45309; margin: 0; font-size: 14px;">The GoooFit Team 💪</p>
             <div style="margin-top: 20px;">
-              <a href="https://gooofit.com" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 500;">gooofit.com</a>
+              <a href="https://gooofit.com" style="color: #fb923c; text-decoration: none; font-size: 14px; font-weight: 500;">gooofit.com</a>
             </div>
           </div>
         </div>
@@ -210,7 +399,7 @@ async function sendPasswordResetEmail(to, resetToken, name = 'User') {
     `;
     
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com',
+      from: `"GoooFit Support" <${process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com'}>`,
       to: to,
       subject: 'Password Reset Request - GoooFit',
       html: html
@@ -241,7 +430,7 @@ async function sendPasswordResetEmail(to, resetToken, name = 'User') {
  * @param {string} name - Recipient name
  * @returns {Promise<Object>} API response
  */
-async function sendRegistrationNotificationEmail(to, name) {
+async function sendRegistrationNotificationEmail(to, name, country = 'Unknown') {
   try {
     console.log('📧 Sending registration notification email via Gmail SMTP...');
     
@@ -253,25 +442,64 @@ async function sendRegistrationNotificationEmail(to, name) {
       <head>
         <meta charset="utf-8">
         <title>New User Registration - GoooFit</title>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        </style>
       </head>
-      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-        <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h1 style="color: #2c5aa0;">New User Registration</h1>
-          <p>A new user has registered on GoooFit:</p>
-          <ul>
-            <li><strong>Name:</strong> ${name}</li>
-            <li><strong>Email:</strong> ${to}</li>
-            <li><strong>Registration Date:</strong> ${new Date().toLocaleDateString()}</li>
-          </ul>
-          <p>Welcome them to the GoooFit community!</p>
-          <p>Best regards,<br>GoooFit System</p>
+      <body style="font-family: 'Inter', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #fff7ed;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07);">
+          <!-- Header with orange gradient -->
+          <div style="background: linear-gradient(135deg, #ffb347 0%, #ffcc80 100%); padding: 40px 30px; text-align: center;">
+            <h1 style="color: #fff; margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.5px;">🎉 New User Registration</h1>
+            <p style="color: rgba(255,255,255,0.95); margin: 10px 0 0 0; font-size: 16px;">GoooFit - Admin Notification</p>
+          </div>
+          
+          <!-- Content -->
+          <div style="padding: 40px 30px;">
+            <h2 style="color: #b45309; margin: 0 0 20px 0; font-size: 24px; font-weight: 600;">Hello Admin! 👋</h2>
+            
+            <p style="color: #b45309; margin: 0 0 20px 0; font-size: 16px;">
+              Great news! A new user has just joined the GoooFit community. 
+              Here are the details of the new registration:
+            </p>
+            
+            <!-- User Details -->
+            <div style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border-radius: 12px; padding: 30px; margin: 30px 0;">
+              <h3 style="color: #ea580c; margin: 0 0 20px 0; font-size: 20px; font-weight: 600;">👤 New User Details:</h3>
+              <div style="color: #b45309; font-size: 16px;">
+                <p style="margin: 10px 0;"><strong>📝 Name:</strong> ${name}</p>
+                <p style="margin: 10px 0;"><strong>📧 Email:</strong> ${to}</p>
+                <p style="margin: 10px 0;"><strong>🌍 Country:</strong> ${getCountryFlag(country)} ${country}</p>
+                <p style="margin: 10px 0;"><strong>📅 Registration Date:</strong> ${new Date().toLocaleDateString()}</p>
+                <p style="margin: 10px 0;"><strong>⏰ Registration Time:</strong> ${new Date().toLocaleTimeString()}</p>
+              </div>
+            </div>
+            
+            <!-- Action Button -->
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="https://gooofit.com" style="background: linear-gradient(135deg, #ffb347 0%, #ffcc80 100%); color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 12px; display: inline-block; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px -1px rgba(255,179,71,0.15); transition: all 0.3s ease;">View Dashboard</a>
+            </div>
+            
+            <p style="color: #b45309; margin: 30px 0 0 0; font-size: 14px;">
+              Welcome them to the GoooFit community and help them start their health journey!
+            </p>
+          </div>
+          
+          <!-- Footer -->
+          <div style="background: #fff3e0; padding: 30px; text-align: center; border-top: 1px solid #ffe0b2;">
+            <p style="color: #b45309; margin: 0 0 10px 0; font-size: 14px; font-weight: 600;">Best regards,</p>
+            <p style="color: #b45309; margin: 0; font-size: 14px;">GoooFit Admin 🤖</p>
+            <div style="margin-top: 20px;">
+              <a href="https://gooofit.com" style="color: #fb923c; text-decoration: none; font-size: 14px; font-weight: 500;">gooofit.com</a>
+            </div>
+          </div>
         </div>
       </body>
       </html>
     `;
     
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com',
+      from: `"GoooFit Admin" <${process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com'}>`,
       to: to,
       subject: 'New User Registration - GoooFit',
       html: html
