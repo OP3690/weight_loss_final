@@ -1,13 +1,13 @@
 const nodemailer = require('nodemailer');
 
-// Create transporter with environment variables (using Gmail SMTP)
+// Create transporter with environment variables (using GoDaddy SMTP by default)
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com', // Gmail SMTP server
-  port: 587, // Gmail SMTP port
-  secure: false, // Use STARTTLS for port 587
+  host: 'smtpout.secureserver.net', // GoDaddy SMTP server
+  port: 465,
+  secure: true, // Use SSL for port 465
   auth: {
-    user: process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com',
-    pass: process.env.EMAIL_PASSWORD || 'comk mmlv lycy ibjk'
+    user: process.env.EMAIL_USER || 'support@gooofit.com',
+    pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
   },
   tls: {
     rejectUnauthorized: false
@@ -37,8 +37,8 @@ const createAlternativeGoDaddyTransporter = () => {
 
 // Log email configuration (without password)
 console.log('📧 Email Configuration:');
-console.log('   Host:', 'smtp.gmail.com');
-console.log('   User:', process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com');
+console.log('   Host:', 'smtpout.secureserver.net');
+console.log('   User:', process.env.EMAIL_USER || 'support@gooofit.com');
 console.log('   Password:', process.env.EMAIL_PASSWORD ? '***SET***' : '***NOT SET***');
 
 // Alternative transporter for testing different configurations (port 587 as backup)
@@ -84,10 +84,10 @@ const verifyTransporter = async () => {
   try {
     console.log('🔧 Verifying email transporter...');
     console.log('📧 Using configuration:');
-    console.log('   Host:', 'smtp.gmail.com');
-    console.log('   Port:', 587);
-    console.log('   Secure:', false);
-    console.log('   User:', process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com');
+    console.log('   Host:', 'smtpout.secureserver.net');
+    console.log('   Port:', 465);
+    console.log('   Secure:', true);
+    console.log('   User:', process.env.EMAIL_USER || 'support@gooofit.com');
     console.log('   Password length:', process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.length : 0);
     
     await transporter.verify();
@@ -189,7 +189,7 @@ const getCountryFlag = (countryName) => {
     'Cameroon': '🇨🇲',
     'Chad': '🇹🇩',
     'Niger': '🇳🇪',
-    'Mali': '��🇱',
+    'Mali': '🇲🇱',
     'Burkina Faso': '🇧🇫',
     'Senegal': '🇸🇳',
     'Guinea': '🇬🇳',
@@ -318,12 +318,12 @@ const testEmailConfig = async () => {
     console.log('   EMAIL_PASSWORD:', process.env.EMAIL_PASSWORD ? 'SET' : 'NOT SET');
     console.log('   NODE_ENV:', process.env.NODE_ENV || 'NOT SET');
     
-    // Try primary configuration (Gmail SMTP) - only verify, don't send
-    console.log('🔧 Testing Gmail SMTP configuration...');
+    // Try primary configuration (GoDaddy SMTP) - only verify, don't send
+    console.log('🔧 Testing GoDaddy SMTP configuration...');
     const isVerified = await verifyTransporter();
     if (isVerified) {
-      console.log('✅ Gmail email configuration is working');
-      console.log('📧 Note: Email sending is limited by Gmail daily quota');
+      console.log('✅ GoDaddy email configuration is working');
+      console.log('📧 Note: Email sending is limited by GoDaddy daily quota');
       return true;
     }
     
