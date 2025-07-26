@@ -1,13 +1,13 @@
 const nodemailer = require('nodemailer');
 
-// Create transporter with environment variables (using Gmail SMTP with app password)
+// Create transporter with environment variables (using GoDaddy SMTP)
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com', // Gmail SMTP server
-  port: 587,
-  secure: false, // Use STARTTLS for port 587
+  host: 'smtpout.secureserver.net', // GoDaddy SMTP server
+  port: 465,
+  secure: true, // Use SSL for port 465
   auth: {
-    user: process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com',
-    pass: process.env.EMAIL_PASSWORD || 'comk mmlv lycy ibjk'
+    user: process.env.EMAIL_USER || 'support@gooofit.com',
+    pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
   },
   tls: {
     rejectUnauthorized: false
@@ -16,15 +16,15 @@ const transporter = nodemailer.createTransport({
   logger: true // Log to console
 });
 
-// Alternative Gmail SMTP configuration (port 465)
-const createAlternativeGmailTransporter = () => {
+// Alternative GoDaddy SMTP configuration (port 587)
+const createAlternativeGoDaddyTransporter = () => {
   return nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // Use SSL for port 465
+    host: 'smtpout.secureserver.net',
+    port: 587,
+    secure: false, // Use STARTTLS for port 587
     auth: {
-      user: process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com',
-      pass: process.env.EMAIL_PASSWORD || 'comk mmlv lycy ibjk'
+      user: process.env.EMAIL_USER || 'support@gooofit.com',
+      pass: process.env.EMAIL_PASSWORD || 'Fortune$$336699'
     },
     tls: {
       rejectUnauthorized: false
@@ -36,8 +36,8 @@ const createAlternativeGmailTransporter = () => {
 
 // Log email configuration (without password)
 console.log('📧 Email Configuration:');
-console.log('   Host:', 'smtp.gmail.com');
-console.log('   User:', process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com');
+console.log('   Host:', 'smtpout.secureserver.net');
+console.log('   User:', process.env.EMAIL_USER || 'support@gooofit.com');
 console.log('   Password:', process.env.EMAIL_PASSWORD ? '***SET***' : '***NOT SET***');
 
 // Alternative transporter for testing different configurations (port 587 as backup)
@@ -83,10 +83,10 @@ const verifyTransporter = async () => {
   try {
     console.log('🔧 Verifying email transporter...');
     console.log('📧 Using configuration:');
-    console.log('   Host:', 'smtp.gmail.com');
-    console.log('   Port:', 587);
-    console.log('   Secure:', false);
-    console.log('   User:', process.env.EMAIL_USER || 'onboarding.gooofit@gmail.com');
+    console.log('   Host:', 'smtpout.secureserver.net');
+    console.log('   Port:', 465);
+    console.log('   Secure:', true);
+    console.log('   User:', process.env.EMAIL_USER || 'support@gooofit.com');
     console.log('   Password length:', process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.length : 0);
     
     await transporter.verify();
@@ -317,24 +317,24 @@ const testEmailConfig = async () => {
     console.log('   EMAIL_PASSWORD:', process.env.EMAIL_PASSWORD ? 'SET' : 'NOT SET');
     console.log('   NODE_ENV:', process.env.NODE_ENV || 'NOT SET');
     
-    // Try primary configuration (Gmail SMTP) - only verify, don't send
-    console.log('🔧 Testing Gmail SMTP configuration...');
+    // Try primary configuration (GoDaddy SMTP) - only verify, don't send
+    console.log('🔧 Testing GoDaddy SMTP configuration...');
     const isVerified = await verifyTransporter();
     if (isVerified) {
-      console.log('✅ Gmail email configuration is working');
-      console.log('📧 Note: Email sending is limited by Gmail daily quota');
+      console.log('✅ GoDaddy email configuration is working');
+      console.log('📧 Note: Email sending is limited by GoDaddy daily quota');
       return true;
     }
     
-    // Try alternative Gmail SMTP server (port 465)
-    console.log('🔧 Testing alternative Gmail SMTP server (port 465)...');
+    // Try alternative GoDaddy SMTP server (port 587)
+    console.log('🔧 Testing alternative GoDaddy SMTP server (port 587)...');
     try {
-      const altGmailTransporter = createAlternativeGmailTransporter();
-      await altGmailTransporter.verify();
-      console.log('✅ Alternative Gmail SMTP server is working');
+      const altGoDaddyTransporter = createAlternativeGoDaddyTransporter();
+      await altGoDaddyTransporter.verify();
+      console.log('✅ Alternative GoDaddy SMTP server is working');
       return true;
-    } catch (altGmailError) {
-      console.error('❌ Alternative Gmail SMTP server failed:', altGmailError.message);
+    } catch (altGoDaddyError) {
+      console.error('❌ Alternative GoDaddy SMTP server failed:', altGoDaddyError.message);
     }
     
     // Try alternative configuration (port 587, STARTTLS) - backup
