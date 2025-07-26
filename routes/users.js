@@ -1424,25 +1424,55 @@ router.post('/verify-otp', [
   }
 });
 
-// Add test endpoint for SendMails.io API
-router.get('/test-sendmails', async (req, res) => {
+// Test email service endpoint
+router.get('/test-email', async (req, res) => {
   try {
-    const emailService = require('../services/emailService');
-    const result = await emailService.testEmailService();
+    console.log('🧪 Testing email service...');
+    
+    const { testEmailService } = require('../services/emailService');
+    const result = await testEmailService();
+    
+    console.log('📊 Email service test result:', result);
     
     res.json({
       success: result.success,
-      message: result.success ? 'SendMails.io API test successful' : 'SendMails.io API test failed',
-      timestamp: new Date().toISOString(),
-      details: result
+      message: result.message,
+      api: result.api,
+      smtp: result.smtp
     });
+    
   } catch (error) {
-    console.error('❌ Error testing SendMails.io API:', error);
+    console.error('❌ Email service test error:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to test SendMails.io API',
-      error: error.message,
-      timestamp: new Date().toISOString()
+      message: 'Email service test failed',
+      error: error.message
+    });
+  }
+});
+
+// Test SendMails.io API endpoint
+router.get('/test-sendmails', async (req, res) => {
+  try {
+    console.log('🧪 Testing SendMails.io API...');
+    
+    const { testSendMailsConnection } = require('../services/sendMailsService');
+    const result = await testSendMailsConnection();
+    
+    console.log('📊 SendMails.io API test result:', result);
+    
+    res.json({
+      success: result.success,
+      message: result.message,
+      data: result.data
+    });
+    
+  } catch (error) {
+    console.error('❌ SendMails.io API test error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'SendMails.io API test failed',
+      error: error.message
     });
   }
 });
