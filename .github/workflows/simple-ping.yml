@@ -1,0 +1,68 @@
+name: Simple Server Ping
+
+on:
+  schedule:
+    # Run every 14 minutes
+    - cron: '*/14 * * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Ping server with curl
+        run: |
+          echo "🔄 Pinging GoooFit server at $(date)"
+          
+          # Random endpoint selection
+          endpoints=(
+            "/api/user-success?limit=5"
+            "/api/user-success/random"
+            "/api/user-success/stats"
+            "/api/health"
+            "/api/status"
+            "/"
+            "/health"
+            "/status"
+          )
+          
+          # Select random endpoint
+          endpoint=${endpoints[$RANDOM % ${#endpoints[@]}]}
+          
+          # Add random parameters
+          timestamp=$(date +%s)
+          random_param=$(openssl rand -hex 6)
+          
+          url="https://gooofit.onrender.com${endpoint}?_t=${timestamp}&v=${random_param}"
+          
+          echo "🎯 Pinging: $url"
+          
+          # Make request with realistic headers
+          response=$(curl -s -w "%{http_code}" -o /tmp/response.txt \
+            -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+            -H "Accept: application/json, text/plain, */*" \
+            -H "Accept-Language: en-US,en;q=0.9" \
+            -H "Accept-Encoding: gzip, deflate, br" \
+            -H "Connection: keep-alive" \
+            -H "Cache-Control: no-cache" \
+            -H "Pragma: no-cache" \
+            --max-time 30 \
+            "$url")
+          
+          echo "📊 Response code: $response"
+          
+          if [ "$response" -ge 200 ] && [ "$response" -lt 300 ]; then
+            echo "✅ Ping successful!"
+          else
+            echo "⚠️  Ping returned status: $response"
+            echo "📄 Response body:"
+            cat /tmp/response.txt
+          fi
+          
+          echo "⏰ Next ping will be in ~14 minutes"
+          
+      - name: Log completion
+        run: |
+          echo "✅ Ping cycle completed at $(date)"
+          echo "🔄 Server should stay awake for the next 15 minutes" 
