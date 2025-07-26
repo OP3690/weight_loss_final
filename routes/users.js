@@ -1316,7 +1316,7 @@ router.post('/forgot-password', [
     if (method === 'email') {
       // Send password reset email
       console.log('📧 Attempting to send password reset email...');
-      result = await sendPasswordResetEmail(email, user.name, otp);
+      result = await sendPasswordResetEmail(email, otp, user.name);
       console.log('📧 Email result:', result);
     } else {
       // Send SMS OTP
