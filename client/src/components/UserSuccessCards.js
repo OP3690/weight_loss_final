@@ -14,12 +14,14 @@ const UserSuccessCards = () => {
   const fetchUserSuccessStories = async () => {
     try {
       console.log('🔄 Fetching new batch of user success stories...');
-      // Fetch a random batch of stories (limit=50 for variety but not too heavy)
-      const response = await api.get('/user-success?limit=50');
+      // Fetch a larger batch of stories for more variety
+      const response = await api.get('/user-success?limit=100');
       
       if (response.data.success) {
         console.log(`✅ Fetched ${response.data.data.length} new stories`);
-        setCurrentStories(response.data.data);
+        // Shuffle the stories array to ensure random order
+        const shuffledStories = [...response.data.data].sort(() => Math.random() - 0.5);
+        setCurrentStories(shuffledStories);
         setError(null);
       } else {
         setError('Failed to fetch user success stories');
@@ -116,11 +118,11 @@ const UserSuccessCards = () => {
       setCurrentIndex(prevIndex => prevIndex + 1);
     }, 4000);
 
-    // Set up interval for fetching new batch every 3 minutes (180 seconds)
+    // Set up interval for fetching new batch every 2 minutes (120 seconds)
     batchIntervalRef.current = setInterval(() => {
       console.log('⏰ Time to fetch new batch of stories...');
       fetchUserSuccessStories();
-    }, 180000); // 3 minutes
+    }, 120000); // 2 minutes
 
     return () => {
       clearTimeout(timeoutId);
@@ -226,18 +228,19 @@ const UserSuccessCards = () => {
     return 'bg-green-400';
   };
 
-  // Get current stories to display (2 at a time) with random selection
+  // Get current stories to display (2 at a time) with sequential rotation
   const getCurrentStories = () => {
     if (currentStories.length === 0) return [];
     
-    // Get 2 random stories from the available pool
-    // Use currentIndex to ensure different stories each time
-    const randomSeed = currentIndex + Date.now();
-    const shuffled = [...currentStories].sort(() => {
-      // Use a more random approach with multiple factors
-      return Math.sin(randomSeed + Math.random()) * Math.cos(randomSeed + Math.random());
-    });
-    return shuffled.slice(0, 2);
+    // Calculate which stories to show based on currentIndex
+    // This ensures we go through all stories before repeating
+    const story1Index = currentIndex % currentStories.length;
+    const story2Index = (currentIndex + 1) % currentStories.length;
+    
+    return [
+      currentStories[story1Index],
+      currentStories[story2Index]
+    ];
   };
 
   const currentDisplayStories = getCurrentStories();
