@@ -36,66 +36,157 @@ const UserSuccessCards = () => {
     }
   };
 
-  // Fallback to default stories if API fails
-  const showDefaultStories = () => {
-    const defaultStories = [
-      {
-        _id: 'default1',
-        name: 'Sarah Johnson',
-        country: 'USA',
-        flag: '🇺🇸',
-        weightLost: 8.5,
-        duration: '6 months',
-        isActive: true
-      },
-      {
-        _id: 'default2',
-        name: 'Priya Patel',
-        country: 'India',
-        flag: '🇮🇳',
-        weightLost: 6.2,
-        duration: '4 months',
-        isActive: true
-      },
-      {
-        _id: 'default3',
-        name: 'Carlos Rodriguez',
-        country: 'Spain',
-        flag: '🇪🇸',
-        weightLost: 5.8,
-        duration: '3 months',
-        isActive: true
-      },
-      {
-        _id: 'default4',
-        name: 'Emma Wilson',
-        country: 'UK',
-        flag: '🇬🇧',
-        weightLost: 7.1,
-        duration: '5 months',
-        isActive: true
-      },
-      {
-        _id: 'default5',
-        name: 'Yuki Tanaka',
-        country: 'Japan',
-        flag: '🇯🇵',
-        weightLost: 4.3,
-        duration: '2 months',
-        isActive: true
-      },
-      {
-        _id: 'default6',
-        name: 'Maria Silva',
-        country: 'Brazil',
-        flag: '🇧🇷',
-        weightLost: 9.2,
-        duration: '7 months',
-        isActive: true
-      }
+  // Generate random default stories when API fails
+  const generateRandomStories = () => {
+    const names = [
+      'Sarah Johnson', 'Priya Patel', 'Carlos Rodriguez', 'Emma Wilson', 'Yuki Tanaka', 'Maria Silva',
+      'Ahmed Hassan', 'Sophie Martin', 'Raj Kumar', 'Isabella Garcia', 'Lucas Chen', 'Aisha Khan',
+      'David Thompson', 'Fatima Al-Zahra', 'Michael Brown', 'Elena Popov', 'James Wilson', 'Nina Patel',
+      'Robert Davis', 'Zara Ahmed', 'William Miller', 'Sofia Rodriguez', 'Christopher Lee', 'Maya Singh',
+      'Daniel Garcia', 'Ava Johnson', 'Matthew Martinez', 'Chloe Williams', 'Anthony Taylor', 'Grace Kim',
+      'Joshua Anderson', 'Lily Chen', 'Andrew Thomas', 'Zoe Brown', 'Ryan Jackson', 'Hannah Davis',
+      'Nathan White', 'Scarlett Wilson', 'Kevin Moore', 'Victoria Taylor', 'Brian Clark', 'Penelope Garcia',
+      'Steven Lewis', 'Layla Martinez', 'Timothy Hall', 'Riley Anderson', 'Jeffrey Young', 'Nora Thomas',
+      'Ronald King', 'Stella Jackson', 'Edward Wright', 'Lucy White', 'Jason Green', 'Aria Moore',
+      'Eric Baker', 'Ellie Clark', 'Stephen Adams', 'Nova Lewis', 'Jacob Nelson', 'Ruby Hall',
+      'Gary Carter', 'Hazel Young', 'Nicholas Mitchell', 'Willow King', 'Larry Roberts', 'Ivy Wright',
+      'Frank Turner', 'Sage Green', 'Scott Phillips', 'Jade Baker', 'Raymond Campbell', 'Sky Adams',
+      'Gregory Parker', 'Ocean Nelson', 'Benjamin Evans', 'River Carter', 'Patrick Edwards', 'Forest Mitchell',
+      'Jack Collins', 'Meadow Roberts', 'Dennis Stewart', 'Brook Turner', 'Jerry Morris', 'Dawn Phillips',
+      'Terry Rogers', 'Twilight Campbell', 'Samuel Reed', 'Aurora Parker', 'Willie Cook', 'Starlight Evans',
+      'Ralph Morgan', 'Moonlight Edwards', 'Lawrence Bell', 'Sunset Collins', 'Eugene Murphy', 'Rainbow Stewart',
+      'Keith Bailey', 'Thunder Morris', 'Roger Rivera', 'Lightning Rogers', 'Harold Cooper', 'Storm Reed',
+      'Harry Richardson', 'Frost Cook', 'Howard Cox', 'Crystal Morgan', 'Roy Ward', 'Diamond Bell',
+      'Louis Torres', 'Pearl Murphy', 'Bobby Peterson', 'Opal Bailey', 'Johnny Gray', 'Sapphire Rivera',
+      'Adam Ramirez', 'Emerald Cooper', 'Bruce James', 'Ruby Richardson', 'Billy Watson', 'Amethyst Cox',
+      'Steve Brooks', 'Topaz Ward', 'Eugene Kelly', 'Jade Torres', 'Carl Sanders', 'Onyx Peterson',
+      'Russell Price', 'Quartz Gray', 'Bobby Bennett', 'Marble Ramirez', 'Victor Wood', 'Granite James',
+      'Martin Barnes', 'Slate Watson', 'Ernest Ross', 'Basalt Brooks', 'Phillip Henderson', 'Limestone Kelly',
+      'Todd Coleman', 'Sandstone Sanders', 'Jesse Jenkins', 'Shale Price', 'Craig Perry', 'Gneiss Bennett',
+      'Alan Powell', 'Schist Wood', 'Shawn Long', 'Phyllite Barnes', 'Clarence Patterson', 'Slate Ross',
+      'Sean Hughes', 'Quartzite Henderson', 'Philip Flores', 'Marble Coleman', 'Chris Butler', 'Granite Jenkins',
+      'Johnny Simmons', 'Basalt Perry', 'Earl Foster', 'Limestone Powell', 'Jimmy Gonzales', 'Sandstone Long',
+      'Antonio Bryant', 'Shale Patterson', 'Danny Alexander', 'Gneiss Hughes', 'Bryan Russell', 'Schist Flores',
+      'Tony Griffin', 'Phyllite Butler', 'Luis Diaz', 'Quartzite Simmons', 'Mike Hayes', 'Marble Foster',
+      'Stanley Sanders', 'Granite Gonzales', 'Leonard Price', 'Basalt Bryant', 'Nathan Bennett', 'Limestone Alexander',
+      'Dale Wood', 'Sandstone Russell', 'Clyde Barnes', 'Shale Griffin', 'Wayne Ross', 'Gneiss Diaz',
+      'Oscar Henderson', 'Schist Hayes', 'Alan Coleman', 'Phyllite Sanders', 'Glenn Jenkins', 'Quartzite Price',
+      'Hector Perry', 'Marble Bennett', 'Sidney Powell', 'Granite Wood', 'Leroy Long', 'Basalt Barnes',
+      'Marcos Patterson', 'Limestone Ross', 'Darrell Hughes', 'Sandstone Henderson', 'Terrence Flores', 'Shale Coleman',
+      'Sergio Butler', 'Gneiss Jenkins', 'Marion Simmons', 'Schist Perry', 'Tracy Foster', 'Phyllite Powell',
+      'Seth Gonzales', 'Quartzite Long', 'Kent Bryant', 'Marble Patterson', 'Terrance Alexander', 'Granite Hughes',
+      'Rene Russell', 'Basalt Flores', 'Eduardo Griffin', 'Limestone Butler', 'Freddie Diaz', 'Sandstone Simmons',
+      'Wade Hayes', 'Shale Foster', 'Austin Sanders', 'Gneiss Gonzales', 'Donnie Price', 'Schist Bryant',
+      'Omar Bennett', 'Phyllite Alexander', 'Roman Wood', 'Quartzite Russell', 'Darnell Barnes', 'Marble Griffin',
+      'Rolando Ross', 'Granite Diaz', 'Lance Henderson', 'Basalt Hayes', 'Cody Coleman', 'Limestone Sanders',
+      'Julius Jenkins', 'Sandstone Price', 'Thaddeus Perry', 'Shale Bennett', 'Valentine Powell', 'Gneiss Wood',
+      'Jamey Long', 'Phyllite Barnes', 'Edmond Patterson', 'Quartzite Ross', 'Santiago Hughes', 'Marble Henderson',
+      'Louie Flores', 'Granite Coleman', 'Wilford Butler', 'Basalt Jenkins', 'Lawerence Simmons', 'Limestone Perry',
+      'Aaron Foster', 'Sandstone Powell', 'Elijah Gonzales', 'Shale Long', 'Cary Bryant', 'Gneiss Patterson',
+      'Blair Alexander', 'Phyllite Hughes', 'Odell Russell', 'Quartzite Flores', 'Maxwell Griffin', 'Marble Butler',
+      'Irving Diaz', 'Granite Simmons', 'Sterling Hayes', 'Basalt Foster', 'Marlon Sanders', 'Limestone Gonzales',
+      'Mitchell Price', 'Sandstone Bennett', 'Marcel Wood', 'Shale Barnes', 'Kareem Ross', 'Gneiss Henderson',
+      'Jarrett Coleman', 'Phyllite Jenkins', 'Brooks Perry', 'Quartzite Powell', 'Ariel Long', 'Marble Patterson',
+      'Abdul Hughes', 'Granite Bryant', 'Dirk Flores', 'Basalt Alexander', 'Remington Butler', 'Limestone Russell',
+      'Skylar Simmons', 'Sandstone Griffin', 'Bowie Hayes', 'Shale Diaz', 'Ridge Sanders', 'Gneiss Price',
+      'Baylor Wood', 'Phyllite Barnes', 'Caspian Ross', 'Quartzite Henderson', 'Fletcher Coleman', 'Marble Jenkins',
+      'Madden Perry', 'Granite Powell', 'Stetson Long', 'Basalt Hughes', 'Wells Bryant', 'Limestone Flores',
+      'Beckham Alexander', 'Sandstone Butler', 'Blaze Russell', 'Shale Simmons', 'Ridge Griffin', 'Gneiss Hayes',
+      'Zephyr Diaz', 'Phyllite Sanders', 'Atlas Wood', 'Quartzite Price', 'Orion Barnes', 'Marble Henderson',
+      'Phoenix Coleman', 'Granite Jenkins', 'Jupiter Perry', 'Basalt Powell', 'Nova Long', 'Limestone Hughes',
+      'Cosmo Bryant', 'Sandstone Flores', 'Zen Alexander', 'Shale Butler', 'Kai Russell', 'Gneiss Simmons',
+      'River Griffin', 'Phyllite Hayes', 'Forest Diaz', 'Quartzite Sanders', 'Ocean Wood', 'Marble Price',
+      'Sky Barnes', 'Granite Coleman', 'Storm Jenkins', 'Basalt Perry', 'Thunder Powell', 'Limestone Long',
+      'Lightning Hughes', 'Sandstone Bryant', 'Frost Flores', 'Shale Alexander', 'Crystal Russell', 'Gneiss Griffin',
+      'Diamond Hayes', 'Phyllite Diaz', 'Pearl Sanders', 'Quartzite Wood', 'Opal Price', 'Marble Barnes',
+      'Sapphire Coleman', 'Granite Jenkins', 'Emerald Perry', 'Basalt Powell', 'Ruby Long', 'Limestone Hughes',
+      'Amethyst Bryant', 'Sandstone Flores', 'Topaz Alexander', 'Shale Russell', 'Jade Griffin', 'Gneiss Hayes',
+      'Onyx Diaz', 'Phyllite Sanders', 'Quartz Wood', 'Quartzite Price', 'Marble Barnes', 'Marble Coleman',
+      'Granite Perry', 'Granite Powell', 'Basalt Long', 'Basalt Hughes', 'Limestone Bryant', 'Limestone Flores',
+      'Sandstone Alexander', 'Sandstone Russell', 'Shale Griffin', 'Shale Hayes', 'Gneiss Diaz', 'Gneiss Sanders',
+      'Schist Wood', 'Schist Price', 'Phyllite Barnes', 'Phyllite Coleman', 'Quartzite Perry', 'Quartzite Powell'
     ];
-    
-    setCurrentStories(defaultStories);
+
+    const countries = [
+      { name: 'USA', flag: '🇺🇸' }, { name: 'India', flag: '🇮🇳' }, { name: 'Spain', flag: '🇪🇸' },
+      { name: 'UK', flag: '🇬🇧' }, { name: 'Japan', flag: '🇯🇵' }, { name: 'Brazil', flag: '🇧🇷' },
+      { name: 'Canada', flag: '🇨🇦' }, { name: 'Australia', flag: '🇦🇺' }, { name: 'Germany', flag: '🇩🇪' },
+      { name: 'France', flag: '🇫🇷' }, { name: 'Italy', flag: '🇮🇹' }, { name: 'Netherlands', flag: '🇳🇱' },
+      { name: 'Sweden', flag: '🇸🇪' }, { name: 'Norway', flag: '🇳🇴' }, { name: 'Denmark', flag: '🇩🇰' },
+      { name: 'Finland', flag: '🇫🇮' }, { name: 'Switzerland', flag: '🇨🇭' }, { name: 'Austria', flag: '🇦🇹' },
+      { name: 'Belgium', flag: '🇧🇪' }, { name: 'Portugal', flag: '🇵🇹' }, { name: 'Greece', flag: '🇬🇷' },
+      { name: 'Poland', flag: '🇵🇱' }, { name: 'Czech Republic', flag: '🇨🇿' }, { name: 'Hungary', flag: '🇭🇺' },
+      { name: 'Romania', flag: '🇷🇴' }, { name: 'Bulgaria', flag: '🇧🇬' }, { name: 'Croatia', flag: '🇭🇷' },
+      { name: 'Slovenia', flag: '🇸🇮' }, { name: 'Slovakia', flag: '🇸🇰' }, { name: 'Estonia', flag: '🇪🇪' },
+      { name: 'Latvia', flag: '🇱🇻' }, { name: 'Lithuania', flag: '🇱🇹' }, { name: 'Ireland', flag: '🇮🇪' },
+      { name: 'Iceland', flag: '🇮🇸' }, { name: 'Luxembourg', flag: '🇱🇺' }, { name: 'Malta', flag: '🇲🇹' },
+      { name: 'Cyprus', flag: '🇨🇾' }, { name: 'Mexico', flag: '🇲🇽' }, { name: 'Argentina', flag: '🇦🇷' },
+      { name: 'Chile', flag: '🇨🇱' }, { name: 'Colombia', flag: '🇨🇴' }, { name: 'Peru', flag: '🇵🇪' },
+      { name: 'Venezuela', flag: '🇻🇪' }, { name: 'Uruguay', flag: '🇺🇾' }, { name: 'Paraguay', flag: '🇵🇾' },
+      { name: 'Ecuador', flag: '🇪🇨' }, { name: 'Bolivia', flag: '🇧🇴' }, { name: 'Guyana', flag: '🇬🇾' },
+      { name: 'Suriname', flag: '🇸🇷' }, { name: 'China', flag: '🇨🇳' }, { name: 'South Korea', flag: '🇰🇷' },
+      { name: 'Singapore', flag: '🇸🇬' }, { name: 'Malaysia', flag: '🇲🇾' }, { name: 'Thailand', flag: '🇹🇭' },
+      { name: 'Vietnam', flag: '🇻🇳' }, { name: 'Philippines', flag: '🇵🇭' }, { name: 'Indonesia', flag: '🇮🇩' },
+      { name: 'Pakistan', flag: '🇵🇰' }, { name: 'Bangladesh', flag: '🇧🇩' }, { name: 'Sri Lanka', flag: '🇱🇰' },
+      { name: 'Nepal', flag: '🇳🇵' }, { name: 'Bhutan', flag: '🇧🇹' }, { name: 'Maldives', flag: '🇲🇻' },
+      { name: 'Myanmar', flag: '🇲🇲' }, { name: 'Cambodia', flag: '🇰🇭' }, { name: 'Laos', flag: '🇱🇦' },
+      { name: 'Mongolia', flag: '🇲🇳' }, { name: 'Kazakhstan', flag: '🇰🇿' }, { name: 'Uzbekistan', flag: '🇺🇿' },
+      { name: 'Kyrgyzstan', flag: '🇰🇬' }, { name: 'Tajikistan', flag: '🇹🇯' }, { name: 'Turkmenistan', flag: '🇹🇲' },
+      { name: 'Azerbaijan', flag: '🇦🇿' }, { name: 'Georgia', flag: '🇬🇪' }, { name: 'Armenia', flag: '🇦🇲' },
+      { name: 'Turkey', flag: '🇹🇷' }, { name: 'Iran', flag: '🇮🇷' }, { name: 'Iraq', flag: '🇮🇶' },
+      { name: 'Syria', flag: '🇸🇾' }, { name: 'Lebanon', flag: '🇱🇧' }, { name: 'Jordan', flag: '🇯🇴' },
+      { name: 'Israel', flag: '🇮🇱' }, { name: 'Palestine', flag: '🇵🇸' }, { name: 'Saudi Arabia', flag: '🇸🇦' },
+      { name: 'UAE', flag: '🇦🇪' }, { name: 'Qatar', flag: '🇶🇦' }, { name: 'Kuwait', flag: '🇰🇼' },
+      { name: 'Bahrain', flag: '🇧🇭' }, { name: 'Oman', flag: '🇴🇲' }, { name: 'Yemen', flag: '🇾🇪' },
+      { name: 'Egypt', flag: '🇪🇬' }, { name: 'Morocco', flag: '🇲🇦' }, { name: 'Algeria', flag: '🇩🇿' },
+      { name: 'Tunisia', flag: '🇹🇳' }, { name: 'Libya', flag: '🇱🇾' }, { name: 'Sudan', flag: '🇸🇩' },
+      { name: 'South Sudan', flag: '🇸🇸' }, { name: 'Ethiopia', flag: '🇪🇹' }, { name: 'Kenya', flag: '🇰🇪' },
+      { name: 'Tanzania', flag: '🇹🇿' }, { name: 'Uganda', flag: '🇺🇬' }, { name: 'Rwanda', flag: '🇷🇼' },
+      { name: 'Burundi', flag: '🇧🇮' }, { name: 'Somalia', flag: '🇸🇴' }, { name: 'Djibouti', flag: '🇩🇯' },
+      { name: 'Eritrea', flag: '🇪🇷' }, { name: 'Nigeria', flag: '🇳🇬' }, { name: 'Ghana', flag: '🇬🇭' },
+      { name: 'Ivory Coast', flag: '🇨🇮' }, { name: 'Senegal', flag: '🇸🇳' }, { name: 'Mali', flag: '🇲🇱' },
+      { name: 'Burkina Faso', flag: '🇧🇫' }, { name: 'Niger', flag: '🇳🇪' }, { name: 'Chad', flag: '🇹🇩' },
+      { name: 'Cameroon', flag: '🇨🇲' }, { name: 'Central African Republic', flag: '🇨🇫' }, { name: 'Gabon', flag: '🇬🇦' },
+      { name: 'Congo', flag: '🇨🇬' }, { name: 'DR Congo', flag: '🇨🇩' }, { name: 'Angola', flag: '🇦🇴' },
+      { name: 'Zambia', flag: '🇿🇲' }, { name: 'Zimbabwe', flag: '🇿🇼' }, { name: 'Botswana', flag: '🇧🇼' },
+      { name: 'Namibia', flag: '🇳🇦' }, { name: 'South Africa', flag: '🇿🇦' }, { name: 'Lesotho', flag: '🇱🇸' },
+      { name: 'Eswatini', flag: '🇸🇿' }, { name: 'Madagascar', flag: '🇲🇬' }, { name: 'Mauritius', flag: '🇲🇺' },
+      { name: 'Seychelles', flag: '🇸🇨' }, { name: 'Comoros', flag: '🇰🇲' }, { name: 'Cape Verde', flag: '🇨🇻' },
+      { name: 'Guinea-Bissau', flag: '🇬🇼' }, { name: 'Guinea', flag: '🇬🇳' }, { name: 'Sierra Leone', flag: '🇸🇱' },
+      { name: 'Liberia', flag: '🇱🇷' }, { name: 'Togo', flag: '🇹🇬' }, { name: 'Benin', flag: '🇧🇯' },
+      { name: 'Equatorial Guinea', flag: '🇬🇶' }, { name: 'São Tomé and Príncipe', flag: '🇸🇹' }
+    ];
+
+    const durations = [
+      '2 weeks', '1 month', '1.5 months', '2 months', '3 months', '4 months', '5 months', '6 months'
+    ];
+
+    // Generate 200 random stories
+    const randomStories = [];
+    for (let i = 0; i < 200; i++) {
+      const randomName = names[Math.floor(Math.random() * names.length)];
+      const randomCountry = countries[Math.floor(Math.random() * countries.length)];
+      const randomDuration = durations[Math.floor(Math.random() * durations.length)];
+      const randomWeightLost = (Math.random() * 9.25 + 0.75).toFixed(2); // 0.75 to 10 kg
+
+      randomStories.push({
+        _id: `random_${i}_${Date.now()}`,
+        name: randomName,
+        country: randomCountry.name,
+        flag: randomCountry.flag,
+        weightLost: parseFloat(randomWeightLost),
+        duration: randomDuration,
+        isActive: true
+      });
+    }
+
+    return randomStories;
+  };
+
+  // Fallback to random generated stories if API fails
+  const showRandomStories = () => {
+    const randomStories = generateRandomStories();
+    setCurrentStories(randomStories);
     setError(null);
     setIsLoading(false);
   };
@@ -105,7 +196,7 @@ const UserSuccessCards = () => {
     const timeoutId = setTimeout(() => {
       if (isLoading) {
         console.log('API timeout - showing default stories');
-        showDefaultStories();
+        showRandomStories(); // Changed to showRandomStories
       }
     }, 5000); // 5 second timeout
 
@@ -144,50 +235,10 @@ const UserSuccessCards = () => {
     );
   }
 
-  // Error state - Show default success stories
+  // Error state - Show random success stories
   if (error) {
-    const defaultStories = [
-      {
-        _id: 'default1',
-        name: 'Sarah Johnson',
-        country: 'USA',
-        flag: '🇺🇸',
-        weightLost: 8.5,
-        duration: '6 months',
-        isActive: true
-      },
-      {
-        _id: 'default2',
-        name: 'Priya Patel',
-        country: 'India',
-        flag: '🇮🇳',
-        weightLost: 6.2,
-        duration: '4 months',
-        isActive: true
-      },
-      {
-        _id: 'default3',
-        name: 'Carlos Rodriguez',
-        country: 'Spain',
-        flag: '🇪🇸',
-        weightLost: 5.8,
-        duration: '3 months',
-        isActive: true
-      },
-      {
-        _id: 'default4',
-        name: 'Emma Wilson',
-        country: 'UK',
-        flag: '🇬🇧',
-        weightLost: 7.1,
-        duration: '5 months',
-        isActive: true
-      }
-    ];
-    
-    setCurrentStories(defaultStories);
-    setError(null);
-    return null; // Let the component render with default stories
+    showRandomStories();
+    return null; // Let the component render with random stories
   }
 
   // No stories state
