@@ -1,13 +1,12 @@
 const nodemailer = require('nodemailer');
-const sendMailsService = require('./sendMailsService');
 
 // Log email configuration
 console.log('📧 Email Configuration:');
-console.log('   Primary: SendMails.io API');
-console.log('   Fallback: GoDaddy SMTP');
-console.log('   Status: Ready to send emails automatically');
+console.log('   Transactional Emails: GoDaddy SMTP (Direct)');
+console.log('   Marketing Emails: SendMails.io API');
+console.log('   Status: Ready for instant transactional email delivery');
 
-// GoDaddy SMTP Configuration (Fallback)
+// GoDaddy SMTP Configuration (Primary for transactional emails)
 const createGoDaddyTransporter = () => {
   return nodemailer.createTransport({
     host: 'smtpout.secureserver.net',
@@ -31,30 +30,15 @@ const createGoDaddyTransporter = () => {
 };
 
 /**
- * Send welcome email using SendMails.io API with SMTP fallback
+ * Send welcome email using direct GoDaddy SMTP for instant delivery
  * @param {string} to - Recipient email address
  * @param {string} name - Recipient name
  * @returns {Promise<Object>} API response
  */
 async function sendWelcomeEmail(to, name) {
   try {
-    console.log('📧 Sending welcome email...');
+    console.log('📧 Sending welcome email via GoDaddy SMTP...');
     
-    // Try SendMails.io API first
-    try {
-      console.log('   Trying SendMails.io API...');
-      const result = await sendMailsService.sendWelcomeEmail(to, name);
-      
-      if (result.success) {
-        console.log('✅ Welcome email sent successfully via SendMails.io API');
-        return result;
-      }
-    } catch (apiError) {
-      console.log('   ❌ SendMails.io API failed, trying SMTP fallback...');
-    }
-    
-    // Fallback to GoDaddy SMTP
-    console.log('   Using GoDaddy SMTP fallback...');
     const transporter = createGoDaddyTransporter();
     
     const html = `
@@ -97,7 +81,7 @@ async function sendWelcomeEmail(to, name) {
     return {
       success: true,
       messageId: info.messageId,
-      method: 'SMTP'
+      method: 'GoDaddy SMTP (Direct)'
     };
     
   } catch (error) {
@@ -110,7 +94,7 @@ async function sendWelcomeEmail(to, name) {
 }
 
 /**
- * Send password reset email using SendMails.io API with SMTP fallback
+ * Send password reset email using direct GoDaddy SMTP for instant delivery
  * @param {string} to - Recipient email address
  * @param {string} resetToken - Password reset token
  * @param {string} name - Recipient name (optional)
@@ -118,23 +102,8 @@ async function sendWelcomeEmail(to, name) {
  */
 async function sendPasswordResetEmail(to, resetToken, name = 'User') {
   try {
-    console.log('📧 Sending password reset email...');
+    console.log('📧 Sending password reset email via GoDaddy SMTP...');
     
-    // Try SendMails.io API first
-    try {
-      console.log('   Trying SendMails.io API...');
-      const result = await sendMailsService.sendPasswordResetEmail(to, resetToken, name);
-      
-      if (result.success) {
-        console.log('✅ Password reset email sent successfully via SendMails.io API');
-        return result;
-      }
-    } catch (apiError) {
-      console.log('   ❌ SendMails.io API failed, trying SMTP fallback...');
-    }
-    
-    // Fallback to GoDaddy SMTP
-    console.log('   Using GoDaddy SMTP fallback...');
     const transporter = createGoDaddyTransporter();
     
     const resetUrl = `${process.env.CLIENT_URL || 'https://gooofit.com'}/reset-password?token=${resetToken}`;
@@ -179,7 +148,7 @@ async function sendPasswordResetEmail(to, resetToken, name = 'User') {
     return {
       success: true,
       messageId: info.messageId,
-      method: 'SMTP'
+      method: 'GoDaddy SMTP (Direct)'
     };
     
   } catch (error) {
@@ -192,30 +161,15 @@ async function sendPasswordResetEmail(to, resetToken, name = 'User') {
 }
 
 /**
- * Send registration notification email using SendMails.io API with SMTP fallback
+ * Send registration notification email using direct GoDaddy SMTP for instant delivery
  * @param {string} to - Recipient email address
  * @param {string} name - Recipient name
  * @returns {Promise<Object>} API response
  */
 async function sendRegistrationNotificationEmail(to, name) {
   try {
-    console.log('📧 Sending registration notification email...');
+    console.log('📧 Sending registration notification email via GoDaddy SMTP...');
     
-    // Try SendMails.io API first
-    try {
-      console.log('   Trying SendMails.io API...');
-      const result = await sendMailsService.sendRegistrationNotificationEmail(to, name);
-      
-      if (result.success) {
-        console.log('✅ Registration notification email sent successfully via SendMails.io API');
-        return result;
-      }
-    } catch (apiError) {
-      console.log('   ❌ SendMails.io API failed, trying SMTP fallback...');
-    }
-    
-    // Fallback to GoDaddy SMTP
-    console.log('   Using GoDaddy SMTP fallback...');
     const transporter = createGoDaddyTransporter();
     
     const html = `
@@ -255,7 +209,7 @@ async function sendRegistrationNotificationEmail(to, name) {
     return {
       success: true,
       messageId: info.messageId,
-      method: 'SMTP'
+      method: 'GoDaddy SMTP (Direct)'
     };
     
   } catch (error) {
@@ -268,29 +222,14 @@ async function sendRegistrationNotificationEmail(to, name) {
 }
 
 /**
- * Send generic email using SendMails.io API with SMTP fallback
+ * Send generic email using direct GoDaddy SMTP for instant delivery
  * @param {Object} emailData - Email data object
  * @returns {Promise<Object>} API response
  */
 async function sendEmail(emailData) {
   try {
-    console.log('📧 Sending generic email...');
+    console.log('📧 Sending generic email via GoDaddy SMTP...');
     
-    // Try SendMails.io API first
-    try {
-      console.log('   Trying SendMails.io API...');
-      const result = await sendMailsService.sendEmail(emailData);
-      
-      if (result.success) {
-        console.log('✅ Generic email sent successfully via SendMails.io API');
-        return result;
-      }
-    } catch (apiError) {
-      console.log('   ❌ SendMails.io API failed, trying SMTP fallback...');
-    }
-    
-    // Fallback to GoDaddy SMTP
-    console.log('   Using GoDaddy SMTP fallback...');
     const transporter = createGoDaddyTransporter();
     
     const mailOptions = {
@@ -308,7 +247,7 @@ async function sendEmail(emailData) {
     return {
       success: true,
       messageId: info.messageId,
-      method: 'SMTP'
+      method: 'GoDaddy SMTP (Direct)'
     };
     
   } catch (error) {
@@ -321,29 +260,23 @@ async function sendEmail(emailData) {
 }
 
 /**
- * Test email service (both API and SMTP)
+ * Test email service (GoDaddy SMTP only)
  * @returns {Promise<Object>} Test result
  */
 async function testEmailService() {
   try {
-    console.log('🧪 Testing email service (API + SMTP fallback)...');
-    
-    // Test SendMails.io API
-    console.log('1️⃣ Testing SendMails.io API...');
-    const apiTest = await sendMailsService.testSendMailsConnection();
-    console.log('   API Test:', apiTest.success ? '✅ SUCCESS' : '❌ FAILED');
+    console.log('🧪 Testing email service (GoDaddy SMTP)...');
     
     // Test GoDaddy SMTP
-    console.log('2️⃣ Testing GoDaddy SMTP...');
+    console.log('1️⃣ Testing GoDaddy SMTP...');
     const transporter = createGoDaddyTransporter();
     const smtpTest = await transporter.verify();
     console.log('   SMTP Test:', smtpTest ? '✅ SUCCESS' : '❌ FAILED');
     
     return {
-      success: apiTest.success || smtpTest,
-      api: apiTest,
+      success: smtpTest,
       smtp: { success: smtpTest },
-      message: 'Email service test completed'
+      message: 'Email service test completed (GoDaddy SMTP only)'
     };
     
   } catch (error) {

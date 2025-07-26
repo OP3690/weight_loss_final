@@ -111,27 +111,27 @@ app.get('/api/test-email', async (req, res) => {
   }
 });
 
-// SendMails.io API test endpoint
-app.get('/api/test-sendmails', async (req, res) => {
+// GoDaddy SMTP test endpoint
+app.get('/api/test-smtp', async (req, res) => {
   try {
-    console.log('🧪 Testing SendMails.io API...');
+    console.log('🧪 Testing GoDaddy SMTP...');
     
-    const { testSendMailsConnection } = require('./services/sendMailsService');
-    const result = await testSendMailsConnection();
+    const { testEmailService } = require('./services/emailService');
+    const result = await testEmailService();
     
-    console.log('📊 SendMails.io API test result:', result);
+    console.log('📊 GoDaddy SMTP test result:', result);
     
     res.json({
       success: result.success,
       message: result.message,
-      data: result.data
+      smtp: result.smtp
     });
     
   } catch (error) {
-    console.error('❌ SendMails.io API test error:', error);
+    console.error('❌ GoDaddy SMTP test error:', error);
     res.status(500).json({
       success: false,
-      message: 'SendMails.io API test failed',
+      message: 'GoDaddy SMTP test failed',
       error: error.message
     });
   }
