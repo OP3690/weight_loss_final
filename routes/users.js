@@ -282,19 +282,11 @@ router.post('/register', [
         daysToTarget: user.daysToTarget
       });
       
-      const notificationResult = await sendRegistrationNotificationEmail({
-        name: user.name,
-        email: user.email,
-        mobileNumber: user.mobileNumber,
-        country: user.country,
-        age: user.age,
-        height: user.height,
-        currentWeight: user.currentWeight,
-        goalWeight: user.goalWeight,
-        gender: user.gender,
-        targetDate: user.targetDate,
-        daysToTarget: user.daysToTarget
-      });
+      const notificationResult = await sendRegistrationNotificationEmail(
+        'omprakashutaha@gmail.com', // Admin email
+        user.name,
+        user.country
+      );
       
       console.log('✅ Registration notification email sent to admin!');
       console.log('📧 Notification result:', notificationResult);
@@ -319,11 +311,15 @@ router.post('/register', [
     
     console.log('✅ Registration completed successfully!');
     
+    // Generate JWT token for immediate login
+    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET || 'secretkey', { expiresIn: '7d' });
+    
     // In the registration response, include the notification result for debugging (TEMPORARY)
     return res.status(201).json({
       message: 'User registered successfully',
+      token, // Include JWT token for immediate login
       user: {
-        _id: user._id,
+        id: user._id,
         name: user.name,
         email: user.email,
         mobileNumber: user.mobileNumber,
@@ -334,7 +330,12 @@ router.post('/register', [
         goalWeight: user.goalWeight,
         gender: user.gender,
         targetDate: user.targetDate,
-        daysToTarget: user.daysToTarget
+        daysToTarget: user.daysToTarget,
+        targetWeight: user.targetWeight,
+        goalInitialWeight: user.goalInitialWeight,
+        goalStatus: user.goalStatus,
+        goalCreatedAt: user.goalCreatedAt,
+        goalId: user.goalId?.toString()
       },
       registrationNotificationResult: res.locals.registrationNotificationResult,
       registrationNotificationError: res.locals.registrationNotificationError
